@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security in the Age of AI</title>
+
+  <!-- Reveal.js core -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Custom styles -->
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- Chart.js for data visualization -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <section id="title" class="section-divider" data-state="is-section-divider">
+        <p class="event-tag">UW SSEC RSE Meetup &mdash; May 14, 2026</p>
+        <h1>Security in the Age of AI</h1>
+        <p class="subtitle">Open Source Supply Chain Security:<br>Threats, Mitigations &amp; Hardened Workflows</p>
+      </section>
+
+      <section id="agenda">
+        <h2>What We'll Cover</h2>
+        <div class="content">
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 10px;">
+            <div class="card-red">
+              <p style="font-size: 28pt; margin-bottom: 6px; color: var(--primary-color);">
+                <i class="fa-solid fa-skull-crossbones"></i>
+              </p>
+              <p style="font-size: 14pt; font-weight: 700; color: var(--text-color); margin-bottom: 8px;">Part 1<br>Threat Landscape</p>
+              <p style="font-size: 13pt; color: var(--muted-color);">Major incidents from the last 12 months — GitHub, npm, PyPI, GitHub Actions</p>
+            </div>
+            <div class="card-green">
+              <p style="font-size: 28pt; margin-bottom: 6px; color: var(--secondary-color);">
+                <i class="fa-solid fa-shield-halved"></i>
+              </p>
+              <p style="font-size: 14pt; font-weight: 700; color: var(--text-color); margin-bottom: 8px;">Part 2<br>Practical Mitigations</p>
+              <p style="font-size: 13pt; color: var(--muted-color);">What you can do as a consumer and publisher of open-source packages</p>
+            </div>
+            <div class="card-blue">
+              <p style="font-size: 28pt; margin-bottom: 6px; color: var(--accent-blue);">
+                <i class="fa-solid fa-gears"></i>
+              </p>
+              <p style="font-size: 14pt; font-weight: 700; color: var(--text-color); margin-bottom: 8px;">Part 3<br>Hardened Workflows</p>
+              <p style="font-size: 13pt; color: var(--muted-color);">Ready-to-use npm and PyPI release workflows with defense-in-depth</p>
+            </div>
+          </div>
+          <blockquote style="margin-top: 28px;">
+            <p>"Research environments often lack the dedicated infrastructure and support needed to prioritize security — yet research code faces mounting risks."</p>
+          </blockquote>
+        </div>
+      </section>
+
+      <section id="divider-1" class="section-divider" data-state="is-section-divider">
+        <h1>Part 1: The Threat Landscape</h1>
+        <p>12 months of unprecedented supply chain attacks</p>
+      </section>
+
+      <section id="github-cve">
+        <h2>CVE-2026-3854 &mdash; GitHub Command Injection</h2>
+        <div class="content">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+            <div>
+              <p style="margin-bottom: 10px;"><span class="badge">CVSS 8.7</span></p>
+              <ul>
+                <li><strong>Any authenticated user</strong> could execute arbitrary commands on GitHub's backend via a single <code>git push</code></li>
+                <li>Flaw in push option parsing — unsanitized values injected into internal hook routing headers</li>
+                <li>On github.com: cross-tenant read access to repos on shared storage nodes</li>
+                <li>Self-hosted GHES: <strong>88% of instances still vulnerable</strong> at public disclosure</li>
+              </ul>
+            </div>
+            <div>
+              <div class="card" style="margin-bottom: 16px;">
+                <p style="font-size: 13pt; color: var(--muted-color); margin-bottom: 4px;">Reported</p>
+                <p style="font-size: 15pt;">March 4, 2026 by Wiz</p>
+              </div>
+              <div class="card" style="margin-bottom: 16px;">
+                <p style="font-size: 13pt; color: var(--muted-color); margin-bottom: 4px;">Patched on github.com</p>
+                <p style="font-size: 15pt;">~2 hours after report</p>
+              </div>
+              <div class="card-red">
+                <p style="font-size: 13pt; color: var(--muted-color); margin-bottom: 4px;">Action Required</p>
+                <p style="font-size: 15pt;">Upgrade to GHES <strong>3.19.3+</strong></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <section id="teampcp-overview">
+          <h2>The TeamPCP Campaign (Mar&ndash;Apr 2026)</h2>
+          <div class="content">
+            <p style="margin-bottom: 12px;">A single threat group systematically targeted the <strong>security tooling layer</strong> — the tools developers are told to trust most — across five ecosystems.</p>
+            <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 16px;">
+              <div class="card" style="text-align: center; padding: 12px 8px;">
+                <p style="font-size: 11pt; color: var(--muted-color);">GitHub</p>
+                <p style="font-size: 14pt;">Actions</p>
+              </div>
+              <div class="card" style="text-align: center; padding: 12px 8px;">
+                <p style="font-size: 11pt; color: var(--muted-color);">Container</p>
+                <p style="font-size: 14pt;">Docker Hub</p>
+              </div>
+              <div class="card" style="text-align: center; padding: 12px 8px;">
+                <p style="font-size: 11pt; color: var(--muted-color);">JavaScript</p>
+                <p style="font-size: 14pt;">npm</p>
+              </div>
+              <div class="card" style="text-align: center; padding: 12px 8px;">
+                <p style="font-size: 11pt; color: var(--muted-color);">Python</p>
+                <p style="font-size: 14pt;">PyPI</p>
+              </div>
+              <div class="card" style="text-align: center; padding: 12px 8px;">
+                <p style="font-size: 11pt; color: var(--muted-color);">VS Code</p>
+                <p style="font-size: 14pt;">Open VSX</p>
+              </div>
+            </div>
+            <div class="card-red">
+              <p style="font-size: 14pt;"><i class="fa-solid fa-triangle-exclamation" style="color: var(--primary-color); margin-right: 8px;"></i>Campaign has entered an <strong>extortion phase</strong> — ransomware crew "Vect" allied with TeamPCP to monetize access from compromised orgs.</p>
+            </div>
+          </div>
+        </section>
+        <section id="teampcp-incidents">
+          <h2>TeamPCP: Incident Timeline</h2>
+          <div class="content">
+            <table style="font-size: 12pt;">
+              <thead>
+                <tr>
+                  <th style="width: 100px;">Date</th>
+                  <th style="width: 200px;">Target</th>
+                  <th>Impact</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Mar 19</td>
+                  <td><strong>Trivy</strong> (Aqua Security)</td>
+                  <td>Credential-stealing malware via GitHub Actions &amp; containers; embedded in thousands of CI/CD pipelines</td>
+                </tr>
+                <tr>
+                  <td>Mar 23</td>
+                  <td><strong>Checkmarx</strong></td>
+                  <td>2 Open VSX plugins + 2 GitHub Actions workflows poisoned</td>
+                </tr>
+                <tr>
+                  <td>Mar 24</td>
+                  <td><strong>LiteLLM 1.82.8</strong> (PyPI)</td>
+                  <td>Dropped <code>.pth</code> file executing on every Python startup; harvested SSH keys, cloud creds, Kubernetes lateral movement</td>
+                </tr>
+                <tr>
+                  <td>Apr 22</td>
+                  <td><strong>Bitwarden CLI</strong></td>
+                  <td>Malicious <code>@bitwarden/cli@2026.4.0</code> — 10M+ users, 50k+ businesses; stole cloud creds, self-propagated</td>
+                </tr>
+                <tr>
+                  <td>Apr 29</td>
+                  <td><strong>SAP CAP packages</strong></td>
+                  <td><code>@cap-js/sqlite</code>, <code>@cap-js/postgres</code>, <code>mbt</code> — targets cloud creds, GitHub/npm tokens, K8s secrets</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <section>
+        <section id="shai-hulud-overview">
+          <h2>Shai-Hulud: The Self-Replicating npm Worm</h2>
+          <div class="content">
+            <p style="margin-bottom: 14px;">A worm that <strong>hijacks victim packages to spread itself</strong> — harvests credentials, then backdoors packages it finds to propagate further.</p>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+              <div class="card">
+                <p class="badge">Sep 2025</p>
+                <p style="font-size: 14pt; font-weight: 700; margin-bottom: 6px;">Original</p>
+                <ul style="font-size: 13pt;">
+                  <li>500+ packages compromised</li>
+                  <li>GitHub PATs, AWS/GCP/Azure keys</li>
+                  <li>Exfiltrated to attacker GitHub repos</li>
+                  <li><code>postinstall</code> hook execution</li>
+                </ul>
+              </div>
+              <div class="card-red">
+                <p class="badge">Nov 2025</p>
+                <p style="font-size: 14pt; font-weight: 700; margin-bottom: 6px;">2.0</p>
+                <ul style="font-size: 13pt;">
+                  <li>796 packages, 1,092 versions</li>
+                  <li>Switched to <code>preinstall</code> (before security tooling)</li>
+                  <li>Installed Bun to evade Node monitoring</li>
+                  <li><strong>Destructive fallback</strong>: overwrote home directory</li>
+                </ul>
+              </div>
+              <div class="card-red">
+                <p class="badge">Apr–May 2026</p>
+                <p style="font-size: 14pt; font-weight: 700; margin-bottom: 6px;">3rd + 4th Coming</p>
+                <ul style="font-size: 13pt;">
+                  <li>Bitwarden CLI (The Third Coming)</li>
+                  <li>SAP CAP packages (Mini Shai-Hulud)</li>
+                  <li>Now allied with ransomware crew Vect</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section id="shai-hulud-details">
+          <h2>Shai-Hulud: Why It's Different</h2>
+          <div class="content">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+              <div>
+                <p style="font-weight: 700; color: var(--primary-color); margin-bottom: 10px; font-size: 17pt;"><i class="fa-solid fa-virus"></i> Self-propagation mechanism</p>
+                <p style="margin-bottom: 8px;">It doesn't just steal credentials — it <strong>uses stolen npm tokens to backdoor the victim's own packages</strong>, infecting their downstream users.</p>
+                <p>Postman, Zapier, and PostHog were among affected publishers in 2.0.</p>
+              </div>
+              <div>
+                <p style="font-weight: 700; color: var(--primary-color); margin-bottom: 10px; font-size: 17pt;"><i class="fa-solid fa-eye-slash"></i> The public leak problem</p>
+                <p style="margin-bottom: 8px;">Original variant uploaded stolen secrets <strong>unencrypted to public GitHub</strong> — anyone who found them could use them. Attribution became impossible.</p>
+                <p>Enabled a Trust Wallet compromise around New Year's 2026.</p>
+              </div>
+            </div>
+            <div class="card-red" style="margin-top: 20px;">
+              <p style="font-size: 15pt;"><i class="fa-solid fa-triangle-exclamation" style="color: var(--primary-color); margin-right: 8px;"></i><strong>Python blind spot:</strong> The LiteLLM attack used <code>.pth</code> files — most supply-chain scanners don't check them, and they execute on every Python startup.</p>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section id="other-incidents">
+        <h2>The AI Angle: Claude Code Source Leak</h2>
+        <div class="content">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div>
+              <p style="margin-bottom: 8px;"><span class="badge">Mar 31, 2026</span></p>
+              <p style="font-size: 15pt; margin-bottom: 8px;"><strong>59.8 MB JavaScript source map</strong> bundled in <code>@anthropic-ai/claude-code</code> v2.1.88 — exposing ~512,000 lines of TypeScript source.</p>
+              <p style="font-size: 14pt; color: var(--muted-color); margin-bottom: 8px;"><strong>Root cause:</strong> Bun generates source maps by default; <code>*.map</code> not in <code>.npmignore</code>. Anthropic called it "a plain developer error."</p>
+              <div class="card-red" style="margin-top: 10px;">
+                <p style="font-size: 13pt;"><strong>Same day as the Axios RAT attack</strong> — anyone who ran <code>npm update</code> that morning could have pulled both the source map and the malicious axios 1.14.1.</p>
+              </div>
+            </div>
+            <div>
+              <p style="font-weight: 700; font-size: 15pt; color: var(--primary-color); margin-bottom: 8px;">The supply-chain ripple effects</p>
+              <ul style="font-size: 13pt;">
+                <li><strong>Weaponized as a lure:</strong> fake "leaked Claude Code" repos delivered Vidar infostealer via GitHub Releases within 24 hours</li>
+                <li><strong>Package squatting:</strong> attackers registered npm packages mimicking Anthropic's internal tooling</li>
+                <li><strong>Faster vulnerability discovery:</strong> CVE-2026-21852 (API key exfiltration) disclosed within days — source visibility lowers the cost of finding bugs</li>
+                <li><strong>Publisher lesson:</strong> A dry-run install step or file-size alert would have caught a 59.8 MB tarball instantly</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="footnote">Even well-resourced, security-focused organizations hit publisher-side risks. Hardened release workflows help everyone.</div>
+      </section>
+
+      <section id="attack-patterns">
+        <h2>Attack Patterns to Internalize</h2>
+        <div class="content">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="card">
+              <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-solid fa-arrows-rotate"></i> Shift: typosquats → legitimate package takeovers</p>
+              <p style="font-size: 13pt;">Your scanner checking for known CVEs is <strong>not enough</strong>. You need to detect hijacks of packages you trust.</p>
+            </div>
+            <div class="card">
+              <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-solid fa-terminal"></i> Lifecycle scripts are the dominant vector</p>
+              <p style="font-size: 13pt;"><code>preinstall</code> and <code>postinstall</code> hooks fire before anything inspects the package. Disable them.</p>
+            </div>
+            <div class="card">
+              <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-solid fa-key"></i> CI/CD secrets are the real target</p>
+              <p style="font-size: 13pt;">GitHub PATs, npm tokens, AWS/GCP/Azure keys, Kubernetes service account tokens. Credential-free environments eliminate the risk.</p>
+            </div>
+            <div class="card">
+              <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-brands fa-github"></i> GitHub Actions: injection point <em>and</em> C2 channel</p>
+              <p style="font-size: 13pt;">Actions by tag are hijackable. The March attacks specifically targeted release tags to distribute malicious trusted CI actions.</p>
+            </div>
+            <div class="card">
+              <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-brands fa-python"></i> Python <code>.pth</code> files are a scanner blind spot</p>
+              <p style="font-size: 13pt;">Execute on every Python startup. Most supply-chain scanners don't check them. LiteLLM 1.82.8 used exactly this gap.</p>
+            </div>
+            <div class="card">
+              <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-solid fa-user-secret"></i> Developer machines are in scope</p>
+              <p style="font-size: 13pt;">The Axios and Shai-Hulud attacks harvested SSH keys &amp; credentials from developer laptops where <code>npm install</code> ran.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="divider-2" class="section-divider" data-state="is-section-divider">
+        <h1>Part 2: What You Can Do</h1>
+        <p>Practical mitigations for consumers and publishers</p>
+      </section>
+
+      <section>
+        <section id="consumer-mitigations-1">
+          <h2>As a Consumer: Stop the Bleeding</h2>
+          <div class="content">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+              <div>
+                <div class="check-item" style="margin-bottom: 12px;">
+                  <i class="fa-solid fa-lock fa-fw" style="color: var(--secondary-color); margin-top: 3px; flex-shrink: 0;"></i>
+                  <div>
+                    <p style="font-weight: 700; margin-bottom: 3px;">Pin everything with lockfiles</p>
+                    <p style="font-size: 14pt; color: var(--muted-color);">Lockfiles + hashes turn "pull latest" into "pull this exact byte string." GitHub Actions: pin to commit SHAs, not tags.</p>
+                  </div>
+                </div>
+                <div class="check-item" style="margin-bottom: 12px;">
+                  <i class="fa-solid fa-ban fa-fw" style="color: var(--secondary-color); margin-top: 3px; flex-shrink: 0;"></i>
+                  <div>
+                    <p style="font-weight: 700; margin-bottom: 3px;">Disable lifecycle scripts in CI</p>
+                    <p style="font-size: 14pt; color: var(--muted-color);"><code>npm install --ignore-scripts</code> neutralizes the dominant payload vector. Whitelist the few packages that genuinely need it.</p>
+                  </div>
+                </div>
+                <div class="check-item">
+                  <i class="fa-solid fa-clock fa-fw" style="color: var(--secondary-color); margin-top: 3px; flex-shrink: 0;"></i>
+                  <div>
+                    <p style="font-weight: 700; margin-bottom: 3px;">Add a cooldown period</p>
+                    <p style="font-size: 14pt; color: var(--muted-color);">Don't auto-pull versions &lt;7–14 days old. Most malicious releases are yanked within hours. Renovate supports <code>minimumReleaseAge</code>.</p>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="check-item" style="margin-bottom: 12px;">
+                  <i class="fa-solid fa-box-archive fa-fw" style="color: var(--secondary-color); margin-top: 3px; flex-shrink: 0;"></i>
+                  <div>
+                    <p style="font-weight: 700; margin-bottom: 3px;">Ephemeral, credential-free install environments</p>
+                    <p style="font-size: 14pt; color: var(--muted-color);">Move dependency resolution into containers or VMs with no SSH keys, AWS creds, or <code>.env</code> files. Devcontainers + ephemeral CI runners.</p>
+                  </div>
+                </div>
+                <div class="check-item" style="margin-bottom: 12px;">
+                  <i class="fa-solid fa-shield fa-fw" style="color: var(--secondary-color); margin-top: 3px; flex-shrink: 0;"></i>
+                  <div>
+                    <p style="font-weight: 700; margin-bottom: 3px;">Registry firewall or allowlist</p>
+                    <p style="font-size: 14pt; color: var(--muted-color);">Sonatype, JFrog Curation, Socket, or self-hosted Verdaccio/Nexus. Socket's free GitHub app catches a lot.</p>
+                  </div>
+                </div>
+                <div class="check-item">
+                  <i class="fa-solid fa-list fa-fw" style="color: var(--secondary-color); margin-top: 3px; flex-shrink: 0;"></i>
+                  <div>
+                    <p style="font-weight: 700; margin-bottom: 3px;">Generate SBOMs on every build</p>
+                    <p style="font-size: 14pt; color: var(--muted-color);">Syft, CycloneDX, or <code>npm sbom</code>. When CISA publishes IOCs at 2 AM you can answer "are we exposed?" in minutes.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section id="consumer-mitigations-2">
+          <h2>As a Consumer: Detect &amp; Respond</h2>
+          <div class="content">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+              <div>
+                <p style="font-weight: 700; font-size: 17pt; color: var(--accent-blue); margin-bottom: 12px;"><i class="fa-solid fa-magnifying-glass"></i> Detection</p>
+                <ul>
+                  <li>Monitor for <strong>outbound connections from <code>npm install</code></strong> or <code>pip install</code></li>
+                  <li>Alert on file reads under <code>~/.ssh</code> or <code>~/.aws</code> during install</li>
+                  <li>EDR or Falco rules catch behavioral signals before IOCs are published</li>
+                  <li>Subscribe to: GitHub Security Advisories, OSV.dev, PyPI announcements, CISA alerts</li>
+                </ul>
+              </div>
+              <div>
+                <p style="font-weight: 700; font-size: 17pt; color: var(--accent-blue); margin-bottom: 12px;"><i class="fa-solid fa-fire-extinguisher"></i> Incident Readiness</p>
+                <p style="margin-bottom: 10px; font-size: 15pt;">Have a written <strong>"compromised dependency" runbook</strong>:</p>
+                <ul>
+                  <li>Identify affected hosts and CI jobs</li>
+                  <li>Revoke &amp; rotate credentials reachable from those environments</li>
+                  <li>Purge package caches (<code>pip cache purge</code>, <code>npm cache clean</code>)</li>
+                  <li>Assume any secrets present on affected hosts are exposed</li>
+                  <li><strong>Practice it once</strong> before you need it</li>
+                </ul>
+              </div>
+            </div>
+            <div class="card-red" style="margin-top: 16px;">
+              <p style="font-size: 14pt;"><strong>What to skip:</strong> blanket bans on open source, CVE-only scanners (miss every hijacking), "review every dep manually" (impossible past ~10 deps). Focus scrutiny on direct dependencies and publish-time controls.</p>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section>
+        <section id="publisher-mitigations-1">
+          <h2>As a Publisher: Protect Your Release Pipeline</h2>
+          <div class="content">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+              <div>
+                <div class="card-green" style="margin-bottom: 14px;">
+                  <p style="font-weight: 700; font-size: 15pt; margin-bottom: 6px;"><i class="fa-solid fa-star" style="color: var(--secondary-color);"></i> Adopt Trusted Publishing (OIDC)</p>
+                  <p style="font-size: 14pt;">Single highest-impact change. Replaces long-lived API tokens with short-lived credentials minted per-publish from CI. No stored tokens to steal. Available on <strong>PyPI and npm</strong>.</p>
+                </div>
+                <div class="check-item" style="margin-bottom: 10px;">
+                  <i class="fa-solid fa-robot fa-fw" style="color: var(--secondary-color); margin-top: 3px; flex-shrink: 0;"></i>
+                  <div>
+                    <p style="font-weight: 700; margin-bottom: 3px;">Publish from CI, never a personal machine</p>
+                    <p style="font-size: 14pt; color: var(--muted-color);">The Axios postmortem explicitly cited direct publishing from a personal npm account as the single point of compromise.</p>
+                  </div>
+                </div>
+                <div class="check-item">
+                  <i class="fa-solid fa-fingerprint fa-fw" style="color: var(--secondary-color); margin-top: 3px; flex-shrink: 0;"></i>
+                  <div>
+                    <p style="font-weight: 700; margin-bottom: 3px;">Phishing-resistant MFA on every maintainer account</p>
+                    <p style="font-size: 14pt; color: var(--muted-color);">WebAuthn / passkeys / YubiKey — not TOTP. Shai-Hulud used an <code>npmjs.help</code> lookalike to harvest TOTP codes.</p>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="check-item" style="margin-bottom: 10px;">
+                  <i class="fa-solid fa-certificate fa-fw" style="color: var(--secondary-color); margin-top: 3px; flex-shrink: 0;"></i>
+                  <div>
+                    <p style="font-weight: 700; margin-bottom: 3px;">Sign releases with SLSA provenance</p>
+                    <p style="font-size: 14pt; color: var(--muted-color);"><code>npm publish --provenance</code> and PyPI attestations create a verifiable record linking artifact to workflow &amp; commit. PyPI used this to detect the forged Ultralytics releases.</p>
+                  </div>
+                </div>
+                <div class="check-item" style="margin-bottom: 10px;">
+                  <i class="fa-solid fa-code-branch fa-fw" style="color: var(--secondary-color); margin-top: 3px; flex-shrink: 0;"></i>
+                  <div>
+                    <p style="font-weight: 700; margin-bottom: 3px;">Branch &amp; tag protection</p>
+                    <p style="font-size: 14pt; color: var(--muted-color);">Required PR reviews, signed commits, tag protection on <code>v*</code>. The TeamPCP attacks used spoofed commits impersonating legitimate maintainers.</p>
+                  </div>
+                </div>
+                <div class="check-item">
+                  <i class="fa-solid fa-people-group fa-fw" style="color: var(--secondary-color); margin-top: 3px; flex-shrink: 0;"></i>
+                  <div>
+                    <p style="font-weight: 700; margin-bottom: 3px;">Audit maintainer access quarterly</p>
+                    <p style="font-size: 14pt; color: var(--muted-color);">Old contributors with publish rights on packages they haven't touched in years are a common compromise vector.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section id="publisher-mitigations-2">
+          <h2>As a Publisher: Lock Down GitHub Actions</h2>
+          <div class="content">
+            <p style="margin-bottom: 14px; font-size: 15pt;">GitHub Actions misconfigurations were the entry point in the elementary-data, kubernetes-el, and Ultralytics attacks.</p>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+              <div class="card">
+                <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-solid fa-lock"></i> Minimal permissions</p>
+                <p style="font-size: 13pt;">Set <code>permissions: &#123;&#125;</code> at workflow level. Each job opts in explicitly. Most workflows ask for far more than they need.</p>
+              </div>
+              <div class="card">
+                <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-brands fa-github"></i> SHA-pin all <code>uses:</code> refs</p>
+                <p style="font-size: 13pt;"><code>actions/checkout@b4ffde65</code> not <code>@v4</code>. The March 2026 attacks hijacked release tags. Dependabot keeps SHAs current.</p>
+              </div>
+              <div class="card">
+                <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-solid fa-triangle-exclamation"></i> Avoid <code>pull_request_target</code></p>
+                <p style="font-size: 13pt;">Never combine it with checking out untrusted PR code ("Pwn Request" pattern). Used in kubernetes-el and elementary-data attacks.</p>
+              </div>
+              <div class="card">
+                <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-solid fa-network-wired"></i> Egress allowlists</p>
+                <p style="font-size: 13pt;">StepSecurity Harden-Runner monitors &amp; blocks outbound from runners. Start with <code>egress-policy: audit</code>, then graduate to <code>block</code>.</p>
+              </div>
+              <div class="card">
+                <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-solid fa-person-military-pointing"></i> Require approval for first-time contributors</p>
+                <p style="font-size: 13pt;">The 256+ trojanized PR campaign relied on workflows running automatically for unknown contributors.</p>
+              </div>
+              <div class="card">
+                <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-solid fa-magnifying-glass-chart"></i> Audit with <code>zizmor</code></p>
+                <p style="font-size: 13pt;">Open-source workflow auditor catches <code>pull_request_target</code> misuse, missing permissions, and other misconfigs automatically.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section id="divider-3" class="section-divider" data-state="is-section-divider">
+        <h1>Part 3: Hardened Release Workflows</h1>
+        <p>Defense-in-depth for npm and PyPI publishing</p>
+      </section>
+
+      <section id="workflow-principles">
+        <h2>Workflow Architecture: The Core Idea</h2>
+        <div class="content">
+          <p style="margin-bottom: 18px; font-size: 16pt;">Even Anthropic's own Claude Code team shipped a 59.8 MB source map in their npm package because a <code>*.map</code> file wasn't in <code>.npmignore</code>. Hardened workflows catch mistakes too — not just attacks.</p>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div>
+              <p style="font-weight: 700; font-size: 16pt; color: var(--accent-blue); margin-bottom: 10px;"><i class="fa-solid fa-building-columns"></i> Prerequisites first</p>
+              <ul>
+                <li>Configure <strong>Trusted Publishing</strong> on the registry (PyPI project settings or npm package settings)</li>
+                <li>Create a <strong>GitHub Environment</strong> called <code>release</code> with required reviewers — your last human checkpoint</li>
+                <li><strong>Branch protection</strong> on main + tag protection on <code>v*</code></li>
+              </ul>
+            </div>
+            <div>
+              <p style="font-weight: 700; font-size: 16pt; color: var(--accent-blue); margin-bottom: 10px;"><i class="fa-solid fa-arrows-split-up-and-left"></i> Two-job split: the key structural change</p>
+              <div class="card-green">
+                <p style="font-size: 14pt; margin-bottom: 8px;"><strong>Build job</strong> → zero secrets, <code>contents: read</code> only, produces artifact</p>
+                <p style="font-size: 14pt;"><strong>Publish job</strong> → consumes artifact, has <code>id-token: write</code>, gated behind environment approval</p>
+              </div>
+              <p style="margin-top: 10px; font-size: 14pt; color: var(--muted-color);">If malware runs during <code>npm ci</code> in the build job, it finds no publishing credentials — because there are none in that job.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="workflow-controls">
+        <h2>Key Workflow Controls — What Each Buys You</h2>
+        <div class="content">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+            <div class="card" style="padding: 12px 16px;">
+              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;"><code>permissions: &#123;&#125;</code> at workflow level</p>
+              <p style="font-size: 13pt;">Forces each job to opt in. Pwn Request attacks depend on over-permissioned workflows. This breaks them.</p>
+            </div>
+            <div class="card" style="padding: 12px 16px;">
+              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;">SHA-pinned <code>uses:</code> references</p>
+              <p style="font-size: 13pt;">Tag hijacking (March 2026 attacks) doesn't affect pinned SHAs. Dependabot keeps them updated automatically.</p>
+            </div>
+            <div class="card" style="padding: 12px 16px;">
+              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;">Trusted Publishing (OIDC) — no stored tokens</p>
+              <p style="font-size: 13pt;">Short-lived credentials per publish. The Ultralytics breach was worsened by an unrevoked PyPI token still in GitHub Actions.</p>
+            </div>
+            <div class="card" style="padding: 12px 16px;">
+              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;"><code>npm ci --ignore-scripts</code></p>
+              <p style="font-size: 13pt;">Blocks <code>preinstall</code>/<code>postinstall</code> — the delivery method for Bitwarden CLI, Axios, and Shai-Hulud payloads.</p>
+            </div>
+            <div class="card" style="padding: 12px 16px;">
+              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;"><code>persist-credentials: false</code> on checkout</p>
+              <p style="font-size: 13pt;">Default checkout leaves a token usable for git operations. Anything compromised after checkout could push code as you.</p>
+            </div>
+            <div class="card" style="padding: 12px 16px;">
+              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;">Dry-run install + file-size alerting</p>
+              <p style="font-size: 13pt;">Install the built package in a clean dir and inspect what shipped. A 59.8 MB CLI package is exactly the anomaly a smoke test catches.</p>
+            </div>
+            <div class="card" style="padding: 12px 16px;">
+              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;"><code>--provenance</code> / PyPI attestations</p>
+              <p style="font-size: 13pt;">SLSA provenance creates a signed record linking artifact to workflow &amp; commit. PyPI used this to detect forged Ultralytics releases.</p>
+            </div>
+            <div class="card" style="padding: 12px 16px;">
+              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;"><code>environment: release</code> with required reviewers</p>
+              <p style="font-size: 13pt;">Human must click "approve" before the publish job can start — final checkpoint even if everything upstream is compromised.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="takeaways">
+        <h2>Key Takeaways</h2>
+        <div class="content">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div>
+              <p style="font-weight: 700; font-size: 16pt; color: var(--primary-color); margin-bottom: 10px;"><i class="fa-solid fa-binoculars"></i> The threat has shifted</p>
+              <ul style="font-size: 14pt;">
+                <li>Attacks target <strong>legitimate packages</strong>, not just typosquats — your CVE scanner isn't enough</li>
+                <li>Lifecycle scripts and Python <code>.pth</code> files are the dominant entry vectors</li>
+                <li>The goal is your <strong>CI/CD credentials</strong>, not your source code</li>
+              </ul>
+            </div>
+            <div>
+              <p style="font-weight: 700; font-size: 16pt; color: var(--secondary-color); margin-bottom: 10px;"><i class="fa-solid fa-shield-halved"></i> The highest-leverage actions</p>
+              <ul style="font-size: 14pt;">
+                <li><strong>Consumer:</strong> Disable lifecycle scripts in CI + ephemeral credential-free runners</li>
+                <li><strong>Publisher:</strong> Switch to Trusted Publishing + two-job split</li>
+                <li><strong>Everyone:</strong> Pin GitHub Actions to commit SHAs + audit <code>pull_request_target</code></li>
+              </ul>
+            </div>
+          </div>
+          <div class="card-blue" style="margin-top: 18px;">
+            <p style="font-size: 15pt;"><i class="fa-solid fa-book" style="color: var(--accent-blue); margin-right: 8px;"></i><strong>Reference document:</strong> Full hardened npm and PyPI release workflows with line-by-line explanations are in the companion guide — <em>Open Source Supply Chain Security: Threat Roundup &amp; Hardening Guide</em> (May 2026)</p>
+          </div>
+        </div>
+        <div class="footnote">Sources: CISA, GitHub Security, Wiz, Unit 42, Datadog Security Labs, Elastic, Microsoft Security, ReversingLabs, Socket, StepSecurity</div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js-plugins@latest/chart/plugin.js"></script>
+  <script>
+    Reveal.initialize({
+      width: 1280,
+      height: 720,
+      margin: 0,
+      controls: true,
+      progress: true,
+      slideNumber: false,
+      hash: true,
+      transition: 'slide',
+      center: false,
+      plugins: [ RevealChart ],
+      chart: {
+        defaults: Object.assign({
+          color: 'rgba(220, 226, 237, 0.9)',
+          borderColor: 'rgba(220, 226, 237, 0.3)',
+          devicePixelRatio: 2
+        }, window.location.search.includes('export') ? { animation: false } : {})
+      }
+    });
+  </script>
+</body>
+</html>
