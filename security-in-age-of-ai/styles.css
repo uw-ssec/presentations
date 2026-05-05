@@ -1,11 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
-
 :root {
-  --background-color: #1a1d23;
-  --section-divider-bg: #0f1114;
+  --background-color: #1a0038;
+  --section-divider-bg: #32006e;
 
-  --heading-font: "Inter", Helvetica, sans-serif;
-  --body-font: "Inter", Helvetica, sans-serif;
+  --heading-font: "Encode Sans", Helvetica, sans-serif;
+  --body-font: "Open Sans", Helvetica, sans-serif;
   --mono-font: "JetBrains Mono", "Courier New", monospace;
   --base-font-size: 32px;
   --text-size: 16pt;
@@ -14,14 +12,14 @@
   --h3-size: 20pt;
   --footnote-size: 10pt;
 
-  --primary-color: #e33737;
-  --secondary-color: #4e9f3d;
-  --accent-blue: #4a9eff;
-  --text-color: #dce2ed;
-  --muted-color: #7a8699;
-  --line-color: #2e3340;
-  --card-bg: #22262f;
-  --card-border: #2e3340;
+  --primary-color: #2ad2c9;
+  --secondary-color: #b7a57a;
+  --accent-blue: #4b2e83;
+  --text-color: #ffffff;
+  --muted-color: #c5b4e3;
+  --line-color: rgba(255,255,255,0.12);
+  --card-bg: rgba(255,255,255,0.06);
+  --card-border: rgba(255,255,255,0.15);
 
   --slide-padding: 60px;
   --slide-padding-top: 40px;
@@ -52,9 +50,9 @@
   line-height: 1.2;
 }
 
-.reveal h1 { font-size: var(--h1-size); }
-.reveal h2 { font-size: var(--h2-size); margin-bottom: 0; }
-.reveal h3 { font-size: var(--h3-size); }
+.reveal h1 { font-size: var(--h1-size); font-weight: 800; }
+.reveal h2 { font-size: var(--h2-size); margin-bottom: 0; font-weight: 700; }
+.reveal h3 { font-size: var(--h3-size); font-weight: 700; }
 
 .reveal p, .reveal li, .reveal td, .reveal th, .reveal blockquote {
   font-size: var(--text-size);
@@ -139,6 +137,15 @@
   color: var(--text-color);
 }
 
+.reveal .slides section.section-divider h1::after {
+  content: '';
+  display: block;
+  width: 80px;
+  height: 3px;
+  background: #b7a57a;
+  margin: 12px auto 0;
+}
+
 .reveal .slides section.section-divider p {
   font-size: 20pt;
   color: var(--muted-color);
@@ -152,10 +159,11 @@
 }
 
 .reveal .slides section.section-divider .event-tag {
+  font-family: "Encode Sans Compressed", Helvetica, sans-serif;
   font-size: 13pt;
-  color: var(--primary-color);
+  color: #b7a57a;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   margin-bottom: 20px;
   font-weight: 600;
 }
@@ -176,11 +184,11 @@
 
 /* ===== BLOCKQUOTES ===== */
 .reveal blockquote {
-  border-left: 4px solid var(--primary-color);
+  border-left: 4px solid #b7a57a;
   padding-left: 20px;
   margin: 16px 0;
   font-style: italic;
-  background: none;
+  background: rgba(183,165,122,0.08);
   box-shadow: none;
   width: 100%;
   max-width: none;
@@ -229,8 +237,8 @@
 }
 
 .card-red {
-  background: rgba(227, 55, 55, 0.1);
-  border: 1px solid rgba(227, 55, 55, 0.3);
+  background: var(--card-bg);
+  border: 1px solid rgba(42,210,201,0.3);
   border-radius: var(--box-radius);
   padding: 16px 20px;
 }
@@ -252,7 +260,7 @@
 /* ===== INCIDENT BADGE ===== */
 .badge {
   display: inline-block;
-  background: var(--primary-color);
+  background: #4b2e83;
   color: #fff;
   font-size: 11pt;
   font-weight: 700;
@@ -266,7 +274,8 @@
 }
 
 .badge-blue {
-  background: var(--accent-blue);
+  background: #2ad2c9;
+  color: #1a0038;
 }
 
 /* ===== CHECKLIST ITEMS ===== */
@@ -287,10 +296,11 @@
 .reveal code {
   font-family: var(--mono-font);
   font-size: 0.85em;
-  background: rgba(255,255,255,0.08);
+  background: #1a0038;
   padding: 2px 6px;
   border-radius: 3px;
-  color: #c9d1d9;
+  color: #2ad2c9;
+  border: 1px solid rgba(42,210,201,0.2);
 }
 
 /* ===== SLIDE TITLE ACCENT LINE ===== */
@@ -309,5 +319,5 @@
   left: 0;
   right: 0;
   height: 3px;
-  background: var(--primary-color);
+  background: #b7a57a;
 }
