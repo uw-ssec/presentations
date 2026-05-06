@@ -444,7 +444,7 @@
   background: var(--color-teal-500);
 }
 
-.badge {
+.reveal .badge {
   background: var(--color-purple-700);
   border-radius: 0;
   color: var(--color-white);
@@ -459,11 +459,11 @@
   transform: skewX(-15deg);
 }
 
-.badge-green {
+.reveal .badge-green {
   background: var(--color-gold-700);
 }
 
-.badge-blue {
+.reveal .badge-blue {
   background: var(--color-teal-500);
   color: var(--color-purple-950);
 }
