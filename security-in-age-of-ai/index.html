@@ -349,6 +349,91 @@
         </section>
       </section>
 
+      <section>
+        <section id="copy-fail-overview">
+          <h2>CVE-2026-31431 &mdash; &ldquo;Copy Fail&rdquo; Linux Privilege Escalation</h2>
+          <div class="content">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+              <div>
+                <p style="margin-bottom: 10px;"><span class="badge">CVSS 7.8</span>&nbsp;&nbsp;<span class="badge" style="background: rgba(220,53,69,0.18); color: var(--primary-color);">Public PoC</span></p>
+                <ul>
+                  <li>Logic flaw in <code>authencesn</code> (2017), chained through <strong>AF_ALG</strong> (kernel crypto socket) + <code>splice()</code> syscall into a <strong>4-byte page-cache write</strong> on setuid binaries like <code>/usr/bin/su</code></li>
+                  <li>Unprivileged local user &rarr; root &mdash; <strong>no race condition, no kernel offsets</strong>; reliable ~732-byte Python exploit</li>
+                  <li>Modifies only the <strong>in-memory kernel page cache</strong> &mdash; no disk changes, evades file-integrity and forensic tools</li>
+                  <li>Affects any kernel &ge; 4.14: Ubuntu 18.04&ndash;25.10, RHEL 10.1, Amazon Linux 2023, SUSE 16</li>
+                </ul>
+              </div>
+              <div>
+                <div class="card" style="margin-bottom: 14px;">
+                  <p style="font-size: 13pt; color: var(--muted-color); margin-bottom: 4px;">Discovered &amp; patched</p>
+                  <p style="font-size: 15pt;">April&ndash;May 2026 &mdash; mainline commit <code>a664bf3d603d</code></p>
+                </div>
+                <div class="card-red" style="margin-bottom: 14px;">
+                  <p style="font-size: 13pt; font-weight: 700; color: var(--primary-color); margin-bottom: 6px;"><i class="fa-solid fa-cubes"></i> Container &amp; Cloud Blast Radius</p>
+                  <ul style="font-size: 13pt;">
+                    <li>Containers share the host kernel &mdash; one exploit owns the <strong>entire node</strong></li>
+                    <li>Millions of Kubernetes clusters in scope</li>
+                    <li>CI/CD runners satisfy &ldquo;unprivileged local user&rdquo; <em>by design</em></li>
+                  </ul>
+                </div>
+                <div class="card">
+                  <p style="font-size: 13pt; font-weight: 700; color: var(--accent-blue); margin-bottom: 4px;"><i class="fa-solid fa-wrench"></i> Interim workaround</p>
+                  <p style="font-size: 13pt;">Disable <code>algif_aead</code> via <code>modprobe.d</code> or kernel boot params &mdash; may affect hardware-accelerated crypto performance</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section id="copy-fail-chain">
+          <h2>Copy Fail in the Supply-Chain Attack Chain</h2>
+          <div class="content">
+            <p style="margin-bottom: 14px; font-size: 15pt;">Supply-chain compromise lands unprivileged code on a CI runner. Copy Fail turns that into root &mdash; defeating credential isolation and container boundaries.</p>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 18px;">
+              <div class="card-red" style="text-align: center; padding: 14px 8px;">
+                <p style="font-size: 22pt; color: var(--primary-color); margin-bottom: 6px;"><i class="fa-solid fa-box-open"></i></p>
+                <p style="font-size: 13pt; font-weight: 700; margin-bottom: 4px;">Malicious package</p>
+                <p style="font-size: 12pt; color: var(--muted-color);"><code>preinstall</code> hook runs as CI user</p>
+              </div>
+              <div class="card-red" style="text-align: center; padding: 14px 8px;">
+                <p style="font-size: 22pt; color: var(--primary-color); margin-bottom: 6px;"><i class="fa-solid fa-arrow-right"></i></p>
+                <p style="font-size: 13pt; font-weight: 700; margin-bottom: 4px;">AF_ALG + splice()</p>
+                <p style="font-size: 12pt; color: var(--muted-color);">4-byte page-cache write, in-memory only</p>
+              </div>
+              <div class="card-red" style="text-align: center; padding: 14px 8px;">
+                <p style="font-size: 22pt; color: var(--primary-color); margin-bottom: 6px;"><i class="fa-solid fa-arrow-right"></i></p>
+                <p style="font-size: 13pt; font-weight: 700; margin-bottom: 4px;">root on CI node</p>
+                <p style="font-size: 12pt; color: var(--muted-color);">All containers, secrets, service accounts</p>
+              </div>
+              <div class="card-red" style="text-align: center; padding: 14px 8px;">
+                <p style="font-size: 22pt; color: var(--primary-color); margin-bottom: 6px;"><i class="fa-solid fa-arrow-right"></i></p>
+                <p style="font-size: 13pt; font-weight: 700; margin-bottom: 4px;">Full cluster access</p>
+                <p style="font-size: 12pt; color: var(--muted-color);">K8s service accounts, cloud IAM roles</p>
+              </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+              <div>
+                <p style="font-weight: 700; font-size: 15pt; color: var(--primary-color); margin-bottom: 8px;"><i class="fa-solid fa-robot"></i> AI-era multiplier</p>
+                <ul style="font-size: 13pt;">
+                  <li>Public Python PoC requires no deep expertise &mdash; AI automation trivial</li>
+                  <li>Mythos-class AI can chain supply-chain access + kernel privesc automatically</li>
+                  <li>Race-condition-free, reliable exploit = high success rate for automated tooling</li>
+                </ul>
+              </div>
+              <div>
+                <p style="font-weight: 700; font-size: 15pt; color: var(--secondary-color); margin-bottom: 8px;"><i class="fa-solid fa-shield-halved"></i> Defenses that break this chain</p>
+                <ul style="font-size: 13pt;">
+                  <li><strong>Patch kernel now</strong> &mdash; or disable <code>algif_aead</code> immediately</li>
+                  <li><strong>Ephemeral runners</strong> &mdash; recycle container after every job</li>
+                  <li>Treat any container RCE as <strong>full host compromise</strong> &mdash; rotate all node credentials</li>
+                  <li><code>--ignore-scripts</code> in CI prevents the chain from starting</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="footnote">Sources: copy.fail &mdash; Microsoft Security Blog (May 1, 2026) &mdash; Tenable FAQ (Apr 2026) &mdash; Ubuntu Security Notices</div>
+        </section>
+      </section>
+
       <section id="attack-patterns">
         <h2>Attack Patterns to Internalize</h2>
         <div class="content">
@@ -363,7 +448,7 @@
             </div>
             <div class="card">
               <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-solid fa-key"></i> CI/CD secrets are the real target</p>
-              <p style="font-size: 13pt;">GitHub PATs, npm tokens, AWS/GCP/Azure keys, Kubernetes service account tokens. Credential-free environments eliminate the risk.</p>
+              <p style="font-size: 13pt;">GitHub PATs, npm tokens, AWS/GCP/Azure keys, Kubernetes service account tokens. Copy Fail (CVE-2026-31431) shows that credential-free runners still need a patched kernel &mdash; a local user can escalate to root and reach everything on the node.</p>
             </div>
             <div class="card">
               <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-brands fa-github"></i> GitHub Actions: injection point <em>and</em> C2 channel</p>
@@ -652,7 +737,7 @@
             <p style="font-size: 15pt;"><i class="fa-solid fa-book" style="color: var(--accent-blue); margin-right: 8px;"></i><strong>Reference document:</strong> Full hardened npm and PyPI release workflows with line-by-line explanations are in the companion guide — <em>Open Source Supply Chain Security: Threat Roundup &amp; Hardening Guide</em> (May 2026)</p>
           </div>
         </div>
-        <div class="footnote">Sources: CISA, GitHub Security, Wiz, Unit 42, Datadog Security Labs, Elastic, Microsoft Security, ReversingLabs, Socket, StepSecurity, Anthropic Red Team</div>
+        <div class="footnote">Sources: CISA, GitHub Security, Wiz, Unit 42, Datadog Security Labs, Elastic, Microsoft Security, ReversingLabs, Socket, StepSecurity, Anthropic Red Team, copy.fail, Tenable</div>
       </section>
 
     </div>
