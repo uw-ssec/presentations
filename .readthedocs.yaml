@@ -5,5 +5,5 @@ build:
   tools:
     python: "3.12"
   commands:
-    - mkdir -p $READTHEDOCS_OUTPUT/html
-    - cp -r security-in-age-of-ai/. $READTHEDOCS_OUTPUT/html/
+    - mkdir -p $READTHEDOCS_OUTPUT/html/security-in-age-of-ai
+    - cp -r security-in-age-of-ai/. $READTHEDOCS_OUTPUT/html/security-in-age-of-ai/
