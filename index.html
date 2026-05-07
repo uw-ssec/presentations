@@ -152,7 +152,7 @@
       transition: box-shadow 0.15s ease, transform 0.15s ease;
     }
 
-    .card:hover {
+    .card:not(.card--coming-soon):hover {
       box-shadow: 0 4px 20px rgba(75, 46, 131, 0.13);
       transform: translateY(-2px);
     }
@@ -189,6 +189,19 @@
       font-weight: 700;
       letter-spacing: 0.07em;
       padding: 3px 8px;
+      text-transform: uppercase;
+    }
+
+    .status-badge {
+      background: var(--color-neutral-200);
+      border: 1px solid var(--color-neutral-600);
+      border-radius: 4px;
+      color: var(--color-neutral-900);
+      font-family: var(--ui-font);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      padding: 2px 8px;
       text-transform: uppercase;
     }
 
@@ -246,6 +259,38 @@
       display: inline;
     }
 
+    .card-status {
+      color: var(--color-neutral-700);
+      font-family: var(--heading-font);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+
+    .card--coming-soon {
+      background: var(--color-gold-100);
+      border-color: var(--color-neutral-200);
+      box-shadow: none;
+    }
+
+    .card--coming-soon::before {
+      background: var(--color-neutral-600);
+    }
+
+    .card--coming-soon .tag {
+      background: var(--color-white);
+      color: var(--color-neutral-700);
+    }
+
+    .card--coming-soon .card-title {
+      color: var(--color-neutral-700);
+    }
+
+    .card--coming-soon .card-footer {
+      background: var(--color-gold-100);
+      border-top-color: var(--color-neutral-200);
+    }
+
     /* ── Footer ────────────────────────────────────── */
     .site-footer {
       border-top: 1px solid var(--color-neutral-200);
@@ -285,19 +330,20 @@
 
   <main>
     <div class="container">
-      <p class="section-label">Available presentations</p>
+      <p class="section-label">Presentation gallery</p>
 
       <ul class="gallery" aria-label="Presentation gallery">
 
-        <li class="card">
+        <li class="card card--coming-soon">
           <div class="card-body">
             <div class="card-tags" aria-label="Topics">
               <span class="tag">Security</span>
               <span class="tag">Supply Chain</span>
               <span class="tag">AI</span>
+              <span class="status-badge">Coming soon</span>
             </div>
             <h2 class="card-title">
-              <a href="security-in-age-of-ai/">Security in the Age of AI</a>
+              Security in the Age of AI
             </h2>
             <p class="card-subtitle">
               Open Source Supply Chain Security: Threats, Mitigations &amp; Hardened Workflows
@@ -305,7 +351,7 @@
             <p class="card-event">UW SSEC RSE Meetup &mdash; May&nbsp;14, 2026</p>
           </div>
           <div class="card-footer">
-            <a class="card-link" href="security-in-age-of-ai/">View presentation</a>
+            <p class="card-status">Presentation coming soon</p>
           </div>
         </li>
 
