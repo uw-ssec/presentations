@@ -1,0 +1,579 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Efficient Federated Inference on Entomology Images with PyTorch</title>
+
+  <!-- Google Fonts: SSEC design system -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Encode+Sans:wght@300;400;500;600;700;800&family=Encode+Sans+Compressed:wght@400;600;700&family=Open+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Reveal.js core -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- SSEC design system + antenna extensions -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- ══════════════════════════════════════════════════════════
+           SLIDE 1 · Title
+           ══════════════════════════════════════════════════════════ -->
+      <section id="title" class="section-divider" data-state="is-section-divider">
+        <p class="event-tag">SciPy 2025 &middot; 30-minute talk</p>
+        <h1>Efficient Federated Inference on Entomology Images with PyTorch</h1>
+        <p class="subtitle">
+          Carlos Garcia Jurado Suarez<br>
+          UW eScience Institute &middot; Mila Institute
+        </p>
+        <!--
+          PLACEHOLDER: Antenna logo or camera-trap insect photo
+          Asset path: assets/antenna-logo.png  OR  assets/insect-bg.jpg
+          Source: https://www.insectai.org/
+        -->
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════
+           SLIDE 2 · What is Antenna?
+           ══════════════════════════════════════════════════════════ -->
+      <section id="antenna-intro">
+        <h2>What is Antenna?</h2>
+        <div class="content">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+            <div>
+              <ul>
+                <li>Open-source platform from the <strong>Mila Institute</strong></li>
+                <li>Processes images from automated <strong>wildlife camera traps</strong> in the field</li>
+                <li>Classifies insect species using <strong>deep learning</strong> — supporting biodiversity monitoring at scale</li>
+                <li>Used by multiple research institutions across different deployment environments</li>
+              </ul>
+              <div class="card-blue" style="margin-top: 14px;">
+                <p style="font-size: 13pt;">
+                  <i class="fa-solid fa-globe" style="color: var(--accent-blue); margin-right: 8px;"></i>
+                  <strong>insectai.org</strong> — open source, community-driven
+                </p>
+              </div>
+            </div>
+            <div>
+              <!-- PLACEHOLDER: Antenna web interface screenshot -->
+              <!-- Asset: assets/antenna-screenshot.png -->
+              <div class="diagram-placeholder" style="height: 280px;">
+                <i class="fa-regular fa-image" style="font-size: 28pt; color: var(--color-neutral-400);"></i>
+                <p class="diagram-label">Placeholder: Antenna Web Interface</p>
+                <p style="font-size: 11pt; color: var(--muted-color); text-align: center; max-width: 220px;">
+                  Image catalog view or monitoring dashboard<br>
+                  Asset: <code>assets/antenna-screenshot.png</code>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footnote">Caption: Antenna web platform — researchers submit image batches and review classification results.</div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════
+           SLIDE 3 · The scaling problem
+           ══════════════════════════════════════════════════════════ -->
+      <section id="scaling-problem">
+        <h2>The Scaling Problem</h2>
+        <div class="content">
+          <p style="margin-bottom: 16px; font-size: 15pt;">
+            As adoption grew, jobs went from <strong>hundreds to millions of images</strong>.
+            Two interconnected problems emerged:
+          </p>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 16px;">
+            <div class="card-red">
+              <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 8px;">
+                <i class="fa-solid fa-plug-circle-exclamation"></i>&nbsp; Integration barrier
+              </p>
+              <p style="font-size: 14pt;">
+                Third-party researchers couldn't easily integrate their own ML pipelines —
+                requiring a public HTTP endpoint was a deployment blocker
+              </p>
+            </div>
+            <div class="card-red">
+              <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 8px;">
+                <i class="fa-solid fa-gauge-high"></i>&nbsp; Throughput ceiling
+              </p>
+              <p style="font-size: 14pt;">
+                Platform couldn't scale processing to large jobs or multiple models —
+                synchronous design limited throughput and flexibility
+              </p>
+            </div>
+          </div>
+          <div class="card-blue">
+            <p style="font-size: 15pt; text-align: center;">
+              <strong>This talk:</strong> two engineering changes that solve both —
+              async pull architecture &amp; PyTorch GPU optimization
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════
+           SECTION DIVIDER · Part 1
+           ══════════════════════════════════════════════════════════ -->
+      <section id="divider-part1" class="section-divider" data-state="is-section-divider">
+        <h1>Part 1: Async Pull Architecture</h1>
+        <p>Inverting the communication model to unlock distributed ML inference</p>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════
+           SLIDE 4 · Original push model
+           ══════════════════════════════════════════════════════════ -->
+      <section id="push-model">
+        <h2>How the Original System Worked</h2>
+        <div class="content">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+            <div>
+              <ul>
+                <li>Antenna <strong>pushed</strong> image batches to external ML processing services (PS) over HTTP</li>
+                <li>Each PS had to expose a <strong>public HTTP endpoint</strong> — hard in university HPC environments or behind firewalls</li>
+                <li><strong>Synchronous</strong>: Antenna waited for each response before moving on</li>
+                <li>Scalability was entirely the PS implementor's problem</li>
+              </ul>
+            </div>
+            <div>
+              <!-- Diagram A: Push model (before) -->
+              <p class="diag-label">Diagram A &mdash; Push Model (before)</p>
+              <img src="assets/diagrams/antenna-a-push-model-before.svg"
+                   alt="Antenna push model before optimization: Antenna pushes to a public Processing Service endpoint and waits on a synchronous blocking response"
+                   class="diagram-full">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════
+           SLIDE 5 · Pull model redesign
+           ══════════════════════════════════════════════════════════ -->
+      <section id="pull-model">
+        <h2>The Redesign &mdash; Pull Model</h2>
+        <div class="content">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+            <div>
+              <ul>
+                <li><strong>Invert the direction:</strong> PS workers poll Antenna's job queue and pull task batches on their own schedule</li>
+                <li>PS no longer needs a public endpoint — it <strong>initiates all outbound connections</strong></li>
+                <li>Workers run <strong>behind a firewall</strong>, on an HPC cluster, or on a local machine</li>
+                <li>Multiple workers poll the same queue independently — <strong>horizontal scaling</strong> emerges naturally</li>
+              </ul>
+            </div>
+            <div>
+              <!-- Diagram B: Pull model (after) -->
+              <p class="diag-label">Diagram B &mdash; Pull Model (after)</p>
+              <img src="assets/diagrams/antenna-b-pull-model-after.svg"
+                   alt="Antenna pull model after redesign: PS workers poll the Antenna job queue, pull batches, and post results back — no public endpoint required"
+                   class="diagram-full">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════
+           SLIDE 6 · ami worker implementation
+           ══════════════════════════════════════════════════════════ -->
+      <section id="ami-worker">
+        <h2>Worker Implementation &mdash; <code>ami worker</code></h2>
+        <div class="content">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+            <div>
+              <ul>
+                <li>Ships as <code>ami worker</code> CLI in the <code>ami-data-companion</code> package</li>
+                <li>Configuration via environment variables or a <code>.env</code> file (API URL, auth token, batch size)</li>
+                <li>Worker loop: poll <code>/jobs</code> &rarr; fetch batch &rarr; run ML pipeline &rarr; POST results</li>
+                <li>Any number of workers can run in parallel against the same queue</li>
+              </ul>
+              <div class="card" style="margin-top: 12px;">
+                <p style="font-size: 13pt; color: var(--muted-color);">
+                  <i class="fa-brands fa-python" style="color: var(--accent-blue); margin-right: 6px;"></i>
+                  Install: <code>pip install ami-data-companion</code>
+                </p>
+              </div>
+            </div>
+            <div>
+              <p style="font-size: 11pt; font-family: var(--ui-font); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted-color); margin-bottom: 8px;">
+                3-step startup
+              </p>
+              <pre class="code-block"><code>export AMI_API_URL=https://your-antenna.org
+export AMI_API_KEY=your-token
+export AMI_BATCH_SIZE=32
+
+ami worker register --pipeline insects-v2
+ami worker</code></pre>
+            </div>
+          </div>
+        </div>
+        <div class="footnote">Source: github.com/RolnickLab/ami-data-companion</div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════
+           SLIDE 7 · Part 1 results
+           ══════════════════════════════════════════════════════════ -->
+      <section id="part1-results">
+        <h2>Part 1 Results</h2>
+        <div class="content">
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 16px;">
+            <div class="card-green">
+              <p style="font-size: 13pt; color: var(--secondary-color); font-weight: 700; margin-bottom: 6px;">
+                <i class="fa-solid fa-check-circle"></i>&nbsp; Deploy anywhere
+              </p>
+              <p style="font-size: 14pt;">Workers run anywhere with outbound HTTP — HPC clusters, university firewalls, local machines. No public endpoint required.</p>
+            </div>
+            <div class="card-green">
+              <p style="font-size: 13pt; color: var(--secondary-color); font-weight: 700; margin-bottom: 6px;">
+                <i class="fa-solid fa-layer-group"></i>&nbsp; Horizontal scaling
+              </p>
+              <p style="font-size: 14pt;">Add more workers without changing Antenna. Each worker independently polls and claims batches from the same queue.</p>
+            </div>
+            <div class="card-green">
+              <p style="font-size: 13pt; color: var(--secondary-color); font-weight: 700; margin-bottom: 6px;">
+                <i class="fa-solid fa-puzzle-piece"></i>&nbsp; Extensibility
+              </p>
+              <p style="font-size: 14pt;">New ML pipelines register and pull independently. Researchers build custom workers for their own models.</p>
+            </div>
+            <div class="card-green">
+              <p style="font-size: 13pt; color: var(--secondary-color); font-weight: 700; margin-bottom: 6px;">
+                <i class="fa-solid fa-network-wired"></i>&nbsp; Multi-institution
+              </p>
+              <p style="font-size: 14pt;">Workers run across research institutions on different hardware configurations — no central coordination needed.</p>
+            </div>
+          </div>
+          <div class="card-blue">
+            <p style="font-size: 15pt; text-align: center;">
+              <strong>Key insight:</strong> inverting push &rarr; pull makes distributed ML inference
+              <em>self-scaling</em> — each new worker adds capacity automatically.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════
+           SECTION DIVIDER · Part 2
+           ══════════════════════════════════════════════════════════ -->
+      <section id="divider-part2" class="section-divider" data-state="is-section-divider">
+        <h1>Part 2: PyTorch GPU Inference Optimization</h1>
+        <p>From 1,674 seconds to 108 seconds &mdash; a 15&times; improvement on a single GPU</p>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════
+           SLIDE 8 · Performance baseline
+           ══════════════════════════════════════════════════════════ -->
+      <section id="baseline">
+        <h2>The Performance Baseline</h2>
+        <div class="content">
+          <div style="display: grid; grid-template-columns: auto 1fr; gap: 28px; align-items: start; margin-bottom: 14px;">
+            <div style="text-align: center; padding: 8px 16px;">
+              <div class="stat-number">1,674s</div>
+              <div class="stat-label">for 1,000 images<br>RTX A6000</div>
+            </div>
+            <div>
+              <ul>
+                <li>GPU utilization was <strong>poor</strong> — significant idle gaps visible in profiling</li>
+                <li>Root causes: CPU&ndash;GPU transfer bottlenecks, synchronous result posting, suboptimal data loading</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Diagram C: GPU utilization before optimization -->
+          <p class="diag-label">Diagram C &mdash; GPU Utilization Before Optimization</p>
+          <img src="assets/diagrams/antenna-c-gpu-utilization-before.svg"
+               alt="Gantt-style timeline showing GPU and CPU activity before optimization: large idle gaps on the GPU row"
+               class="diagram-full">
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════
+           SLIDE 9 · Fix 1 — Keep data on the GPU
+           ══════════════════════════════════════════════════════════ -->
+      <section id="fix1-gpu-tensors">
+        <h2>Fix 1 &mdash; Keep Data on the GPU Between Stages</h2>
+        <div class="content">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+            <div>
+              <ul>
+                <li>Detection and classification are <strong>two sequential model passes</strong></li>
+                <li>Original code converted intermediate tensors back to <strong>PIL images</strong> between passes</li>
+                <li>Forced a <strong>GPU &rarr; CPU &rarr; GPU</strong> round-trip for every image in the batch</li>
+                <li>Fix: keep tensors on GPU and pass them directly from detector to classifier</li>
+              </ul>
+            </div>
+            <div>
+              <!-- Diagram D: CPU-GPU data flow before/after -->
+              <p class="diag-label">Diagram D &mdash; Data Flow Before / After</p>
+              <img src="assets/diagrams/antenna-d-cpu-gpu-data-flow.svg"
+                   alt="Before: GPU detect → CPU PIL Image → GPU classify. After: GPU detect → GPU classify directly, eliminating the CPU round-trip"
+                   class="diagram-full">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════
+           SLIDE 10 · Fix 2 — Pinned memory and batch collation
+           ══════════════════════════════════════════════════════════ -->
+      <section id="fix2-pinned-memory">
+        <h2>Fix 2 &mdash; Pinned Memory &amp; Batch Collation</h2>
+        <div class="content">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+            <div>
+              <ul>
+                <li><code>pin_memory=True</code> enables <strong>DMA transfers</strong> — CPU memory is page-locked, avoiding an extra copy on the way to the GPU</li>
+                <li>Batch collation (stacking images into a tensor) was running in the <strong>main process</strong>, blocking the GPU pipeline for large images</li>
+                <li>Fix: move collation into <strong>DataLoader workers</strong> so it runs in parallel with GPU computation</li>
+              </ul>
+            </div>
+            <div>
+              <p style="font-size: 11pt; font-family: var(--ui-font); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted-color); margin-bottom: 8px;">DataLoader configuration</p>
+              <pre class="code-block"><code>DataLoader(
+  dataset,
+  batch_size=32,
+  pin_memory=True,      # DMA transfer
+  num_workers=4,        # parallel collation
+  collate_fn=collate,   # off main thread
+)</code></pre>
+              <div class="card-green" style="margin-top: 12px;">
+                <p style="font-size: 13pt;">
+                  <strong>Effect:</strong> batch prep runs on CPU workers while the GPU processes the previous batch — overlap, not sequential.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════
+           SLIDE 11 · Fix 3 — CUDA streams
+           ══════════════════════════════════════════════════════════ -->
+      <section id="fix3-cuda-streams">
+        <h2>Fix 3 &mdash; CUDA Streams for Prefetching</h2>
+        <div class="content">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+            <div>
+              <ul>
+                <li>GPU was <strong>idle</strong> waiting for the next batch to transfer from CPU</li>
+                <li>CUDA streams allow <strong>concurrent execution</strong>: stream A processes batch N while stream B prefetches batch N+1 into GPU memory</li>
+                <li>Result: near-continuous GPU utilization instead of alternating compute/transfer cycles</li>
+              </ul>
+            </div>
+            <div>
+              <!-- Diagram E: CUDA stream pipeline before/after -->
+              <p class="diag-label">Diagram E &mdash; CUDA Stream Pipeline</p>
+              <img src="assets/diagrams/antenna-e-cuda-stream-pipeline.svg"
+                   alt="Before: sequential transfer then compute. After: two overlapping CUDA streams with transfer and compute running concurrently"
+                   class="diagram-full">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════
+           SLIDE 12 · Fix 4 — Async result posting
+           ══════════════════════════════════════════════════════════ -->
+      <section id="fix4-async-posting">
+        <h2>Fix 4 &mdash; Async Result Posting</h2>
+        <div class="content">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+            <div>
+              <ul>
+                <li>After each batch, results were posted to Antenna <strong>synchronously</strong> — GPU sat idle during the HTTP round-trip</li>
+                <li>Fix: <code>ResultPoster</code> runs in a <strong>background thread</strong></li>
+                <li>Worker loads and processes batch N+1 while batch N results are being posted</li>
+              </ul>
+              <div class="card-green" style="margin-top: 16px;">
+                <p style="font-size: 14pt;">
+                  <i class="fa-solid fa-lightbulb" style="color: var(--secondary-color); margin-right: 8px;"></i>
+                  Same principle as CUDA streams applied at the <strong>API layer</strong> —
+                  overlap I/O with compute at every level of the stack.
+                </p>
+              </div>
+            </div>
+            <div>
+              <div style="display: flex; flex-direction: column; gap: 12px;">
+                <div>
+                  <p style="font-size: 10pt; font-weight: 700; color: var(--color-purple-600); font-family: var(--ui-font); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 5px;">Before</p>
+                  <div class="stream-timeline">
+                    <div class="stream-label">GPU</div>
+                    <div class="stream-track">
+                      <div class="stream-bar stream-compute" style="width: 30%;">Batch N</div>
+                      <div class="stream-gap" style="width: 20%; position: relative;">
+                        <span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 8pt; color: var(--muted-color); white-space: nowrap;">HTTP wait</span>
+                      </div>
+                      <div class="stream-bar stream-compute" style="width: 30%;">N+1</div>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <p style="font-size: 10pt; font-weight: 700; color: var(--color-teal-600); font-family: var(--ui-font); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 5px;">After</p>
+                  <div style="display: flex; flex-direction: column; gap: 3px;">
+                    <div class="stream-timeline">
+                      <div class="stream-label">GPU</div>
+                      <div class="stream-track">
+                        <div class="stream-bar stream-compute" style="width: 30%;">Batch N</div>
+                        <div class="stream-bar stream-compute" style="width: 30%;">N+1</div>
+                        <div class="stream-bar stream-compute" style="width: 30%;">N+2</div>
+                      </div>
+                    </div>
+                    <div class="stream-timeline">
+                      <div class="stream-label">Thread</div>
+                      <div class="stream-track">
+                        <div class="stream-gap" style="width: 30%;"></div>
+                        <div class="stream-bar stream-transfer" style="width: 30%;">POST N</div>
+                        <div class="stream-bar stream-transfer" style="width: 30%;">POST N+1</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════
+           SLIDE 13 · Combined results  (warm background — climax slide)
+           ══════════════════════════════════════════════════════════ -->
+      <section id="results" class="warm-slide">
+        <h2>Combined Results</h2>
+        <div class="content">
+          <div style="display: grid; grid-template-columns: auto 1fr; gap: 28px; align-items: start;">
+            <!-- Headline numbers -->
+            <div style="text-align: center; background: var(--color-white); border: 1px solid var(--color-neutral-200); border-radius: var(--radius-md); padding: 20px 24px; flex-shrink: 0;">
+              <div class="stat-number stat-number-hero">15&times;</div>
+              <div class="stat-label">faster on a single GPU</div>
+              <div style="display: flex; gap: 14px; justify-content: center; align-items: flex-end; margin-top: 18px;">
+                <div style="text-align: center;">
+                  <div class="stat-number stat-number-before">1,674s</div>
+                  <div class="stat-label">before</div>
+                </div>
+                <div style="font-size: 20pt; color: var(--muted-color); padding-bottom: 14px;">&rarr;</div>
+                <div style="text-align: center;">
+                  <div class="stat-number stat-number-after">108s</div>
+                  <div class="stat-label">after</div>
+                </div>
+              </div>
+              <div style="margin-top: 10px; font-size: 11pt; color: var(--muted-color);">per 1,000 images &middot; RTX A6000</div>
+            </div>
+            <div>
+              <ul style="margin-bottom: 12px;">
+                <li><strong>42,000-image job</strong> completed in <strong>77 minutes</strong> with no interruptions</li>
+                <li>Async architecture multiplies further: workers scale <strong>linearly</strong></li>
+              </ul>
+              <div class="card-green" style="margin-bottom: 10px;">
+                <p style="font-size: 13pt; font-weight: 700; color: var(--secondary-color); margin-bottom: 4px;">Key insight</p>
+                <p style="font-size: 13pt;">A system has multiple resources: GPU, CPU, Network, GPU/CPU bus. Keep them all busy. Each fix addressed a different idle point — the gains compound.</p>
+              </div>
+              <!-- Diagram F: GPU utilization after optimization -->
+              <p class="diag-label" style="margin-top: 8px;">Diagram F &mdash; GPU Utilization After Optimization</p>
+              <img src="assets/diagrams/antenna-f-gpu-utilization-after.svg"
+                   alt="Gantt-style timeline showing near-continuous GPU utilization after all four optimizations are applied"
+                   class="diagram-full">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════
+           SECTION DIVIDER · Conclusion
+           ══════════════════════════════════════════════════════════ -->
+      <section id="divider-conclusion" class="section-divider" data-state="is-section-divider">
+        <h1>Conclusion &amp; Takeaways</h1>
+        <p>Generalizable patterns for federated ML inference</p>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════
+           SLIDE 14 · Summary and generalization
+           ══════════════════════════════════════════════════════════ -->
+      <section id="summary">
+        <h2>Summary &amp; Generalization</h2>
+        <div class="content">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 16px;">
+            <div class="card-blue">
+              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 8px;">
+                <i class="fa-solid fa-arrows-rotate"></i>&nbsp; Part 1 takeaway
+              </p>
+              <p style="font-size: 14pt;">
+                Inverting <strong>push &rarr; pull</strong> makes distributed ML inference dramatically easier
+                to deploy and scale. Workers run anywhere with outbound HTTP.
+              </p>
+            </div>
+            <div class="card-blue">
+              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 8px;">
+                <i class="fa-solid fa-microchip"></i>&nbsp; Part 2 takeaway
+              </p>
+              <p style="font-size: 14pt;">
+                Four concrete PyTorch optimizations — each addressing a different bottleneck —
+                compound to a <strong>15&times; gain</strong>. The pattern generalizes to any GPU-accelerated workload.
+              </p>
+            </div>
+          </div>
+          <div class="card-green">
+            <p style="font-size: 14pt; font-weight: 700; color: var(--secondary-color); margin-bottom: 6px;">
+              <i class="fa-solid fa-globe"></i>&nbsp; Both contributions generalize
+            </p>
+            <p style="font-size: 14pt;">
+              Applicable to <strong>any image classification workload</strong> — not just entomology.
+              The async pull architecture works for any ML inference service that can poll a job queue.
+              The GPU optimizations apply to any multi-stage deep learning pipeline.
+            </p>
+          </div>
+        </div>
+        <div class="footnote">Antenna is open source &mdash; insectai.org &middot; github.com/RolnickLab</div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════
+           SLIDE 15 · Links and Q&A
+           ══════════════════════════════════════════════════════════ -->
+      <section id="links-qa">
+        <h2>Links &amp; Q&amp;A</h2>
+        <div class="content">
+          <div style="display: flex; flex-direction: column; gap: 14px; max-width: 760px;">
+            <div class="card">
+              <p style="font-size: 10pt; color: var(--muted-color); font-family: var(--ui-font); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px;">Antenna platform</p>
+              <p style="font-size: 18pt; font-family: var(--mono-font); color: var(--color-neutral-700);">insectai.org</p>
+            </div>
+            <div class="card">
+              <p style="font-size: 10pt; color: var(--muted-color); font-family: var(--ui-font); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px;">Worker implementation &amp; GPU optimizations</p>
+              <p style="font-size: 16pt; font-family: var(--mono-font); color: var(--color-neutral-700);">github.com/RolnickLab/ami-data-companion</p>
+            </div>
+            <div class="card">
+              <p style="font-size: 10pt; color: var(--muted-color); font-family: var(--ui-font); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px;">Antenna backend (async job queue API)</p>
+              <p style="font-size: 16pt; font-family: var(--mono-font); color: var(--color-neutral-700);">github.com/RolnickLab/antenna</p>
+            </div>
+            <div class="card-blue" style="text-align: center;">
+              <p style="font-size: 18pt; color: var(--accent-blue);">
+                <i class="fa-solid fa-comments" style="margin-right: 10px;"></i>Questions?
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="footnote">Carlos Garcia Jurado Suarez &middot; UW eScience Institute / Mila Institute &middot; SciPy 2025</div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+  <script>
+    Reveal.initialize({
+      width: 1280,
+      height: 720,
+      margin: 0,
+      controls: true,
+      progress: true,
+      slideNumber: false,
+      hash: true,
+      transition: 'slide',
+      center: false,
+    });
+  </script>
+</body>
+</html>
