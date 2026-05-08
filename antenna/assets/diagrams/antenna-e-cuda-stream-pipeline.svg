@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">CUDA stream pipeline before and after optimization</title>
+  <desc id="desc">Comparison of sequential transfer and compute against overlapped transfer and compute across CUDA streams.</desc>
+  <defs>
+    <style>
+      .bg{fill:#f9f7f2}.panel{fill:#fff;stroke:#d5d8de;stroke-width:2}.title{font-family:"Encode Sans",Arial,sans-serif;font-size:44px;font-weight:800;fill:#1A5276}.small{font-family:"Open Sans",Arial,sans-serif;font-size:22px;font-weight:600;fill:#373a3c}.section{font-family:"Encode Sans",Arial,sans-serif;font-size:30px;font-weight:800;fill:#1A5276}.label{font-family:"Encode Sans",Arial,sans-serif;font-size:23px;font-weight:700;fill:#1a1d1f}.tick{font-family:"Open Sans",Arial,sans-serif;font-size:18px;font-weight:600;fill:#555a5e}.axis{stroke:#72777c;stroke-width:3}.grid{stroke:#d5d8de;stroke-width:2;stroke-dasharray:8 12}.transfer{fill:#1A5276}.compute{fill:#2ad2c9}.idle{fill:#f2efe6;stroke:#b7a57a;stroke-width:2}.bar-text{font-family:"Encode Sans",Arial,sans-serif;font-size:18px;font-weight:700;fill:#fff}.dark-text{font-family:"Encode Sans",Arial,sans-serif;font-size:18px;font-weight:700;fill:#1a1d1f}.divider{stroke:#d5d8de;stroke-width:3}
+    </style>
+  </defs>
+  <rect class="bg" width="1600" height="900"/>
+  <rect class="panel" x="64" y="72" width="1472" height="756" rx="8"/>
+  <text class="title" x="104" y="136">E. CUDA Stream Pipeline</text>
+  <text class="small" x="104" y="178">Streams overlap transfer and compute so later batches begin before earlier batches finish.</text>
+  <line class="divider" x1="800" y1="230" x2="800" y2="748"/>
+
+  <g transform="translate(116 248)">
+    <text class="section" x="0" y="0">Before: sequential work</text>
+    <text class="label" x="0" y="92">Single stream</text>
+    <line class="axis" x1="154" y1="86" x2="662" y2="86"/>
+    <line class="grid" x1="154" y1="56" x2="154" y2="154"/><line class="grid" x1="281" y1="56" x2="281" y2="154"/><line class="grid" x1="408" y1="56" x2="408" y2="154"/><line class="grid" x1="535" y1="56" x2="535" y2="154"/><line class="grid" x1="662" y1="56" x2="662" y2="154"/>
+    <rect class="transfer" x="154" y="58" width="92" height="56" rx="4"/><text class="bar-text" x="200" y="92" text-anchor="middle">T1</text>
+    <rect class="compute" x="246" y="58" width="126" height="56" rx="4"/><text class="dark-text" x="309" y="92" text-anchor="middle">C1</text>
+    <rect class="transfer" x="372" y="58" width="92" height="56" rx="4"/><text class="bar-text" x="418" y="92" text-anchor="middle">T2</text>
+    <rect class="compute" x="464" y="58" width="126" height="56" rx="4"/><text class="dark-text" x="527" y="92" text-anchor="middle">C2</text>
+    <rect class="idle" x="590" y="58" width="72" height="56" rx="4"/><text class="dark-text" x="626" y="92" text-anchor="middle">wait</text>
+  </g>
+
+  <g transform="translate(116 508)">
+    <text class="label" x="0" y="38">GPU occupancy</text>
+    <rect class="idle" x="154" y="0" width="96" height="62" rx="5"/><rect class="compute" x="250" y="0" width="126" height="62" rx="5"/><rect class="idle" x="376" y="0" width="92" height="62" rx="5"/><rect class="compute" x="468" y="0" width="126" height="62" rx="5"/><rect class="idle" x="594" y="0" width="68" height="62" rx="5"/>
+    <text class="dark-text" x="202" y="39" text-anchor="middle">idle</text><text class="dark-text" x="313" y="39" text-anchor="middle">compute</text><text class="dark-text" x="422" y="39" text-anchor="middle">idle</text><text class="dark-text" x="531" y="39" text-anchor="middle">compute</text>
+  </g>
+
+  <g transform="translate(854 248)">
+    <text class="section" x="0" y="0">After: overlapped streams</text>
+    <text class="label" x="0" y="82">Stream 1</text>
+    <text class="label" x="0" y="172">Stream 2</text>
+    <line class="axis" x1="154" y1="76" x2="662" y2="76"/>
+    <line class="axis" x1="154" y1="166" x2="662" y2="166"/>
+    <line class="grid" x1="154" y1="40" x2="154" y2="204"/><line class="grid" x1="281" y1="40" x2="281" y2="204"/><line class="grid" x1="408" y1="40" x2="408" y2="204"/><line class="grid" x1="535" y1="40" x2="535" y2="204"/><line class="grid" x1="662" y1="40" x2="662" y2="204"/>
+    <rect class="transfer" x="154" y="48" width="92" height="56" rx="4"/><text class="bar-text" x="200" y="82" text-anchor="middle">T1</text>
+    <rect class="compute" x="246" y="48" width="168" height="56" rx="4"/><text class="dark-text" x="330" y="82" text-anchor="middle">C1</text>
+    <rect class="transfer" x="300" y="138" width="92" height="56" rx="4"/><text class="bar-text" x="346" y="172" text-anchor="middle">T2</text>
+    <rect class="compute" x="392" y="138" width="168" height="56" rx="4"/><text class="dark-text" x="476" y="172" text-anchor="middle">C2</text>
+    <rect class="transfer" x="504" y="48" width="92" height="56" rx="4"/><text class="bar-text" x="550" y="82" text-anchor="middle">T3</text>
+  </g>
+
+  <g transform="translate(854 508)">
+    <text class="label" x="0" y="38">GPU occupancy</text>
+    <rect class="compute" x="154" y="0" width="442" height="62" rx="5"/>
+    <rect class="transfer" x="154" y="0" width="70" height="62" rx="5" opacity=".92"/>
+    <text class="dark-text" x="375" y="39" text-anchor="middle">near-continuous compute window</text>
+  </g>
+
+  <g transform="translate(104 778)">
+    <rect x="0" y="0" width="130" height="30" rx="4" fill="#1A5276"/><text class="bar-text" x="65" y="21" text-anchor="middle">Transfer</text>
+    <rect x="154" y="0" width="130" height="30" rx="4" fill="#2ad2c9"/><text class="dark-text" x="219" y="21" text-anchor="middle">Compute</text>
+  </g>
+</svg>

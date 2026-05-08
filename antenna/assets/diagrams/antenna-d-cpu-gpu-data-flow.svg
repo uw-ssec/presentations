@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">CPU-GPU data flow before and after optimization</title>
+  <desc id="desc">Before path routes through PIL Image on CPU before returning to GPU; after path keeps data on GPU directly.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" orient="auto">
+      <path d="M2 2 L10 6 L2 10 Z" fill="#1A5276"/>
+    </marker>
+    <marker id="arrowGold" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" orient="auto">
+      <path d="M2 2 L10 6 L2 10 Z" fill="#85754d"/>
+    </marker>
+    <style>
+      .bg{fill:#f9f7f2}.panel{fill:#fff;stroke:#d5d8de;stroke-width:2}.title{font-family:"Encode Sans",Arial,sans-serif;font-size:44px;font-weight:800;fill:#1A5276}.small{font-family:"Open Sans",Arial,sans-serif;font-size:22px;font-weight:600;fill:#373a3c}.lane-title{font-family:"Encode Sans",Arial,sans-serif;font-size:30px;font-weight:800;fill:#1A5276}.label{font-family:"Encode Sans",Arial,sans-serif;font-size:25px;font-weight:700;fill:#1a1d1f}.chip{fill:#f6f7f8;stroke:#1A5276;stroke-width:4}.cpu{fill:#f2efe6;stroke:#85754d;stroke-width:4}.gpu{fill:#edfafa;stroke:#1A5276;stroke-width:4}.flow{stroke:#1A5276;stroke-width:6;fill:none;marker-end:url(#arrow)}.detour{stroke:#85754d;stroke-width:6;fill:none;marker-end:url(#arrowGold)}.cut{stroke:#85754d;stroke-width:5;stroke-linecap:round}.badge{fill:#fff;stroke:#b7a57a;stroke-width:2}.badge-text{font-family:"Encode Sans",Arial,sans-serif;font-size:20px;font-weight:700;fill:#373a3c}.divider{stroke:#d5d8de;stroke-width:3}
+    </style>
+  </defs>
+  <rect class="bg" width="1600" height="900"/>
+  <rect class="panel" x="64" y="72" width="1472" height="756" rx="8"/>
+  <text class="title" x="104" y="136">D. CPU-GPU Data Flow</text>
+  <text class="small" x="104" y="178">The optimized path removes CPU image materialization from the hot loop.</text>
+  <line class="divider" x1="800" y1="228" x2="800" y2="750"/>
+
+  <g transform="translate(126 244)">
+    <text class="lane-title" x="0" y="0">Before: device data leaves the GPU</text>
+    <rect class="gpu" x="4" y="130" width="190" height="120" rx="8"/>
+    <text class="label" x="99" y="179" text-anchor="middle">GPU</text>
+    <text class="small" x="99" y="211" text-anchor="middle">array</text>
+    <rect class="cpu" x="284" y="130" width="208" height="120" rx="8"/>
+    <text class="label" x="388" y="179" text-anchor="middle">PIL Image</text>
+    <text class="small" x="388" y="211" text-anchor="middle">CPU memory</text>
+    <rect class="gpu" x="520" y="130" width="150" height="120" rx="8"/>
+    <text class="label" x="595" y="179" text-anchor="middle">GPU</text>
+    <text class="small" x="595" y="211" text-anchor="middle">kernel input</text>
+    <path class="detour" d="M194 190 H284"/>
+    <path class="detour" d="M492 190 H520"/>
+    <rect class="badge" x="230" y="286" width="324" height="54" rx="4"/>
+    <text class="badge-text" x="392" y="321" text-anchor="middle">extra copies + synchronization</text>
+    <path class="cut" d="M262 106 L542 366"/>
+  </g>
+
+  <g transform="translate(854 244)">
+    <text class="lane-title" x="0" y="0">After: direct GPU-to-GPU path</text>
+    <rect class="gpu" x="4" y="130" width="220" height="120" rx="8"/>
+    <text class="label" x="114" y="179" text-anchor="middle">GPU</text>
+    <text class="small" x="114" y="211" text-anchor="middle">source array</text>
+    <rect class="chip" x="508" y="130" width="220" height="120" rx="8"/>
+    <text class="label" x="618" y="179" text-anchor="middle">GPU</text>
+    <text class="small" x="618" y="211" text-anchor="middle">kernel input</text>
+    <path class="flow" d="M224 190 H508"/>
+    <rect class="badge" x="270" y="286" width="282" height="54" rx="4"/>
+    <text class="badge-text" x="411" y="321" text-anchor="middle">no CPU materialization</text>
+  </g>
+
+  <g transform="translate(104 762)">
+    <rect x="0" y="0" width="1260" height="46" rx="4" fill="#f2efe6"/>
+    <text class="small" x="18" y="31">UX read: the after diagram preserves the same mental model while making the removed CPU hop unmistakable.</text>
+  </g>
+</svg>

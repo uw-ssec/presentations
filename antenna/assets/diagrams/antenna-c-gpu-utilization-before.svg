@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">GPU utilization before optimization</title>
+  <desc id="desc">CPU and GPU timeline showing large GPU idle gaps before optimization.</desc>
+  <defs>
+    <style>
+      .bg{fill:#f9f7f2}.panel{fill:#fff;stroke:#d5d8de;stroke-width:2}.title{font-family:"Encode Sans",Arial,sans-serif;font-size:44px;font-weight:800;fill:#1A5276}.small{font-family:"Open Sans",Arial,sans-serif;font-size:22px;font-weight:600;fill:#373a3c}.axis{stroke:#72777c;stroke-width:3}.grid{stroke:#d5d8de;stroke-width:2;stroke-dasharray:8 12}.label{font-family:"Encode Sans",Arial,sans-serif;font-size:25px;font-weight:700;fill:#1a1d1f}.tick{font-family:"Open Sans",Arial,sans-serif;font-size:18px;font-weight:600;fill:#555a5e}.cpu{fill:#1A5276}.gpu{fill:#2ad2c9}.idle{fill:#f2efe6;stroke:#b7a57a;stroke-width:2}.callout{fill:#fff;stroke:#85754d;stroke-width:3}.callout-text{font-family:"Encode Sans",Arial,sans-serif;font-size:24px;font-weight:700;fill:#85754d}.legend{font-family:"Encode Sans",Arial,sans-serif;font-size:20px;font-weight:700;fill:#373a3c}.legend-on-dark{font-family:"Encode Sans",Arial,sans-serif;font-size:20px;font-weight:700;fill:#fff}.tick.light{fill:#fff}
+    </style>
+  </defs>
+  <rect class="bg" width="1600" height="900"/>
+  <rect class="panel" x="64" y="72" width="1472" height="756" rx="8"/>
+  <text class="title" x="104" y="136">C. GPU Utilization Before Optimization</text>
+  <text class="small" x="104" y="178">CPU-side image conversion and transfer setup leave the GPU waiting between kernels.</text>
+
+  <g transform="translate(180 270)">
+    <text class="label" x="0" y="58">CPU</text>
+    <text class="label" x="0" y="242">GPU</text>
+    <line class="axis" x1="130" y1="92" x2="1330" y2="92"/>
+    <line class="axis" x1="130" y1="276" x2="1330" y2="276"/>
+    <g>
+      <line class="grid" x1="130" y1="20" x2="130" y2="330"/><line class="grid" x1="370" y1="20" x2="370" y2="330"/><line class="grid" x1="610" y1="20" x2="610" y2="330"/><line class="grid" x1="850" y1="20" x2="850" y2="330"/><line class="grid" x1="1090" y1="20" x2="1090" y2="330"/><line class="grid" x1="1330" y1="20" x2="1330" y2="330"/>
+      <text class="tick" x="130" y="370" text-anchor="middle">0</text><text class="tick" x="370" y="370" text-anchor="middle">20</text><text class="tick" x="610" y="370" text-anchor="middle">40</text><text class="tick" x="850" y="370" text-anchor="middle">60</text><text class="tick" x="1090" y="370" text-anchor="middle">80</text><text class="tick" x="1330" y="370" text-anchor="middle">100 ms</text>
+    </g>
+    <rect class="cpu" x="138" y="48" width="178" height="70" rx="5"/><rect class="cpu" x="395" y="48" width="214" height="70" rx="5"/><rect class="cpu" x="710" y="48" width="175" height="70" rx="5"/><rect class="cpu" x="998" y="48" width="222" height="70" rx="5"/>
+    <text class="tick light" x="227" y="91" text-anchor="middle">PIL convert</text><text class="tick light" x="502" y="91" text-anchor="middle">host copy</text><text class="tick light" x="797" y="91" text-anchor="middle">prepare</text><text class="tick light" x="1109" y="91" text-anchor="middle">host copy</text>
+
+    <rect class="idle" x="138" y="232" width="260" height="70" rx="5"/><rect class="gpu" x="398" y="232" width="105" height="70" rx="5"/><rect class="idle" x="503" y="232" width="346" height="70" rx="5"/><rect class="gpu" x="849" y="232" width="100" height="70" rx="5"/><rect class="idle" x="949" y="232" width="305" height="70" rx="5"/><rect class="gpu" x="1254" y="232" width="76" height="70" rx="5"/>
+    <text class="tick" x="268" y="275" text-anchor="middle">idle</text><text class="tick" x="450" y="275" text-anchor="middle" fill="#1a1d1f">kernel</text><text class="tick" x="676" y="275" text-anchor="middle">idle</text><text class="tick" x="899" y="275" text-anchor="middle" fill="#1a1d1f">kernel</text><text class="tick" x="1102" y="275" text-anchor="middle">idle</text>
+  </g>
+
+  <g transform="translate(1000 194)">
+    <rect class="callout" x="0" y="0" width="374" height="66" rx="6"/>
+    <text class="callout-text" x="187" y="42" text-anchor="middle">Low duty cycle, high wait time</text>
+  </g>
+  <g transform="translate(104 780)">
+    <rect x="0" y="0" width="640" height="30" rx="4" fill="#1A5276"/><text class="legend-on-dark" x="18" y="22">CPU setup</text>
+    <rect x="170" y="0" width="168" height="30" rx="4" fill="#2ad2c9"/><text class="legend" x="188" y="22">GPU work</text>
+    <rect x="362" y="0" width="150" height="30" rx="4" fill="#f2efe6" stroke="#b7a57a"/><text class="legend" x="382" y="22">GPU idle</text>
+  </g>
+</svg>
