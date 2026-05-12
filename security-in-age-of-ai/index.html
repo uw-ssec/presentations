@@ -321,31 +321,94 @@
           <div class="footnote">Even well-resourced, security-focused organizations hit publisher-side risks. Hardened release workflows help everyone.</div>
         </section>
 
-        <section id="mythos-preview">
-          <h2>Mythos Preview: AI as an Offense Multiplier</h2>
+        <section id="mythos-context">
+          <h2>Mythos: Capability + Ecosystem Knowledge</h2>
           <div class="content">
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
               <div>
-                <p style="margin-bottom: 8px;"><span class="badge">Anthropic Red Team &middot; 2026</span></p>
-                <p style="font-size: 15pt; margin-bottom: 8px;">Anthropic's Mythos Preview demonstrates unprecedented autonomous exploit development — <strong>181 working Firefox exploits</strong> vs. 2 for Claude Opus 4.6.</p>
-                <p style="font-size: 14pt; color: var(--muted-color); margin-bottom: 10px;">"Engineers with no formal security training asked Mythos to find RCE vulnerabilities overnight — and woke up the following morning to a complete, working exploit."</p>
-                <div class="card-red">
-                  <p style="font-size: 13pt;"><strong>Autonomous capabilities:</strong> JIT heap sprays, sandbox escapes, ROP chains. Found a 27-year-old OpenBSD TCP flaw and a 16-year-old FFmpeg codec bug missed by extensive fuzzing.</p>
+                <p style="margin-bottom: 8px;"><span class="badge">Claude Mythos Preview</span></p>
+                <p style="font-size: 15pt; margin-bottom: 10px;">Anthropic describes Mythos as its strongest coding model, capable enough at vulnerability discovery and exploit development that it was <strong>not released publicly</strong>.</p>
+                <div class="card-red" style="margin-bottom: 12px;">
+                  <p style="font-size: 13pt;"><strong>The thesis:</strong> frontier LLMs combine strong security reasoning with broad software ecosystem knowledge, making them unusually powerful security engineer and hacker amplifiers.</p>
+                </div>
+                <div class="card">
+                  <p style="font-size: 13pt;"><strong>The key point:</strong> Anthropic did not set out to build a hacking model. The security capability emerged from deeper software understanding.</p>
                 </div>
               </div>
               <div>
-                <p style="font-weight: 700; font-size: 15pt; color: var(--primary-color); margin-bottom: 10px;">Implications for defenders</p>
+                <p style="font-weight: 700; font-size: 15pt; color: var(--primary-color); margin-bottom: 10px;">Why this belongs in a supply-chain talk</p>
                 <ul style="font-size: 13pt;">
-                  <li><strong>N-day → same-day:</strong> AI converts known CVEs into working exploits in hours, not weeks</li>
-                  <li><strong>Supply-chain acceleration:</strong> autonomous vuln discovery in widely-used libraries (FFmpeg, OpenSSH)</li>
-                  <li><strong>Friction barriers weaken:</strong> mitigations relying on attacker tedium lose effectiveness against AI</li>
-                  <li><strong>Accelerate patching:</strong> drive down time-to-deploy for security updates — AI is already shortening attackers' timelines</li>
-                  <li><strong>Defensive AI now:</strong> use frontier models for alert triage and vuln dedup before more capable offensive tools proliferate</li>
+                  <li>The same model that understands large codebases can find obscure failure paths inside them</li>
+                  <li>Attackers no longer need one expert who knows every subsystem in a chain</li>
+                  <li>Security gaps in common dependencies, CI runners, browsers, kernels, and protocols become easier to connect</li>
+                  <li>Average hackers can synthesize novel paths across domains they only partly understand</li>
                 </ul>
               </div>
             </div>
           </div>
-          <div class="footnote">Source: Anthropic Red Team, Mythos Preview (2026) &mdash; red.anthropic.com</div>
+          <div class="footnote">Source context: parent attachment on Claude Mythos Preview, summarizing Anthropic's system card and Project Glasswing; amplifier framing is presenter narrative.</div>
+        </section>
+
+        <section id="mythos-evidence">
+          <h2>Why This Is More Than Hype</h2>
+          <div class="content">
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 18px;">
+              <div class="card-red">
+                <p style="font-size: 26pt; font-weight: 800; color: var(--primary-color); margin-bottom: 4px;">181</p>
+                <p style="font-size: 13pt; font-weight: 700; margin-bottom: 4px;">working Firefox JS engine exploits</p>
+                <p style="font-size: 12pt; color: var(--muted-color);">The source article contrasts this with 2 successful attempts for Claude Opus 4.6.</p>
+              </div>
+              <div class="card-red">
+                <p style="font-size: 26pt; font-weight: 800; color: var(--primary-color); margin-bottom: 4px;">100%</p>
+                <p style="font-size: 13pt; font-weight: 700; margin-bottom: 4px;">Cybench success rate</p>
+                <p style="font-size: 12pt; color: var(--muted-color);">The benchmark was described as saturated across 35 CTF challenges.</p>
+              </div>
+              <div class="card-red">
+                <p style="font-size: 26pt; font-weight: 800; color: var(--primary-color); margin-bottom: 4px;">1,000+</p>
+                <p style="font-size: 13pt; font-weight: 700; margin-bottom: 4px;">critical vulnerabilities in disclosure</p>
+                <p style="font-size: 12pt; color: var(--muted-color);">The attachment frames these as real bugs, not toy examples.</p>
+              </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+              <div class="card">
+                <p style="font-size: 14pt; font-weight: 700; color: var(--primary-color); margin-bottom: 6px;"><i class="fa-solid fa-code-branch"></i> Cross-domain exploit chains</p>
+                <p style="font-size: 13pt;">The source emphasizes Mythos' ability to combine implementation knowledge across browsers, kernels, codecs, protocols, and exploit techniques.</p>
+              </div>
+              <div class="card">
+                <p style="font-size: 14pt; font-weight: 700; color: var(--primary-color); margin-bottom: 6px;"><i class="fa-solid fa-magnifying-glass-chart"></i> Old bugs, modern reach</p>
+                <p style="font-size: 13pt;">Examples in the attachment include a 27-year-old OpenBSD flaw and a 16-year-old FFmpeg bug that survived extensive automated testing.</p>
+              </div>
+            </div>
+          </div>
+          <div class="footnote">Claims are drawn from the parent-provided Mythos article; original cited sources include Anthropic's system card and Project Glasswing materials.</div>
+        </section>
+
+        <section id="mythos-security-shift">
+          <h2>The Security Shift: Two Kinds of Expertise</h2>
+          <div class="content">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 22px;">
+              <div>
+                <p style="font-weight: 700; font-size: 16pt; color: var(--primary-color); margin-bottom: 10px;"><i class="fa-solid fa-user-shield"></i> Human specialist</p>
+                <ul style="font-size: 13pt;">
+                  <li>Often very strong on security patterns and exploit technique</li>
+                  <li>Limited by deep familiarity with each dependency, codec, kernel path, protocol, and build system</li>
+                  <li>Presenter heuristic: roughly <strong>9/10 security</strong>, but <strong>5-6/10 ecosystem breadth</strong></li>
+                </ul>
+              </div>
+              <div>
+                <p style="font-weight: 700; font-size: 16pt; color: var(--secondary-color); margin-bottom: 10px;"><i class="fa-solid fa-brain"></i> Frontier LLM</p>
+                <ul style="font-size: 13pt;">
+                  <li>Not automatically better than top security engineers</li>
+                  <li>But unusually broad across implementation details, language ecosystems, and exploit primitives</li>
+                  <li>Presenter heuristic: roughly <strong>8/10 security</strong> plus <strong>8-9/10 ecosystem breadth</strong></li>
+                </ul>
+              </div>
+            </div>
+            <div class="card-blue" style="margin-top: 18px;">
+              <p style="font-size: 14pt;"><i class="fa-solid fa-film" style="color: var(--accent-blue); margin-right: 8px;"></i><strong>Example:</strong> a human may know FFmpeg and vulnerability classes in general but lack H.264 codec implementation depth; an LLM can connect codec internals, memory behavior, and exploit technique in one search path.</p>
+            </div>
+          </div>
+          <div class="footnote">The 9/10 and 8-9/10 comparison is a presenter heuristic, not a benchmark; narrative lens: audience fit, technical accuracy, signal over breadth, and speaker usability.</div>
         </section>
       </section>
 

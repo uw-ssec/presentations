@@ -16,6 +16,7 @@
   --color-gold-50: #f9f7f2;
 
   --color-teal-600: #1fb8b0;
+  --color-teal-700: #00857e;
   --color-teal-500: #2ad2c9;
   --color-teal-300: #8fe9e4;
   --color-green-600: #2e7d32;
@@ -57,7 +58,7 @@
   --section-divider-bg: var(--color-purple-950);
   --primary-color: var(--color-purple-700);
   --secondary-color: var(--color-gold-700);
-  --accent-blue: var(--color-teal-600);
+  --accent-blue: var(--color-teal-700);
   --text-color: var(--color-neutral-900);
   --muted-color: var(--color-neutral-600);
   --line-color: var(--color-neutral-200);
