@@ -895,6 +895,91 @@
         </div>
       </section>
 
+      <section>
+        <section id="workflow-build-job">
+          <h2>Build Job: Zero Secrets</h2>
+          <div class="content">
+            <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 18px;">
+              <pre style="background: #1a1a2e; color: #e4e4f1; padding: 14px 16px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 11.5pt; line-height: 1.35; margin: 0; overflow: auto;"><span style="color: #888;">name:</span> Release
+<span style="color: #888;">on:</span>
+  release:
+    types: [published]
+
+<span style="color: #ff8a8a;">permissions: {}</span>          <span style="color: #888;"># deny all by default</span>
+
+<span style="color: #888;">jobs:</span>
+  build:
+    runs-on: ubuntu-latest
+    <span style="color: #ff8a8a;">permissions:
+      contents: read</span>     <span style="color: #888;"># only what's needed</span>
+    steps:
+      - uses: actions/checkout@93cb6efe...  <span style="color: #888;"># SHA-pin</span>
+        with:
+          <span style="color: #ff8a8a;">persist-credentials: false</span>
+      - uses: actions/setup-node@a0853c24...
+      - run: <span style="color: #ff8a8a;">npm ci --ignore-scripts</span>
+      - run: npm run build
+      - uses: actions/upload-artifact@043fb46d...
+        with:
+          name: dist
+          path: dist/</pre>
+              <div>
+                <p style="font-weight: 700; font-size: 15pt; color: var(--accent-blue); margin-bottom: 10px;">What this job is allowed to do</p>
+                <ul style="font-size: 13pt;">
+                  <li><code>permissions: &#123;&#125;</code> at the workflow level - every job opts in explicitly</li>
+                  <li>Build job gets <strong>only</strong> <code>contents: read</code> - no secrets, no <code>id-token</code></li>
+                  <li><code>persist-credentials: false</code> strips the <code>GITHUB_TOKEN</code> from <code>.git/config</code> after checkout</li>
+                  <li><code>--ignore-scripts</code> blocks <code>preinstall</code> / <code>postinstall</code> - the dominant payload vector (Bitwarden CLI, Axios, Shai-Hulud)</li>
+                  <li>All actions SHA-pinned (40-char) - tag hijacks (tj-actions, Trivy) don't affect SHAs</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section id="workflow-publish-job">
+          <h2>Publish Job: Gated by Environment</h2>
+          <div class="content">
+            <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 18px;">
+              <pre style="background: #1a1a2e; color: #e4e4f1; padding: 14px 16px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 11.5pt; line-height: 1.35; margin: 0; overflow: auto;">  publish-pypi:
+    <span style="color: #ff8a8a;">needs: build</span>          <span style="color: #888;"># consume artifact, not source</span>
+    <span style="color: #ff8a8a;">environment: release</span>  <span style="color: #888;"># required reviewers gate</span>
+    runs-on: ubuntu-latest
+    <span style="color: #ff8a8a;">permissions:
+      id-token: write</span>  <span style="color: #888;"># OIDC, no stored token</span>
+    steps:
+      - uses: actions/download-artifact@3e5f45b2...
+        with:
+          name: dist
+          path: dist/
+      - uses: <span style="color: #ff8a8a;">pypa/gh-action-pypi-publish</span>@cef22109...
+        <span style="color: #888;"># no token: needed - OIDC handles it</span>
+
+  publish-npm:
+    needs: build
+    environment: release
+    permissions:
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@3e5f45b2...
+      - uses: actions/setup-node@a0853c24...
+        with: { registry-url: 'https://registry.npmjs.org' }
+      - run: <span style="color: #ff8a8a;">npm publish --provenance</span></pre>
+              <div>
+                <p style="font-weight: 700; font-size: 15pt; color: var(--accent-blue); margin-bottom: 10px;">Why this is safe</p>
+                <ul style="font-size: 13pt;">
+                  <li><code>needs: build</code> consumes the artifact from the unprivileged build job - publish never sees source code or installs deps</li>
+                  <li><code>environment: release</code> requires a human "Approve" click before the job runs - last checkpoint even if everything upstream is compromised</li>
+                  <li><code>id-token: write</code> mints a short-lived OIDC token per publish - no long-lived PyPI / npm token in repo secrets</li>
+                  <li><code>--provenance</code> creates a signed SLSA attestation - how PyPI detected the forged Ultralytics releases</li>
+                </ul>
+                <p style="font-size: 12pt; color: var(--muted-color); margin-top: 8px;">If malware ran during <code>npm ci</code> in the build job, it sees no publishing credentials - because there are none in that job.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+
       <section id="workflow-controls">
         <h2>Key Workflow Controls — What Each Buys You</h2>
         <div class="content">
@@ -931,6 +1016,10 @@
               <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;"><code>environment: release</code> with required reviewers</p>
               <p style="font-size: 13pt;">Human must click "approve" before the publish job can start — final checkpoint even if everything upstream is compromised.</p>
             </div>
+            <div class="card" style="padding: 12px 16px; grid-column: span 2; border-left: 4px solid var(--secondary-color);">
+              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-robot"></i> AI actions: same rules apply</p>
+              <p style="font-size: 13pt;">SHA-pin Claude-Code-Action / Codex-Action / Gemini-CLI. Run them in <code>environment:</code>-gated jobs with minimum scopes. Don't rely on <code>actor.endsWith('[bot]')</code>. Avoid interpolating untrusted PR titles or comments into AI prompts.</p>
+            </div>
           </div>
         </div>
       </section>
@@ -956,11 +1045,8 @@
               </ul>
             </div>
           </div>
-          <div class="card-blue" style="margin-top: 18px;">
-            <p style="font-size: 15pt;"><i class="fa-solid fa-book" style="color: var(--accent-blue); margin-right: 8px;"></i><strong>Reference document:</strong> Full hardened npm and PyPI release workflows with line-by-line explanations are in the companion guide — <em>Open Source Supply Chain Security: Threat Roundup &amp; Hardening Guide</em> (May 2026)</p>
-          </div>
         </div>
-        <div class="footnote">Sources: CISA, GitHub Security, Wiz, Unit 42, Datadog Security Labs, Elastic, Microsoft Security, ReversingLabs, Socket, StepSecurity, Anthropic Red Team, copy.fail, Tenable</div>
+        <div class="footnote">Sources: CISA, GitHub Security, Wiz, Unit 42, Datadog Security Labs, Elastic, Microsoft Security, ReversingLabs, Socket, StepSecurity, Anthropic Red Team, copy.fail, Tenable. See individual slide footnotes for primary citations.</div>
       </section>
 
     </div>
