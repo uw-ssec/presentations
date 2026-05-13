@@ -687,7 +687,7 @@
                   <i class="fa-solid fa-clock fa-fw" style="color: var(--secondary-color); margin-top: 3px; flex-shrink: 0;"></i>
                   <div>
                     <p style="font-weight: 700; margin-bottom: 3px;">Add a cooldown period <span style="font-size: 12pt; font-weight: 400; color: var(--muted-color);">(Datadog Security Labs)</span></p>
-                    <p style="font-size: 14pt; color: var(--muted-color);">54% of JS apps pull a new dep within 24&nbsp;h of release. Malicious Axios versions lived ~3&nbsp;h; the s1ngularity attack ~4&nbsp;h — a 12-hour cooldown blocks both. npm&nbsp;11.10.0+: <code>min-release-age=7</code> in <code>.npmrc</code>; Renovate: <code>minimumReleaseAge:&nbsp;10080</code>; Dependabot cooldown settings.</p>
+                    <p style="font-size: 14pt; color: var(--muted-color);">54% of JS apps pull a new dep within 24&nbsp;h of release. Malicious Axios versions lived ~3&nbsp;h, s1ngularity ~4&nbsp;h, Bitwarden CLI ~1.5&nbsp;h, Mini Shai-Hulud waves under a day - a 7-day cooldown blocks all of them. npm&nbsp;11.10.0+ (Feb 2026): <code>min-release-age=7</code> (days) in <code>.npmrc</code>; Renovate: <code>minimumReleaseAge:&nbsp;10080</code> (minutes = 7d); Dependabot cooldown settings.</p>
                   </div>
                 </div>
               </div>
@@ -716,6 +716,7 @@
               </div>
             </div>
           </div>
+          <div class="footnote">Sources: Socket - npm min-release-age (npm 11.10.0, Feb 2026); Renovate Docs - Minimum Release Age; Datadog Security Labs - dependency cooldown analysis; Andrew Nesbitt - "Package Managers Need to Cool Down."</div>
         </section>
         <section id="consumer-mitigations-2">
           <h2>As a Consumer: Detect &amp; Respond</h2>
@@ -763,7 +764,7 @@
                   <i class="fa-solid fa-robot fa-fw" style="color: var(--secondary-color); margin-top: 3px; flex-shrink: 0;"></i>
                   <div>
                     <p style="font-weight: 700; margin-bottom: 3px;">Publish from CI, never a personal machine</p>
-                    <p style="font-size: 14pt; color: var(--muted-color);">The Axios postmortem explicitly cited direct publishing from a personal npm account as the single point of compromise.</p>
+                    <p style="font-size: 14pt; color: var(--muted-color);">The Axios postmortem (Apr 2026) traced the compromise to a targeted social-engineering attack by Sapphire Sleet (North Korean state actor) - cloned-identity Slack + Teams meeting delivered a RAT on the maintainer's PC. Publishing from CI would have eliminated the blast radius.</p>
                   </div>
                 </div>
                 <div class="check-item">
@@ -799,11 +800,12 @@
               </div>
             </div>
           </div>
+          <div class="footnote">Sources: PyPI - Trusted Publishing (OIDC) docs; npm Trusted Publisher announcement; axios/axios#10636 - Jason Saayman post-mortem; Microsoft Security Blog &amp; Elastic Security Labs - Axios npm RAT analysis; Aikido &amp; Snyk - Shai-Hulud npmjs.help phishing.</div>
         </section>
         <section id="publisher-mitigations-2">
           <h2>As a Publisher: Lock Down GitHub Actions</h2>
           <div class="content">
-            <p style="margin-bottom: 14px; font-size: 15pt;">GitHub Actions misconfigurations were the entry point in the elementary-data, kubernetes-el, and Ultralytics attacks.</p>
+            <p style="margin-bottom: 14px; font-size: 15pt;">GitHub Actions misconfigurations were the entry point in the <strong>elementary-data</strong> (PyPI analytics package, ~1.1M monthly downloads), <strong>kubernetes-el</strong> (Emacs/K8s interface, not the Kubernetes project itself), and Ultralytics attacks.</p>
             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
               <div class="card">
                 <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-solid fa-lock"></i> Minimal permissions</p>
@@ -815,7 +817,7 @@
               </div>
               <div class="card">
                 <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-solid fa-triangle-exclamation"></i> Avoid <code>pull_request_target</code></p>
-                <p style="font-size: 13pt;">Never combine it with checking out untrusted PR code ("Pwn Request" pattern). Used in kubernetes-el and elementary-data attacks.</p>
+                <p style="font-size: 13pt;">Never combine it with checking out untrusted PR code ("Pwn Request" pattern). Used in the kubernetes-el (Mar 5, 2026) and elementary-data (Apr 24, 2026) attacks.</p>
               </div>
               <div class="card">
                 <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-solid fa-network-wired"></i> Egress allowlists</p>
@@ -823,14 +825,15 @@
               </div>
               <div class="card">
                 <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-solid fa-person-military-pointing"></i> Require approval for first-time contributors</p>
-                <p style="font-size: 13pt;">The 256+ trojanized PR campaign relied on workflows running automatically for unknown contributors.</p>
+                <p style="font-size: 13pt;">The <strong>prt-scan</strong> campaign (account <code>ezmtebo</code>, Apr 2026) opened 256+ trojanized PRs in 24 hours; 500+ across 6 waves of activity since Mar 2026.</p>
               </div>
               <div class="card">
                 <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-solid fa-magnifying-glass-chart"></i> Audit with <code>zizmor</code></p>
-                <p style="font-size: 13pt;">Open-source workflow auditor catches <code>pull_request_target</code> misuse, missing permissions, and other misconfigs automatically.</p>
+                <p style="font-size: 13pt;">Open-source workflow auditor (Trail of Bits) catches <code>pull_request_target</code> misuse, missing permissions, and other misconfigs automatically.</p>
               </div>
             </div>
           </div>
+          <div class="footnote">Sources: StepSecurity - elementary-data PyPI/GHCR compromise; Snyk - elementary-data &amp; Ultralytics Pwn Request analysis; Wiz &amp; safedep - prt-scan campaign; StepSecurity Harden-Runner; Trail of Bits - zizmor workflow auditor.</div>
         </section>
       </section>
 
