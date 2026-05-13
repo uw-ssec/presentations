@@ -1016,9 +1016,34 @@
               <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;"><code>environment: release</code> with required reviewers</p>
               <p style="font-size: 13pt;">Human must click "approve" before the publish job can start — final checkpoint even if everything upstream is compromised.</p>
             </div>
-            <div class="card" style="padding: 12px 16px; grid-column: span 2; border-left: 4px solid var(--secondary-color);">
-              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-robot"></i> AI actions: same rules apply</p>
-              <p style="font-size: 13pt;">SHA-pin Claude-Code-Action / Codex-Action / Gemini-CLI. Run them in <code>environment:</code>-gated jobs with minimum scopes. Don't rely on <code>actor.endsWith('[bot]')</code>. Avoid interpolating untrusted PR titles or comments into AI prompts.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="workflow-ai-controls">
+        <h2>AI Actions in the Workflow</h2>
+        <div class="content">
+          <p style="margin-bottom: 16px; font-size: 15pt;">The same rules apply - but the bypass classes are different. Treat AI actions as a privileged step that can be steered by untrusted input.</p>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+            <div class="card" style="padding: 12px 16px;">
+              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;"><i class="fa-brands fa-github"></i> SHA-pin AI actions</p>
+              <p style="font-size: 13pt;">Same rule as any other action - Claude-Code-Action, Codex-Action, Gemini-CLI. They're regular GitHub Actions with the same tag-hijack exposure.</p>
+            </div>
+            <div class="card" style="padding: 12px 16px;">
+              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-user-shield"></i> Don't gate on <code>actor.endsWith('[bot]')</code></p>
+              <p style="font-size: 13pt;">Wiz found this bypassable by any GitHub app. Use explicit allowlists (specific bot accounts) or environment-required reviewers instead.</p>
+            </div>
+            <div class="card" style="padding: 12px 16px;">
+              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-lock"></i> Gate AI jobs by <code>environment:</code></p>
+              <p style="font-size: 13pt;">Scope tokens to the minimum the AI actually needs. Required reviewers turn "AI takes an action" into a human-checked operation.</p>
+            </div>
+            <div class="card" style="padding: 12px 16px;">
+              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-key"></i> Mask file-based credentials</p>
+              <p style="font-size: 13pt;"><code>~/.aws/credentials</code>, GCP key files, Docker tokens - AI tools exfiltrate these because GitHub doesn't auto-mask them the way it masks repo secrets.</p>
+            </div>
+            <div class="card" style="padding: 12px 16px; grid-column: span 2;">
+              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-syringe"></i> Don't interpolate untrusted event data into AI prompts</p>
+              <p style="font-size: 13pt;">PR titles, comments, branch names, and issue bodies are attacker-controlled. Treat them as data: pass via environment variables, never directly into a prompt string. Same principle as the existing script-injection guidance - just applied to the AI step.</p>
             </div>
           </div>
         </div>
