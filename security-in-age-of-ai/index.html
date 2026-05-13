@@ -28,7 +28,7 @@
     <div class="slides">
 
       <section id="title" class="section-divider" data-state="is-section-divider">
-        <p class="event-tag">UW SSEC RSE Meetup &mdash; May 14, 2026</p>
+        <p class="event-tag">UW SSEC RSE Meetup - May 14, 2026</p>
         <h1>Security in the Age of AI</h1>
         <p class="subtitle">Open Source Supply Chain Security:<br>Threats, Mitigations &amp; Hardened Workflows</p>
       </section>
@@ -70,9 +70,15 @@
         <p>12 months of unprecedented supply chain attacks</p>
       </section>
 
+      <section class="section-divider" data-state="is-section-divider">
+        <h2>GitHub: Platform &amp; CI</h2>
+        <p>When the platform you build on, and the CI you trust, become the attack surface</p>
+      </section>
+
       <section id="github-cve">
-        <h2>CVE-2026-3854 &mdash; GitHub Command Injection</h2>
+        <h2>CVE-2026-3854: GitHub Command Injection</h2>
         <div class="content">
+          <p style="font-size: 13pt; color: var(--muted-color); margin-bottom: 12px;"><strong>CVE</strong> (Common Vulnerabilities and Exposures) = a public ID for a specific security flaw. <strong>CVSS</strong> (Common Vulnerability Scoring System) rates its severity on a 0&ndash;10 scale - 7.0+ is High, 9.0+ is Critical.</p>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
             <div>
               <p style="margin-bottom: 10px;"><span class="badge">CVSS 8.7</span></p>
@@ -102,9 +108,73 @@
       </section>
 
       <section>
+        <section id="actions-threat-model">
+          <h2>GitHub Actions: Three Attack Classes (Wiz)</h2>
+          <div class="content">
+            <p style="margin-bottom: 14px; font-size: 15pt;">GitHub Actions' trust boundary creates three systematic attack classes — exploited across Trivy, tj-actions, and Ultralytics compromises.</p>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+              <div class="card-red">
+                <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-solid fa-code-branch"></i> Dangerous Triggers</p>
+                <p style="font-size: 13pt;"><code>pull_request_target</code> runs with full secrets against attacker-controlled PR code. 8 trigger types share this: <code>issue_comment</code>, <code>discussion</code>, <code>workflow_run</code>, and more.</p>
+              </div>
+              <div class="card-red">
+                <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-solid fa-syringe"></i> Script Injection</p>
+                <p style="font-size: 13pt;">PR titles and branch names echoed into <code>run:</code> steps become RCE. Ultralytics: malicious branch name contained <code>curl&nbsp;|&nbsp;bash</code>, poisoning 22,000+ downstream apps.</p>
+              </div>
+              <div class="card-red">
+                <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-brands fa-github"></i> Compromised Actions</p>
+                <p style="font-size: 13pt;">tj-actions compromise propagated to <strong>22,000 repositories</strong>. March 2026 attacks hijacked release tags on Trivy and setup-go to deliver credential-stealing code.</p>
+              </div>
+            </div>
+            <div class="card" style="margin-top: 16px;">
+              <p style="font-size: 14pt;"><i class="fa-solid fa-shield-halved" style="color: var(--accent-blue); margin-right: 8px;"></i><strong>Core defenses:</strong> SHA-pin all <code>uses:</code> refs; never combine <code>pull_request_target</code> with untrusted checkout; bind user inputs to env vars before use; require approval for first-time contributors.</p>
+            </div>
+          </div>
+        </section>
+        <section id="actions-ai-vulns">
+          <h2>AI-Powered Actions: New Attack Surface (Wiz)</h2>
+          <div class="content">
+            <p style="margin-bottom: 14px; font-size: 15pt;">AI coding assistants embedded in CI introduced a new class of vulnerability — the actions themselves had authorization bypasses that attackers could trigger remotely.</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+              <div>
+                <div class="card-red" style="margin-bottom: 14px;">
+                  <p style="font-size: 13pt; font-weight: 700; color: var(--primary-color); margin-bottom: 6px;"><i class="fa-solid fa-user-ninja"></i> External Bot Bypass</p>
+                  <p style="font-size: 13pt;"><strong>Claude-Code-Action</strong> and <strong>OpenAI Codex-Action</strong> authorized requests by checking <code>actor.endsWith('[bot]')</code> — any external GitHub app could pass, triggering AI execution in your pipeline without permission.</p>
+                </div>
+                <div class="card-red">
+                  <p style="font-size: 13pt; font-weight: 700; color: var(--primary-color); margin-bottom: 6px;"><i class="fa-solid fa-user-secret"></i> Confused Deputy via Dependabot</p>
+                  <p style="font-size: 13pt;"><code>@dependabot recreate</code> could impersonate a trusted internal bot, triggering AI execution past gates that blocked direct user attempts.</p>
+                </div>
+              </div>
+              <div>
+                <div class="card-red" style="margin-bottom: 14px;">
+                  <p style="font-size: 13pt; font-weight: 700; color: var(--primary-color); margin-bottom: 6px;"><i class="fa-solid fa-key"></i> Dynamic Credential Exfiltration</p>
+                  <p style="font-size: 13pt;">AI models exfiltrate file-based credentials (GCP key files, <code>~/.aws/credentials</code>, Docker tokens) because they aren't masked the way GitHub repository secrets are.</p>
+                </div>
+                <div class="card">
+                  <p style="font-size: 13pt; font-weight: 700; color: var(--accent-blue); margin-bottom: 6px;"><i class="fa-solid fa-chart-bar"></i> Exposure at Scale</p>
+                  <ul style="font-size: 13pt;">
+                    <li>Claude-Code-Action: <strong>12,000+</strong> public workflows</li>
+                    <li>Gemini-CLI action: 1,000+ workflows</li>
+                    <li>Affected repos: 200,000+ combined stars</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="section-divider" data-state="is-section-divider">
+        <h2>Package Ecosystems</h2>
+        <p>npm, PyPI, and the security tooling layer under sustained attack</p>
+      </section>
+
+      <section>
         <section id="teampcp-overview">
           <h2>The TeamPCP Campaign (Mar&ndash;Apr 2026)</h2>
           <div class="content">
+            <p style="font-size: 13pt; color: var(--muted-color); margin-bottom: 10px;"><strong>TeamPCP</strong> is the industry name for a coordinated threat actor (a group of attackers) running a multi-month campaign - not a single bug, but a series of related compromises traced to the same operators.</p>
             <p style="margin-bottom: 12px;">A single threat group systematically targeted the <strong>security tooling layer</strong> — the tools developers are told to trust most — across five ecosystems.</p>
             <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 16px;">
               <div class="card" style="text-align: center; padding: 12px 8px;">
@@ -180,6 +250,7 @@
         <section id="shai-hulud-overview">
           <h2>Shai-Hulud: The Self-Replicating npm Worm</h2>
           <div class="content">
+            <p style="font-size: 13pt; color: var(--muted-color); margin-bottom: 10px;"><strong>Worm</strong> = malware that spreads on its own, without a human clicking anything. Each infected machine becomes a launchpad for the next.</p>
             <p style="margin-bottom: 14px;">A worm that <strong>hijacks victim packages to spread itself</strong> — harvests credentials, then backdoors packages it finds to propagate further.</p>
             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
               <div class="card">
@@ -229,69 +300,103 @@
                 <p>Enabled a Trust Wallet compromise around New Year's 2026.</p>
               </div>
             </div>
-            <div class="card-red" style="margin-top: 20px;">
-              <p style="font-size: 15pt;"><i class="fa-solid fa-triangle-exclamation" style="color: var(--primary-color); margin-right: 8px;"></i><strong>Python blind spot:</strong> The LiteLLM attack used <code>.pth</code> files — most supply-chain scanners don't check them, and they execute on every Python startup.</p>
-            </div>
           </div>
         </section>
       </section>
 
+      <section class="section-divider" data-state="is-section-divider">
+        <h2>Kernel &amp; Host</h2>
+        <p>When supply-chain access meets local privilege escalation</p>
+      </section>
+
       <section>
-        <section id="actions-threat-model">
-          <h2>GitHub Actions: Three Attack Classes (Wiz)</h2>
+        <section id="copy-fail-overview">
+          <h2>CVE-2026-31431: &ldquo;Copy Fail&rdquo; Linux Privilege Escalation</h2>
           <div class="content">
-            <p style="margin-bottom: 14px; font-size: 15pt;">GitHub Actions' trust boundary creates three systematic attack classes — exploited across Trivy, tj-actions, and Ultralytics compromises.</p>
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
-              <div class="card-red">
-                <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-solid fa-code-branch"></i> Dangerous Triggers</p>
-                <p style="font-size: 13pt;"><code>pull_request_target</code> runs with full secrets against attacker-controlled PR code. 8 trigger types share this: <code>issue_comment</code>, <code>discussion</code>, <code>workflow_run</code>, and more.</p>
-              </div>
-              <div class="card-red">
-                <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-solid fa-syringe"></i> Script Injection</p>
-                <p style="font-size: 13pt;">PR titles and branch names echoed into <code>run:</code> steps become RCE. Ultralytics: malicious branch name contained <code>curl&nbsp;|&nbsp;bash</code>, poisoning 22,000+ downstream apps.</p>
-              </div>
-              <div class="card-red">
-                <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-brands fa-github"></i> Compromised Actions</p>
-                <p style="font-size: 13pt;">tj-actions compromise propagated to <strong>22,000 repositories</strong>. March 2026 attacks hijacked release tags on Trivy and setup-go to deliver credential-stealing code.</p>
-              </div>
-            </div>
-            <div class="card" style="margin-top: 16px;">
-              <p style="font-size: 14pt;"><i class="fa-solid fa-shield-halved" style="color: var(--accent-blue); margin-right: 8px;"></i><strong>Core defenses:</strong> SHA-pin all <code>uses:</code> refs; never combine <code>pull_request_target</code> with untrusted checkout; bind user inputs to env vars before use; require approval for first-time contributors.</p>
-            </div>
-          </div>
-        </section>
-        <section id="actions-ai-vulns">
-          <h2>AI-Powered Actions: New Attack Surface (Wiz)</h2>
-          <div class="content">
-            <p style="margin-bottom: 14px; font-size: 15pt;">AI coding assistants embedded in CI introduced a new class of vulnerability — the actions themselves had authorization bypasses that attackers could trigger remotely.</p>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
               <div>
-                <div class="card-red" style="margin-bottom: 14px;">
-                  <p style="font-size: 13pt; font-weight: 700; color: var(--primary-color); margin-bottom: 6px;"><i class="fa-solid fa-user-ninja"></i> External Bot Bypass</p>
-                  <p style="font-size: 13pt;"><strong>Claude-Code-Action</strong> and <strong>OpenAI Codex-Action</strong> authorized requests by checking <code>actor.endsWith('[bot]')</code> — any external GitHub app could pass, triggering AI execution in your pipeline without permission.</p>
-                </div>
-                <div class="card-red">
-                  <p style="font-size: 13pt; font-weight: 700; color: var(--primary-color); margin-bottom: 6px;"><i class="fa-solid fa-user-secret"></i> Confused Deputy via Dependabot</p>
-                  <p style="font-size: 13pt;"><code>@dependabot recreate</code> could impersonate a trusted internal bot, triggering AI execution past gates that blocked direct user attempts.</p>
-                </div>
+                <p style="margin-bottom: 10px;"><span class="badge">CVSS 7.8</span>&nbsp;&nbsp;<span class="badge" style="background: rgba(220,53,69,0.18); color: var(--primary-color);">Public PoC</span></p>
+                <ul>
+                  <li>Logic flaw in <code>authencesn</code> (2017), chained through <strong>AF_ALG</strong> (kernel crypto socket) + <code>splice()</code> syscall into a <strong>4-byte page-cache write</strong> on setuid binaries like <code>/usr/bin/su</code></li>
+                  <li>Unprivileged local user &rarr; root - <strong>no race condition, no kernel offsets</strong>; reliable ~732-byte Python exploit</li>
+                  <li>Modifies only the <strong>in-memory kernel page cache</strong> - no disk changes, evades file-integrity and forensic tools</li>
+                  <li>Affects any kernel &ge; 4.14: Ubuntu 18.04&ndash;25.10, RHEL 10.1, Amazon Linux 2023, SUSE 16</li>
+                </ul>
               </div>
               <div>
-                <div class="card-red" style="margin-bottom: 14px;">
-                  <p style="font-size: 13pt; font-weight: 700; color: var(--primary-color); margin-bottom: 6px;"><i class="fa-solid fa-key"></i> Dynamic Credential Exfiltration</p>
-                  <p style="font-size: 13pt;">AI models exfiltrate file-based credentials (GCP key files, <code>~/.aws/credentials</code>, Docker tokens) because they aren't masked the way GitHub repository secrets are.</p>
+                <div class="card" style="margin-bottom: 14px;">
+                  <p style="font-size: 13pt; color: var(--muted-color); margin-bottom: 4px;">Discovered &amp; patched</p>
+                  <p style="font-size: 15pt;">April&ndash;May 2026 - mainline commit <code>a664bf3d603d</code></p>
                 </div>
-                <div class="card">
-                  <p style="font-size: 13pt; font-weight: 700; color: var(--accent-blue); margin-bottom: 6px;"><i class="fa-solid fa-chart-bar"></i> Exposure at Scale</p>
+                <div class="card-red" style="margin-bottom: 14px;">
+                  <p style="font-size: 13pt; font-weight: 700; color: var(--primary-color); margin-bottom: 6px;"><i class="fa-solid fa-cubes"></i> Container &amp; Cloud Blast Radius</p>
                   <ul style="font-size: 13pt;">
-                    <li>Claude-Code-Action: <strong>12,000+</strong> public workflows</li>
-                    <li>Gemini-CLI action: 1,000+ workflows</li>
-                    <li>Affected repos: 200,000+ combined stars</li>
+                    <li>Containers share the host kernel - one exploit owns the <strong>entire node</strong></li>
+                    <li>Millions of Kubernetes clusters in scope</li>
+                    <li>CI/CD runners satisfy &ldquo;unprivileged local user&rdquo; <em>by design</em></li>
                   </ul>
                 </div>
+                <div class="card">
+                  <p style="font-size: 13pt; font-weight: 700; color: var(--accent-blue); margin-bottom: 4px;"><i class="fa-solid fa-wrench"></i> Interim workaround</p>
+                  <p style="font-size: 13pt;">Disable <code>algif_aead</code> via <code>modprobe.d</code> or kernel boot params - may affect hardware-accelerated crypto performance</p>
+                </div>
               </div>
             </div>
           </div>
         </section>
+        <section id="copy-fail-chain">
+          <h2>Copy Fail in the Supply-Chain Attack Chain</h2>
+          <div class="content">
+            <p style="margin-bottom: 14px; font-size: 15pt;">Supply-chain compromise lands unprivileged code on a CI runner. Copy Fail turns that into root - defeating credential isolation and container boundaries.</p>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 18px;">
+              <div class="card-red" style="text-align: center; padding: 14px 8px;">
+                <p style="font-size: 22pt; color: var(--primary-color); margin-bottom: 6px;"><i class="fa-solid fa-box-open"></i></p>
+                <p style="font-size: 13pt; font-weight: 700; margin-bottom: 4px;">Malicious package</p>
+                <p style="font-size: 12pt; color: var(--muted-color);"><code>preinstall</code> hook runs as CI user</p>
+              </div>
+              <div class="card-red" style="text-align: center; padding: 14px 8px;">
+                <p style="font-size: 22pt; color: var(--primary-color); margin-bottom: 6px;"><i class="fa-solid fa-arrow-right"></i></p>
+                <p style="font-size: 13pt; font-weight: 700; margin-bottom: 4px;">AF_ALG + splice()</p>
+                <p style="font-size: 12pt; color: var(--muted-color);">4-byte page-cache write, in-memory only</p>
+              </div>
+              <div class="card-red" style="text-align: center; padding: 14px 8px;">
+                <p style="font-size: 22pt; color: var(--primary-color); margin-bottom: 6px;"><i class="fa-solid fa-arrow-right"></i></p>
+                <p style="font-size: 13pt; font-weight: 700; margin-bottom: 4px;">root on CI node</p>
+                <p style="font-size: 12pt; color: var(--muted-color);">All containers, secrets, service accounts</p>
+              </div>
+              <div class="card-red" style="text-align: center; padding: 14px 8px;">
+                <p style="font-size: 22pt; color: var(--primary-color); margin-bottom: 6px;"><i class="fa-solid fa-arrow-right"></i></p>
+                <p style="font-size: 13pt; font-weight: 700; margin-bottom: 4px;">Full cluster access</p>
+                <p style="font-size: 12pt; color: var(--muted-color);">K8s service accounts, cloud IAM roles</p>
+              </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+              <div>
+                <p style="font-weight: 700; font-size: 15pt; color: var(--primary-color); margin-bottom: 8px;"><i class="fa-solid fa-robot"></i> AI-era multiplier</p>
+                <ul style="font-size: 13pt;">
+                  <li>Public Python PoC requires no deep expertise - AI automation trivial</li>
+                  <li>Mythos-class AI can chain supply-chain access + kernel privesc automatically</li>
+                  <li>Race-condition-free, reliable exploit = high success rate for automated tooling</li>
+                </ul>
+              </div>
+              <div>
+                <p style="font-weight: 700; font-size: 15pt; color: var(--secondary-color); margin-bottom: 8px;"><i class="fa-solid fa-shield-halved"></i> Defenses that break this chain</p>
+                <ul style="font-size: 13pt;">
+                  <li><strong>Patch kernel now</strong> - or disable <code>algif_aead</code> immediately</li>
+                  <li><strong>Ephemeral runners</strong> - recycle container after every job</li>
+                  <li>Treat any container RCE as <strong>full host compromise</strong> - rotate all node credentials</li>
+                  <li><code>--ignore-scripts</code> in CI prevents the chain from starting</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="footnote">Sources: copy.fail - Microsoft Security Blog (May 1, 2026) - Tenable FAQ (Apr 2026) - Ubuntu Security Notices</div>
+        </section>
+      </section>
+
+      <section class="section-divider" data-state="is-section-divider">
+        <h2>The AI Angle</h2>
+        <p>Source leaks, frontier capability, and the shrinking window</p>
       </section>
 
       <section>
@@ -379,7 +484,7 @@
               </div>
             </div>
             <div class="card-red">
-              <p style="font-size: 15pt;"><strong>&#8220;The scarcity of elite attention was a security feature. That feature just got deprecated.&#8221;</strong> &mdash; Thomas Ptacek, as framed in the April 8 analysis</p>
+              <p style="font-size: 15pt;"><strong>&#8220;The scarcity of elite attention was a security feature. That feature just got deprecated.&#8221;</strong> - Thomas Ptacek, as framed in the April 8 analysis</p>
             </div>
           </div>
           <div class="footnote">Framework adapted from the April 8 Medium piece, drawing on Anthropic's system card and Thomas Ptacek's &#8220;Vulnerability Research Is Cooked&#8221;; numeric heuristics are presenter framing, not benchmarks.</div>
@@ -503,120 +608,52 @@
       </section>
 
       <section>
-        <section id="copy-fail-overview">
-          <h2>CVE-2026-31431 &mdash; &ldquo;Copy Fail&rdquo; Linux Privilege Escalation</h2>
+        <section id="attack-patterns">
+          <h2>Attack Patterns to Internalize (1/2)</h2>
           <div class="content">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-              <div>
-                <p style="margin-bottom: 10px;"><span class="badge">CVSS 7.8</span>&nbsp;&nbsp;<span class="badge" style="background: rgba(220,53,69,0.18); color: var(--primary-color);">Public PoC</span></p>
-                <ul>
-                  <li>Logic flaw in <code>authencesn</code> (2017), chained through <strong>AF_ALG</strong> (kernel crypto socket) + <code>splice()</code> syscall into a <strong>4-byte page-cache write</strong> on setuid binaries like <code>/usr/bin/su</code></li>
-                  <li>Unprivileged local user &rarr; root &mdash; <strong>no race condition, no kernel offsets</strong>; reliable ~732-byte Python exploit</li>
-                  <li>Modifies only the <strong>in-memory kernel page cache</strong> &mdash; no disk changes, evades file-integrity and forensic tools</li>
-                  <li>Affects any kernel &ge; 4.14: Ubuntu 18.04&ndash;25.10, RHEL 10.1, Amazon Linux 2023, SUSE 16</li>
-                </ul>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+              <div class="card">
+                <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-solid fa-arrows-rotate"></i> Shift: typosquats → legitimate package takeovers</p>
+                <p style="font-size: 13pt;">Your scanner checking for known CVEs is <strong>not enough</strong>. You need to detect hijacks of packages you trust.</p>
               </div>
-              <div>
-                <div class="card" style="margin-bottom: 14px;">
-                  <p style="font-size: 13pt; color: var(--muted-color); margin-bottom: 4px;">Discovered &amp; patched</p>
-                  <p style="font-size: 15pt;">April&ndash;May 2026 &mdash; mainline commit <code>a664bf3d603d</code></p>
-                </div>
-                <div class="card-red" style="margin-bottom: 14px;">
-                  <p style="font-size: 13pt; font-weight: 700; color: var(--primary-color); margin-bottom: 6px;"><i class="fa-solid fa-cubes"></i> Container &amp; Cloud Blast Radius</p>
-                  <ul style="font-size: 13pt;">
-                    <li>Containers share the host kernel &mdash; one exploit owns the <strong>entire node</strong></li>
-                    <li>Millions of Kubernetes clusters in scope</li>
-                    <li>CI/CD runners satisfy &ldquo;unprivileged local user&rdquo; <em>by design</em></li>
-                  </ul>
-                </div>
-                <div class="card">
-                  <p style="font-size: 13pt; font-weight: 700; color: var(--accent-blue); margin-bottom: 4px;"><i class="fa-solid fa-wrench"></i> Interim workaround</p>
-                  <p style="font-size: 13pt;">Disable <code>algif_aead</code> via <code>modprobe.d</code> or kernel boot params &mdash; may affect hardware-accelerated crypto performance</p>
-                </div>
+              <div class="card">
+                <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-solid fa-terminal"></i> Lifecycle scripts are the dominant vector</p>
+                <p style="font-size: 13pt;"><code>preinstall</code> and <code>postinstall</code> hooks fire before anything inspects the package. Disable them.</p>
+              </div>
+              <div class="card">
+                <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-solid fa-key"></i> CI/CD secrets are the real target</p>
+                <p style="font-size: 13pt;">GitHub PATs, npm tokens, AWS/GCP/Azure keys, Kubernetes service account tokens. Copy Fail (CVE-2026-31431) shows that credential-free runners still need a patched kernel - a local user can escalate to root and reach everything on the node.</p>
+              </div>
+              <div class="card">
+                <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-brands fa-github"></i> GitHub Actions: injection point <em>and</em> C2 channel</p>
+                <p style="font-size: 13pt;">Actions by tag are hijackable. The March attacks specifically targeted release tags to distribute malicious trusted CI actions.</p>
               </div>
             </div>
           </div>
         </section>
-        <section id="copy-fail-chain">
-          <h2>Copy Fail in the Supply-Chain Attack Chain</h2>
+        <section id="attack-patterns-2">
+          <h2>Attack Patterns to Internalize (2/2)</h2>
           <div class="content">
-            <p style="margin-bottom: 14px; font-size: 15pt;">Supply-chain compromise lands unprivileged code on a CI runner. Copy Fail turns that into root &mdash; defeating credential isolation and container boundaries.</p>
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 18px;">
-              <div class="card-red" style="text-align: center; padding: 14px 8px;">
-                <p style="font-size: 22pt; color: var(--primary-color); margin-bottom: 6px;"><i class="fa-solid fa-box-open"></i></p>
-                <p style="font-size: 13pt; font-weight: 700; margin-bottom: 4px;">Malicious package</p>
-                <p style="font-size: 12pt; color: var(--muted-color);"><code>preinstall</code> hook runs as CI user</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+              <div class="card">
+                <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-brands fa-python"></i> Python <code>.pth</code> files are a scanner blind spot</p>
+                <p style="font-size: 13pt;">Execute on every Python startup. Most supply-chain scanners don't check them. LiteLLM 1.82.8 used exactly this gap.</p>
               </div>
-              <div class="card-red" style="text-align: center; padding: 14px 8px;">
-                <p style="font-size: 22pt; color: var(--primary-color); margin-bottom: 6px;"><i class="fa-solid fa-arrow-right"></i></p>
-                <p style="font-size: 13pt; font-weight: 700; margin-bottom: 4px;">AF_ALG + splice()</p>
-                <p style="font-size: 12pt; color: var(--muted-color);">4-byte page-cache write, in-memory only</p>
+              <div class="card">
+                <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-solid fa-user-secret"></i> Developer machines are in scope</p>
+                <p style="font-size: 13pt;">The Axios and Shai-Hulud attacks harvested SSH keys &amp; credentials from developer laptops where <code>npm install</code> ran.</p>
               </div>
-              <div class="card-red" style="text-align: center; padding: 14px 8px;">
-                <p style="font-size: 22pt; color: var(--primary-color); margin-bottom: 6px;"><i class="fa-solid fa-arrow-right"></i></p>
-                <p style="font-size: 13pt; font-weight: 700; margin-bottom: 4px;">root on CI node</p>
-                <p style="font-size: 12pt; color: var(--muted-color);">All containers, secrets, service accounts</p>
+              <div class="card">
+                <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-solid fa-robot"></i> Frontier AI is a capability amplifier</p>
+                <p style="font-size: 13pt;">Mythos-class models combine elite security reasoning with deep ecosystem knowledge - 1,000+ critical bugs in disclosure. Source leaks (e.g. Claude Code) further lower the cost of bug-hunting. Patch faster; expect higher report volume.</p>
               </div>
-              <div class="card-red" style="text-align: center; padding: 14px 8px;">
-                <p style="font-size: 22pt; color: var(--primary-color); margin-bottom: 6px;"><i class="fa-solid fa-arrow-right"></i></p>
-                <p style="font-size: 13pt; font-weight: 700; margin-bottom: 4px;">Full cluster access</p>
-                <p style="font-size: 12pt; color: var(--muted-color);">K8s service accounts, cloud IAM roles</p>
-              </div>
-            </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-              <div>
-                <p style="font-weight: 700; font-size: 15pt; color: var(--primary-color); margin-bottom: 8px;"><i class="fa-solid fa-robot"></i> AI-era multiplier</p>
-                <ul style="font-size: 13pt;">
-                  <li>Public Python PoC requires no deep expertise &mdash; AI automation trivial</li>
-                  <li>Mythos-class AI can chain supply-chain access + kernel privesc automatically</li>
-                  <li>Race-condition-free, reliable exploit = high success rate for automated tooling</li>
-                </ul>
-              </div>
-              <div>
-                <p style="font-weight: 700; font-size: 15pt; color: var(--secondary-color); margin-bottom: 8px;"><i class="fa-solid fa-shield-halved"></i> Defenses that break this chain</p>
-                <ul style="font-size: 13pt;">
-                  <li><strong>Patch kernel now</strong> &mdash; or disable <code>algif_aead</code> immediately</li>
-                  <li><strong>Ephemeral runners</strong> &mdash; recycle container after every job</li>
-                  <li>Treat any container RCE as <strong>full host compromise</strong> &mdash; rotate all node credentials</li>
-                  <li><code>--ignore-scripts</code> in CI prevents the chain from starting</li>
-                </ul>
+              <div class="card">
+                <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-solid fa-wand-magic-sparkles"></i> AI agents in CI are a new attack surface</p>
+                <p style="font-size: 13pt;">Claude-Code-Action and Codex-Action had <code>actor.endsWith('[bot]')</code> auth bypasses; AI tools exfiltrate file-based credentials (AWS, GCP, Docker) that aren't masked like secrets. Treat AI actions as privileged: SHA-pin, gate by environment, scope tokens.</p>
               </div>
             </div>
           </div>
-          <div class="footnote">Sources: copy.fail &mdash; Microsoft Security Blog (May 1, 2026) &mdash; Tenable FAQ (Apr 2026) &mdash; Ubuntu Security Notices</div>
         </section>
-      </section>
-
-      <section id="attack-patterns">
-        <h2>Attack Patterns to Internalize</h2>
-        <div class="content">
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-            <div class="card">
-              <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-solid fa-arrows-rotate"></i> Shift: typosquats → legitimate package takeovers</p>
-              <p style="font-size: 13pt;">Your scanner checking for known CVEs is <strong>not enough</strong>. You need to detect hijacks of packages you trust.</p>
-            </div>
-            <div class="card">
-              <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-solid fa-terminal"></i> Lifecycle scripts are the dominant vector</p>
-              <p style="font-size: 13pt;"><code>preinstall</code> and <code>postinstall</code> hooks fire before anything inspects the package. Disable them.</p>
-            </div>
-            <div class="card">
-              <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-solid fa-key"></i> CI/CD secrets are the real target</p>
-              <p style="font-size: 13pt;">GitHub PATs, npm tokens, AWS/GCP/Azure keys, Kubernetes service account tokens. Copy Fail (CVE-2026-31431) shows that credential-free runners still need a patched kernel &mdash; a local user can escalate to root and reach everything on the node.</p>
-            </div>
-            <div class="card">
-              <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-brands fa-github"></i> GitHub Actions: injection point <em>and</em> C2 channel</p>
-              <p style="font-size: 13pt;">Actions by tag are hijackable. The March attacks specifically targeted release tags to distribute malicious trusted CI actions.</p>
-            </div>
-            <div class="card">
-              <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-brands fa-python"></i> Python <code>.pth</code> files are a scanner blind spot</p>
-              <p style="font-size: 13pt;">Execute on every Python startup. Most supply-chain scanners don't check them. LiteLLM 1.82.8 used exactly this gap.</p>
-            </div>
-            <div class="card">
-              <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-solid fa-user-secret"></i> Developer machines are in scope</p>
-              <p style="font-size: 13pt;">The Axios and Shai-Hulud attacks harvested SSH keys &amp; credentials from developer laptops where <code>npm install</code> ran.</p>
-            </div>
-          </div>
-        </div>
       </section>
 
       <section id="divider-2" class="section-divider" data-state="is-section-divider">
