@@ -119,17 +119,18 @@
               </div>
               <div class="card-red">
                 <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-solid fa-syringe"></i> Script Injection</p>
-                <p style="font-size: 13pt;">PR titles and branch names echoed into <code>run:</code> steps become RCE. Ultralytics: malicious branch name contained <code>curl&nbsp;|&nbsp;bash</code>, poisoning 22,000+ downstream apps.</p>
+                <p style="font-size: 13pt;">PR titles and branch names echoed into <code>run:</code> steps become RCE. Ultralytics (Dec 2024): a crafted branch name injected via <code>pull_request_target</code> let attackers ship a Monero cryptominer in v8.3.41/8.3.42 to a package with ~60M PyPI downloads.</p>
               </div>
               <div class="card-red">
                 <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;"><i class="fa-brands fa-github"></i> Compromised Actions</p>
-                <p style="font-size: 13pt;">tj-actions compromise propagated to <strong>22,000 repositories</strong>. March 2026 attacks hijacked release tags on Trivy and setup-go to deliver credential-stealing code.</p>
+                <p style="font-size: 13pt;">tj-actions/changed-files (Mar 2025, CVE-2025-30066) propagated to <strong>~23,000 repositories</strong> via retroactively modified version tags. The March 2026 TeamPCP attacks hijacked release tags on Trivy and setup-go to deliver credential-stealing code.</p>
               </div>
             </div>
             <div class="card" style="margin-top: 16px;">
               <p style="font-size: 14pt;"><i class="fa-solid fa-shield-halved" style="color: var(--accent-blue); margin-right: 8px;"></i><strong>Core defenses:</strong> SHA-pin all <code>uses:</code> refs; never combine <code>pull_request_target</code> with untrusted checkout; bind user inputs to env vars before use; require approval for first-time contributors.</p>
             </div>
           </div>
+          <div class="footnote">Sources: Wiz - GitHub Actions threat-model research; CISA AA25-077A (tj-actions/changed-files CVE-2025-30066); PyPI blog - Ultralytics supply-chain analysis (Dec 2024); Unit 42 - GitHub Actions supply chain attack.</div>
         </section>
         <section id="actions-ai-vulns">
           <h2>AI-Powered Actions: New Attack Surface (Wiz)</h2>
@@ -233,7 +234,7 @@
                 <tr>
                   <td>Apr 22</td>
                   <td><strong>Bitwarden CLI</strong></td>
-                  <td>Malicious <code>@bitwarden/cli@2026.4.0</code> — 10M+ users, 50k+ businesses; stole cloud creds, self-propagated</td>
+                  <td>Malicious <code>@bitwarden/cli@2026.4.0</code> (~250k monthly npm downloads); stole AWS/Azure/GCP/GitHub/npm creds, SSH material &amp; MCP configs; self-propagated via stolen npm tokens</td>
                 </tr>
                 <tr>
                   <td>Apr 29</td>
@@ -243,6 +244,7 @@
               </tbody>
             </table>
           </div>
+          <div class="footnote">Sources: Bitwarden security advisory (Apr 22, 2026); Endor Labs &amp; Palo Alto Unit 42 - Bitwarden CLI 2026.4.0; Socket &amp; The Hacker News - Checkmarx supply-chain incident; SOCRadar - TeamPCP attribution.</div>
         </section>
       </section>
 
@@ -317,7 +319,7 @@
               <div>
                 <p style="margin-bottom: 10px;"><span class="badge">CVSS 7.8</span>&nbsp;&nbsp;<span class="badge" style="background: rgba(220,53,69,0.18); color: var(--primary-color);">Public PoC</span></p>
                 <ul>
-                  <li>Logic flaw in <code>authencesn</code> (2017), chained through <strong>AF_ALG</strong> (kernel crypto socket) + <code>splice()</code> syscall into a <strong>4-byte page-cache write</strong> on setuid binaries like <code>/usr/bin/su</code></li>
+                  <li>Logic flaw in the <code>algif_aead</code> module (an in-place crypto optimization introduced in 2017), chained through <strong>AF_ALG</strong> (kernel crypto socket) + <code>splice()</code> syscall into a <strong>4-byte page-cache write</strong> on setuid binaries like <code>/usr/bin/su</code></li>
                   <li>Unprivileged local user &rarr; root - <strong>no race condition, no kernel offsets</strong>; reliable ~732-byte Python exploit</li>
                   <li>Modifies only the <strong>in-memory kernel page cache</strong> - no disk changes, evades file-integrity and forensic tools</li>
                   <li>Affects any kernel &ge; 4.14: Ubuntu 18.04&ndash;25.10, RHEL 10.1, Amazon Linux 2023, SUSE 16</li>
@@ -326,7 +328,7 @@
               <div>
                 <div class="card" style="margin-bottom: 14px;">
                   <p style="font-size: 13pt; color: var(--muted-color); margin-bottom: 4px;">Discovered &amp; patched</p>
-                  <p style="font-size: 15pt;">April&ndash;May 2026 - mainline commit <code>a664bf3d603d</code></p>
+                  <p style="font-size: 15pt;">Disclosed by Theori; mainline patch April 2026</p>
                 </div>
                 <div class="card-red" style="margin-bottom: 14px;">
                   <p style="font-size: 13pt; font-weight: 700; color: var(--primary-color); margin-bottom: 6px;"><i class="fa-solid fa-cubes"></i> Container &amp; Cloud Blast Radius</p>
@@ -390,7 +392,7 @@
               </div>
             </div>
           </div>
-          <div class="footnote">Sources: copy.fail - Microsoft Security Blog (May 1, 2026) - Tenable FAQ (Apr 2026) - Ubuntu Security Notices</div>
+          <div class="footnote">Sources: Theori disclosure (copy.fail); Microsoft Security Blog (May 1, 2026); Sysdig &amp; Xint technical write-ups; Ubuntu Security Notices; Tenable FAQ (Apr 2026); Unit 42 Copy Fail analysis.</div>
         </section>
       </section>
 
@@ -423,7 +425,7 @@
             </div>
           </div>
         </div>
-          <div class="footnote">Even well-resourced, security-focused organizations hit publisher-side risks. Hardened release workflows help everyone.</div>
+          <div class="footnote">Sources: InfoQ &amp; The Hacker News - Anthropic source-map leak coverage (Apr 2026); VentureBeat - Claude Code source map analysis. Even well-resourced, security-focused organizations hit publisher-side risks - hardened release workflows help everyone.</div>
         </section>
 
         <section id="mythos-context">
@@ -521,7 +523,7 @@
               </div>
             </div>
           </div>
-          <div class="footnote">Claims are drawn from the parent-provided Mythos article; original cited sources include Anthropic's system card and Project Glasswing materials.</div>
+          <div class="footnote">Sources: Anthropic Red Team - Claude Mythos Preview (red.anthropic.com); SecurityWeek - Claude Mythos finds 271 Firefox vulnerabilities; Mozilla Hacks - Behind the Scenes Hardening Firefox with Claude Mythos Preview; CSA - Claude Mythos and the AI Autonomous Offensive Threshold.</div>
         </section>
 
         <section id="mythos-behavior">
@@ -564,8 +566,8 @@
               <div>
                 <p style="font-weight: 700; font-size: 16pt; color: var(--secondary-color); margin-bottom: 10px;">OpenAI</p>
                 <ul style="font-size: 13pt;">
-                  <li>Built GPT-5.4-Cyber as a separate defensive-security model</li>
-                  <li>Put stronger capabilities behind Trusted Access for Cyber verification tiers</li>
+                  <li>Released GPT-5.5-Cyber as a defender-tuned model in limited preview</li>
+                  <li>Gated higher-risk capabilities behind Trusted Access for Cyber identity verification</li>
                   <li>Reported 3,000+ critical and high-severity vulnerability fixes through Codex Security</li>
                   <li>Shipped GPT-5.5 with its strongest safeguards to date</li>
                 </ul>
@@ -575,7 +577,7 @@
               <p style="font-size: 15pt;"><strong>No company makes those trades for fun.</strong> When two competitors make them independently, pay attention.</p>
             </div>
           </div>
-          <div class="footnote">Sources: April 28 Medium evidence framework, including Project Glasswing, OpenAI Trusted Access for Cyber, Codex Security, Opus 4.7 guardrail analysis, and GPT-5.5 safeguard framing.</div>
+          <div class="footnote">Sources: Anthropic Red Team - Mythos Preview &amp; Project Glasswing; OpenAI - Trusted Access for Cyber, GPT-5.5 with Trusted Access for Cyber, Codex Security; CNBC &amp; Help Net Security - GPT-5.5-Cyber launch (May 2026).</div>
         </section>
 
         <section id="mythos-action">
