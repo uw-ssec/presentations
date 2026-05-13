@@ -1057,6 +1057,40 @@
         </div>
       </section>
 
+      <section id="workflow-automation">
+        <h2>Keeping the Workflow Healthy</h2>
+        <div class="content">
+          <p style="margin-bottom: 14px; font-size: 14pt;">A hardened workflow drifts back to unsafe defaults without automation. Layer continuous validation, dependency refresh, and shared templates on top of the per-job controls.</p>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px;">
+            <div class="card" style="padding: 12px 16px;">
+              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-magnifying-glass-chart"></i> <code>zizmor</code> in CI</p>
+              <p style="font-size: 13pt;">Trail of Bits workflow scanner. Catches <code>pull_request_target</code> misuse, missing permissions, unpinned actions, and script-injection patterns. Run report-only first; flip to enforcement once clean. SARIF output lands in the GitHub Security tab.</p>
+            </div>
+            <div class="card" style="padding: 12px 16px;">
+              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-arrows-rotate"></i> Dependabot for Actions</p>
+              <p style="font-size: 13pt;">Add <code>package-ecosystem: github-actions</code> to <code>.github/dependabot.yml</code>. SHA-pinning is only safe if pins stay current - Dependabot opens PRs to bump them.</p>
+            </div>
+            <div class="card" style="padding: 12px 16px;">
+              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-file-code"></i> Shared workflow templates</p>
+              <p style="font-size: 13pt;">Publish hardened starter files in <code>.github/workflow-templates/</code> at the org level. New repos pick them up by default; passes <code>zizmor</code> on day one.</p>
+            </div>
+            <div class="card" style="padding: 12px 16px;">
+              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-ban"></i> No <code>curl &#124; bash</code></p>
+              <p style="font-size: 13pt;">Never pipe remote scripts straight to a shell in CI. Download, inspect, commit a pinned copy, then execute - the remote URL is a hijack target.</p>
+            </div>
+            <div class="card" style="padding: 12px 16px;">
+              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-person-military-pointing"></i> First-time contributor approval</p>
+              <p style="font-size: 13pt;">Repo setting that requires manual approval before workflows run for new external contributors. Breaks the prt-scan-style "open 256+ PRs and let CI leak secrets" pattern.</p>
+            </div>
+            <div class="card" style="padding: 12px 16px;">
+              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-code-branch"></i> <code>pull_request_target</code> hygiene</p>
+              <p style="font-size: 13pt;">If you must use it, never check out untrusted PR head ref in the same job. Split into a privileged "trigger" job and an unprivileged "test" job, or use <code>pull_request</code> instead.</p>
+            </div>
+          </div>
+        </div>
+        <div class="footnote">Sources: Trail of Bits - zizmor; GitHub Docs - Dependabot for Actions, workflow templates, first-time contributor approval; Wiz &amp; safedep - prt-scan campaign analysis.</div>
+      </section>
+
       <section id="takeaways">
         <h2>Key Takeaways</h2>
         <div class="content">
