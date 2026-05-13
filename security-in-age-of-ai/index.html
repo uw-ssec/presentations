@@ -880,7 +880,7 @@
               <ul>
                 <li>Configure <strong>Trusted Publishing</strong> on the registry (PyPI project settings or npm package settings)</li>
                 <li>Create a <strong>GitHub Environment</strong> called <code>release</code> with required reviewers — your last human checkpoint</li>
-                <li><strong>Branch protection</strong> on main + tag protection on <code>v*</code></li>
+                <li><strong>Repository Rulesets</strong> on main + <code>v*</code> tags (required PR reviews, signed commits, tag protection)</li>
               </ul>
             </div>
             <div>
@@ -1051,6 +1051,11 @@ jobs:
       - uses: actions/download-artifact@3e5f45b2...
       - uses: actions/setup-node@a0853c24...
         with: { registry-url: 'https://registry.npmjs.org' }
+      - name: <span style="color: #ffd866;">Smoke-test before publish</span>
+        run: |
+          <span style="color: #888;"># catches the Claude Code 59.8 MB anomaly</span>
+          ls -lh dist/ ; du -sh dist/*
+          [ $(stat -c%s dist/*.tgz) -lt 10000000 ] || exit 1
       - run: <span style="color: #ff8a8a;">npm publish --provenance</span></pre>
               <div>
                 <p style="font-weight: 700; font-size: 15pt; color: var(--accent-blue); margin-bottom: 10px;">Why this is safe</p>
@@ -1059,6 +1064,7 @@ jobs:
                   <li><code>environment: release</code> requires a human "Approve" click before the job runs - last checkpoint even if everything upstream is compromised</li>
                   <li><code>id-token: write</code> mints a short-lived OIDC token per publish - no long-lived PyPI / npm token in repo secrets</li>
                   <li><code>--provenance</code> creates a signed SLSA attestation - how PyPI detected the forged Ultralytics releases</li>
+                  <li><strong>Size smoke-test</strong> aborts the publish if the tarball is anomalously large - the Claude Code 59.8 MB lesson</li>
                 </ul>
                 <p style="font-size: 12pt; color: var(--muted-color); margin-top: 8px;">If malware ran during <code>npm ci</code> in the build job, it sees no publishing credentials - because there are none in that job.</p>
               </div>
@@ -1155,7 +1161,7 @@ updates:
           <h2>Org-Level Defaults</h2>
           <div class="content">
             <p style="margin-bottom: 14px; font-size: 14pt;">Some hardening lives outside the workflow - in repo and org settings, or as starter files for new repos.</p>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
               <div class="card" style="padding: 12px 16px;">
                 <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-file-code"></i> Hardened workflow templates</p>
                 <p style="font-size: 13pt;">Publish starter files in <code>&lt;org&gt;/.github/workflow-templates/</code>. New repos pick them up by default - they pass <code>zizmor</code> on day one without modification.</p>
@@ -1165,16 +1171,12 @@ updates:
                 <p style="font-size: 13pt;">Repo setting <em>Require approval for all outside collaborators</em>. Breaks the prt-scan pattern (an unknown account opens 256+ trojanized PRs and CI silently runs each one).</p>
               </div>
               <div class="card" style="padding: 12px 16px;">
-                <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-flask-vial"></i> Dry-run + size check before publish</p>
-                <p style="font-size: 13pt;">In the publish job: <code>npm pack</code> / <code>python -m build</code>, install into a clean dir, inspect contents and tarball size. The Claude Code 59.8 MB anomaly is exactly the case a smoke test catches.</p>
-              </div>
-              <div class="card" style="padding: 12px 16px;">
-                <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-certificate"></i> Branch &amp; tag protection (Rulesets)</p>
-                <p style="font-size: 13pt;">Required PR reviews, signed commits, tag protection on <code>v*</code>. Modern GitHub <strong>Rulesets</strong> are the recommended primitive - branch protections still work but rulesets is where new features land.</p>
+                <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 4px;"><i class="fa-solid fa-certificate"></i> Repository Rulesets</p>
+                <p style="font-size: 13pt;">Required PR reviews, signed commits, tag protection on <code>v*</code>. <strong>Rulesets</strong> are GitHub's modern primitive - branch protections still work but Rulesets is where new features land.</p>
               </div>
             </div>
           </div>
-          <div class="footnote">Sources: GitHub Docs - workflow templates, repository rulesets, first-time contributor approval; InfoQ - Claude Code 59.8 MB source-map leak.</div>
+          <div class="footnote">Sources: GitHub Docs - workflow templates, repository rulesets, first-time contributor approval; Wiz &amp; safedep - prt-scan campaign analysis.</div>
         </section>
       </section>
 
