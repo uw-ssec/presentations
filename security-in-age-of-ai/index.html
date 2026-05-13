@@ -686,8 +686,8 @@
                 <div class="check-item">
                   <i class="fa-solid fa-clock fa-fw" style="color: var(--secondary-color); margin-top: 3px; flex-shrink: 0;"></i>
                   <div>
-                    <p style="font-weight: 700; margin-bottom: 3px;">Add a cooldown period <span style="font-size: 12pt; font-weight: 400; color: var(--muted-color);">(Datadog Security Labs)</span></p>
-                    <p style="font-size: 14pt; color: var(--muted-color);">54% of JS apps pull a new dep within 24&nbsp;h of release. Malicious Axios versions lived ~3&nbsp;h, s1ngularity ~4&nbsp;h, Bitwarden CLI ~1.5&nbsp;h, Mini Shai-Hulud waves under a day - a 7-day cooldown blocks all of them. npm&nbsp;11.10.0+ (Feb 2026): <code>min-release-age=7</code> (days) in <code>.npmrc</code>; Renovate: <code>minimumReleaseAge:&nbsp;10080</code> (minutes = 7d); Dependabot cooldown settings.</p>
+                    <p style="font-weight: 700; margin-bottom: 3px;">Add a release cooldown <span style="font-size: 12pt; font-weight: 400; color: var(--muted-color);">(Datadog Security Labs)</span></p>
+                    <p style="font-size: 14pt; color: var(--muted-color);">Recent malicious versions lived hours, not days (Axios ~3h, Bitwarden CLI ~1.5h, Mini Shai-Hulud &lt; 1d). A 7-day cooldown blocks them all. Configure: <code>min-release-age=7</code> in <code>.npmrc</code> (npm 11.10+), <code>minimumReleaseAge: 10080</code> in Renovate, or Dependabot cooldown settings.</p>
                   </div>
                 </div>
               </div>
@@ -750,6 +750,34 @@
         </section>
       </section>
 
+      <section id="ai-mitigations">
+        <h2>Mitigating AI-Era Threats</h2>
+        <div class="content">
+          <p style="margin-bottom: 14px; font-size: 14pt; color: var(--muted-color);">AI is both a new attack surface in your CI and a forcing function on the rest of your pipeline. Treat AI tooling as privileged - and assume the vulnerability disclosure volume is about to grow.</p>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div>
+              <p style="font-weight: 700; font-size: 16pt; color: var(--accent-blue); margin-bottom: 10px;"><i class="fa-solid fa-robot"></i> AI agents in your CI</p>
+              <ul style="font-size: 14pt;">
+                <li><strong>SHA-pin AI actions</strong> (Claude-Code-Action, Codex-Action, Gemini-CLI) - same rule as any other action</li>
+                <li><strong>Don't trust <code>actor.endsWith('[bot]')</code></strong> in custom guards - Wiz found this bypassable by any GitHub app</li>
+                <li><strong>Gate behind <code>environment:</code></strong> with required reviewers; scope tokens to the minimum the AI actually needs</li>
+                <li><strong>Mask file-based creds</strong> (<code>~/.aws/credentials</code>, GCP key files, Docker tokens) - AI exfiltrates these because they aren't auto-masked like secrets</li>
+              </ul>
+            </div>
+            <div>
+              <p style="font-weight: 700; font-size: 16pt; color: var(--accent-blue); margin-bottom: 10px;"><i class="fa-solid fa-clock-rotate-left"></i> Operating in a faster disclosure world</p>
+              <ul style="font-size: 14pt;">
+                <li><strong>Patch faster.</strong> 1,000+ critical bugs are moving through responsible disclosure; expect higher report volume and shorter exploit-to-PoC windows</li>
+                <li><strong>Use defensive AI</strong> for triage, deduplication, and SAST follow-up (Codex Security, Project Glasswing's Mythos credits for vetted defenders)</li>
+                <li><strong>Treat AI-authored PRs like external contributions</strong> - review, test, and require approval; AI-generated content is now in your threat model</li>
+                <li><strong>Source-leak hygiene:</strong> dry-run your published package, alert on tarball size anomalies (the Claude Code 59.8 MB lesson)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="footnote">Sources: Wiz - AI-powered Actions threat model (Claude-Code-Action / Codex-Action bypass); Anthropic Red - Project Glasswing &amp; defensive Mythos credits; OpenAI - Codex Security &amp; Trusted Access for Cyber; InfoQ - Claude Code source-map leak postmortem.</div>
+      </section>
+
       <section>
         <section id="publisher-mitigations-1">
           <h2>As a Publisher: Protect Your Release Pipeline</h2>
@@ -794,10 +822,13 @@
                   <i class="fa-solid fa-people-group fa-fw" style="color: var(--secondary-color); margin-top: 3px; flex-shrink: 0;"></i>
                   <div>
                     <p style="font-weight: 700; margin-bottom: 3px;">Audit maintainer access quarterly</p>
-                    <p style="font-size: 14pt; color: var(--muted-color);">Old contributors with publish rights on packages they haven't touched in years are a common compromise vector.</p>
+                    <p style="font-size: 14pt; color: var(--muted-color);">Old contributors with publish rights on packages they haven't touched in years are a common compromise vector. <code>gh api orgs/&lt;org&gt;/members</code> + the npm "Manage Access" UI are good starting points.</p>
                   </div>
                 </div>
               </div>
+            </div>
+            <div class="card-red" style="margin-top: 16px;">
+              <p style="font-size: 14pt;"><strong>What to skip:</strong> a self-hosted registry mirror as your only defense (mirrors propagate upstream compromises), code review without phishing-resistant MFA (the Axios case had review), and "we'll add provenance later" (PyPI used SLSA attestations to detect the forged Ultralytics releases - it's a detection control, not just hygiene).</p>
             </div>
           </div>
           <div class="footnote">Sources: PyPI - Trusted Publishing (OIDC) docs; npm Trusted Publisher announcement; axios/axios#10636 - Jason Saayman post-mortem; Microsoft Security Blog &amp; Elastic Security Labs - Axios npm RAT analysis; Aikido &amp; Snyk - Shai-Hulud npmjs.help phishing.</div>
