@@ -1027,6 +1027,49 @@ jobs:
             </div>
           </div>
         </section>
+        <section id="workflow-consumer">
+          <h2>Consumer Workflows: Test &amp; Data CI</h2>
+          <div class="content">
+            <p style="margin-bottom: 12px; font-size: 14pt;">The publisher patterns also apply to test, build, and data jobs - plus three consumer-specific knobs: <strong>cloud OIDC</strong>, <strong>install cooldowns / hashes</strong>, and <strong>runtime egress allowlists</strong>.</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+              <div>
+                <p style="font-weight: 700; font-size: 13pt; color: var(--primary-color); margin-bottom: 6px;"><i class="fa-solid fa-xmark"></i> Vulnerable: stored creds, latest deps</p>
+<pre style="background: #1a1a2e; color: #e4e4f1; padding: 12px 14px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 11pt; line-height: 1.35; margin: 0; border-left: 4px solid var(--primary-color);">jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: <span style="color: #ff8a8a;">pip install -r req.txt</span>
+        <span style="color: #888;"># latest versions, no hashes</span>
+      - run: aws s3 cp s3://data/ ./
+        env:
+          <span style="color: #ff8a8a;">AWS_ACCESS_KEY_ID: ${{ secrets.AWS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SEC }}</span>
+      - run: pytest
+      <span style="color: #888;"># no egress monitoring</span></pre>
+              </div>
+              <div>
+                <p style="font-weight: 700; font-size: 13pt; color: var(--secondary-color); margin-bottom: 6px;"><i class="fa-solid fa-check"></i> Hardened: OIDC, pinned hashes, egress audit</p>
+<pre style="background: #1a1a2e; color: #e4e4f1; padding: 12px 14px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 11pt; line-height: 1.35; margin: 0; border-left: 4px solid var(--secondary-color);">jobs:
+  test:
+    <span style="color: #ffd866;">permissions:
+      id-token: write</span>      <span style="color: #888;"># OIDC, not stored</span>
+      contents: read
+    steps:
+      - uses: <span style="color: #ffd866;">step-security/harden-runner</span>@SHA
+        with: { egress-policy: audit }
+      - uses: actions/checkout@SHA
+        with: { persist-credentials: false }
+      - uses: aws-actions/configure-aws-credentials@SHA
+        with:
+          <span style="color: #ffd866;">role-to-assume: arn:aws:iam::ACCT:role/ci</span>
+      - run: <span style="color: #ffd866;">pip install --require-hashes -r req.txt</span>
+      - run: pytest</pre>
+              </div>
+            </div>
+          </div>
+          <div class="footnote">Sources: GitHub Docs - OIDC for cloud providers (<code>aws-actions/configure-aws-credentials</code>); StepSecurity Harden-Runner; PyPA - pip <code>--require-hashes</code>; npm <code>min-release-age</code> applies to consumer installs too.</div>
+        </section>
       </section>
 
       <section>
