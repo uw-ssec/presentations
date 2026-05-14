@@ -1091,15 +1091,14 @@ jobs:
       - uses: <span style="color: #ff8a8a;">pypa/gh-action-pypi-publish</span>@cef22109...
         <span style="color: #888;"># no token: needed - OIDC + attestations</span></pre>
               <div>
-                <p style="font-weight: 700; font-size: 15pt; color: var(--accent-blue); margin-bottom: 10px;">Why this is safe</p>
+                <p style="font-weight: 700; font-size: 15pt; color: var(--accent-blue); margin-bottom: 8px;">Why this is safe</p>
                 <ul style="font-size: 13pt;">
-                  <li><code>needs: build</code> consumes the artifact from the unprivileged build job - publish never sees source code or installs deps</li>
-                  <li><code>environment: release</code> requires a human "Approve" click - last checkpoint even if everything upstream is compromised</li>
-                  <li><code>id-token: write</code> mints a short-lived OIDC token per publish - no long-lived PyPI token in repo secrets</li>
-                  <li><strong>Size smoke-test</strong> aborts the publish if the tarball is anomalously large - the Claude Code 59.8 MB lesson</li>
-                  <li>PyPI <strong>attestations</strong> (SLSA) are signed automatically - how PyPI detected the forged Ultralytics releases</li>
+                  <li><code>needs: build</code> - publish only sees the artifact, never source or deps</li>
+                  <li><code>environment: release</code> - human "Approve" click before run</li>
+                  <li><code>id-token: write</code> + SLSA <strong>attestations</strong> - short-lived OIDC token, signed provenance (how PyPI caught forged Ultralytics)</li>
+                  <li><strong>Size smoke-test</strong> - aborts on anomalously large tarball (Claude Code 59.8 MB)</li>
                 </ul>
-                <p style="font-size: 12pt; color: var(--muted-color); margin-top: 8px;">npm equivalent: <code>actions/setup-node</code> with <code>registry-url</code>, then <code>npm publish --provenance</code>. Same shape.</p>
+                <p style="font-size: 12pt; color: var(--muted-color); margin-top: 8px;">npm equivalent: <code>actions/setup-node</code> + <code>npm publish --provenance</code>.</p>
               </div>
             </div>
           </div>
