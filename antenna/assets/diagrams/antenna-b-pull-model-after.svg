@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Antenna pull model after optimization</title>
+  <desc id="desc">Diagram showing two horizontally scalable workers polling the Antenna jobs API, pulling batches, processing locally, and posting results.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+      <path d="M2 2 L10 6 L2 10 Z" fill="#1A5276"/>
+    </marker>
+    <marker id="arrowGold" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+      <path d="M2 2 L10 6 L2 10 Z" fill="#85754d"/>
+    </marker>
+    <style>
+      .bg{fill:#f9f7f2}.panel{fill:#fff;stroke:#d5d8de;stroke-width:2}.title{font-family:"Encode Sans",Arial,sans-serif;font-size:44px;font-weight:800;fill:#1A5276}.label{font-family:"Encode Sans",Arial,sans-serif;font-size:27px;font-weight:700;fill:#1a1d1f}.small{font-family:"Open Sans",Arial,sans-serif;font-size:22px;font-weight:600;fill:#373a3c}.caption{font-family:"Encode Sans",Arial,sans-serif;font-size:21px;font-weight:700;fill:#1A5276}.node{fill:#f6f7f8;stroke:#1A5276;stroke-width:4}.api{fill:#f2efe6;stroke:#85754d;stroke-width:4}.worker{fill:#fff;stroke:#1A5276;stroke-width:4}.flow{stroke:#1A5276;stroke-width:5;fill:none;marker-end:url(#arrow)}.return{stroke:#85754d;stroke-width:5;fill:none;marker-end:url(#arrowGold)}.queue{fill:#e8e3d3;stroke:#b7a57a;stroke-width:2}.slot{fill:#fff;stroke:#d5d8de;stroke-width:2}.plus{font-family:"Encode Sans",Arial,sans-serif;font-size:52px;font-weight:800;fill:#85754d}
+    </style>
+  </defs>
+  <rect class="bg" width="1600" height="900"/>
+  <rect class="panel" x="64" y="72" width="1472" height="756" rx="8"/>
+  <text class="title" x="104" y="136">B. Pull Model After: Workers Scale Horizontally</text>
+  <text class="small" x="104" y="178">Antenna exposes job state; workers pull batches when they have local capacity.</text>
+
+  <g transform="translate(130 314)">
+    <rect class="node" x="0" y="0" width="270" height="120" rx="8"/>
+    <text class="label" x="135" y="45" text-anchor="middle">Antenna</text>
+    <text class="small" x="135" y="78" text-anchor="middle">job source of truth</text>
+  </g>
+
+  <g transform="translate(610 282)">
+    <rect class="api" x="0" y="0" width="320" height="184" rx="8"/>
+    <text class="label" x="160" y="46" text-anchor="middle">Jobs API</text>
+    <text class="small" x="160" y="80" text-anchor="middle">poll, lease, update</text>
+    <rect class="queue" x="60" y="108" width="200" height="42" rx="4"/>
+    <text class="caption" x="160" y="136" text-anchor="middle">batched work queue</text>
+  </g>
+
+  <g transform="translate(1180 214)">
+    <rect class="worker" x="0" y="0" width="270" height="134" rx="8"/>
+    <text class="label" x="135" y="44" text-anchor="middle">Worker A</text>
+    <text class="small" x="135" y="76" text-anchor="middle">local processing</text>
+    <rect class="slot" x="46" y="94" width="178" height="20" rx="3"/>
+  </g>
+  <g transform="translate(1180 520)">
+    <rect class="worker" x="0" y="0" width="270" height="134" rx="8"/>
+    <text class="label" x="135" y="44" text-anchor="middle">Worker B</text>
+    <text class="small" x="135" y="76" text-anchor="middle">local processing</text>
+    <rect class="slot" x="46" y="94" width="178" height="20" rx="3"/>
+  </g>
+
+  <path class="flow" d="M400 374 H610"/>
+  <text class="caption" x="505" y="350" text-anchor="middle">publish jobs</text>
+
+  <path class="flow" d="M1180 282 C1084 282 1046 314 930 346"/>
+  <text class="caption" x="1060" y="252" text-anchor="middle">poll + pull batch</text>
+  <path class="return" d="M930 392 C1046 438 1080 456 1180 520"/>
+  <text class="caption" x="1070" y="466" text-anchor="middle">post results</text>
+
+  <path class="flow" d="M1180 588 C1080 588 1046 526 930 430"/>
+  <text class="caption" x="1064" y="622" text-anchor="middle">poll + pull batch</text>
+  <path class="return" d="M930 354 C1046 254 1080 246 1180 214"/>
+  <text class="caption" x="1070" y="196" text-anchor="middle">post results</text>
+
+  <text class="plus" x="1315" y="450" text-anchor="middle">+</text>
+  <text class="small" x="1315" y="486" text-anchor="middle">more workers</text>
+
+  <g transform="translate(104 752)">
+    <rect x="0" y="0" width="1300" height="58" rx="4" fill="#f2efe6"/>
+    <text class="small" x="18" y="36">UX read: control moves to capacity-aware workers, making scale and failure recovery visible in the architecture.</text>
+  </g>
+</svg>
