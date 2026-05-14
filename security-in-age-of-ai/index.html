@@ -1032,7 +1032,7 @@ jobs:
           ${{ github.event.pull_request.title }}
           ${{ github.event.pull_request.body }}
           ---END UNTRUSTED---</pre>
-                <p style="font-size: 11pt; color: var(--muted-color); margin-top: 6px;"><strong>Env-vars don't help</strong> — they stop <em>shell</em> injection, not <em>prompt</em> injection. Real fixes: fence + label untrusted input, restrict allowed tools, require human approval, never grant write access to secrets or networks.</p>
+                <p style="font-size: 11pt; color: var(--muted-color); margin-top: 6px;"><strong>Real fixes:</strong> fence + label untrusted input, restrict allowed tools, require human approval, never grant write access to secrets or networks.</p>
               </div>
             </div>
           </div>
