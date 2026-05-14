@@ -1226,17 +1226,17 @@ updates:
             <div>
               <p style="font-weight: 700; font-size: 16pt; color: var(--primary-color); margin-bottom: 10px;"><i class="fa-solid fa-binoculars"></i> The threat has shifted</p>
               <ul style="font-size: 14pt;">
-                <li>Attacks target <strong>legitimate packages</strong>, not just typosquats — your CVE scanner isn't enough</li>
-                <li>Lifecycle scripts and Python <code>.pth</code> files are the dominant entry vectors</li>
-                <li>The goal is your <strong>CI/CD credentials</strong>, not your source code</li>
+                <li>Attacks target <strong>legitimate packages</strong>, not just typosquats - your CVE scanner isn't enough</li>
+                <li>Entry vectors: lifecycle scripts, Python <code>.pth</code> files, and <strong>prompt injection in CI</strong></li>
+                <li>The goal is your <strong>CI/CD credentials</strong> - and frontier AI is shortening the time from disclosure to exploit</li>
               </ul>
             </div>
             <div>
               <p style="font-weight: 700; font-size: 16pt; color: var(--secondary-color); margin-bottom: 10px;"><i class="fa-solid fa-shield-halved"></i> The highest-leverage actions</p>
               <ul style="font-size: 14pt;">
-                <li><strong>Consumer:</strong> Disable lifecycle scripts in CI + ephemeral credential-free runners</li>
-                <li><strong>Publisher:</strong> Switch to Trusted Publishing + two-job split</li>
-                <li><strong>Everyone:</strong> Pin GitHub Actions to commit SHAs + audit <code>pull_request_target</code></li>
+                <li><strong>Consumer:</strong> <code>--ignore-scripts</code> + 7-day cooldown + OIDC for cloud creds (no stored secrets)</li>
+                <li><strong>Publisher:</strong> Trusted Publishing + build/publish split + size smoke-test before publish</li>
+                <li><strong>Everyone:</strong> SHA-pin actions, Rulesets on <code>main</code> + <code>v*</code>, run <code>zizmor</code> in CI</li>
               </ul>
             </div>
           </div>
