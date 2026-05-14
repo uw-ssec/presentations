@@ -907,7 +907,7 @@ jobs:
 
       <section>
         <section id="workflow-perms-pin">
-          <h2>Workflow-Level Hardening in YAML</h2>
+          <h2>Workflow-Level Hardening</h2>
           <div class="content">
             <p style="margin-bottom: 12px; font-size: 14pt;">Deny-by-default permissions, SHA-pinned actions, no checkout credentials left behind, no lifecycle scripts.</p>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
@@ -990,6 +990,43 @@ jobs:
             </div>
           </div>
         </section>
+
+        <section id="workflow-ai-controls">
+          <h2>AI Actions: Prompt Injection in CI</h2>
+          <div class="content">
+            <p style="margin-bottom: 14px; font-size: 14pt;">Part 2's principles, expressed at workflow level. SHA-pinning and <code>environment:</code> gating look identical to any other action. The new pattern is <strong>prompt injection via event data</strong>.</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+              <div>
+                <p style="font-weight: 700; font-size: 13pt; color: var(--primary-color); margin-bottom: 6px;"><i class="fa-solid fa-xmark"></i> Vulnerable: PR title interpolated into prompt</p>
+  <pre style="background: #1a1a2e; color: #e4e4f1; padding: 12px 14px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 11pt; line-height: 1.35; margin: 0; border-left: 4px solid var(--primary-color);">- uses: anthropics/claude-code-action<span style="color: #ff8a8a;">@v1</span>
+    <span style="color: #888;"># floating tag - hijackable</span>
+    with:
+      prompt: |
+        Review this PR:
+        title = <span style="color: #ff8a8a;">${{ github.event.pull_request.title }}</span>
+        body  = <span style="color: #ff8a8a;">${{ github.event.pull_request.body }}</span></pre>
+                <p style="font-size: 12pt; color: var(--muted-color); margin-top: 8px;">PR title <code>"; rm -rf /; #</code> becomes part of the prompt. Attacker steers the AI.</p>
+              </div>
+              <div>
+                <p style="font-weight: 700; font-size: 13pt; color: var(--secondary-color); margin-bottom: 6px;"><i class="fa-solid fa-check"></i> Hardened: SHA-pin, env-vars, gated</p>
+  <pre style="background: #1a1a2e; color: #e4e4f1; padding: 12px 14px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 11pt; line-height: 1.35; margin: 0; border-left: 4px solid var(--secondary-color);">ai-review:
+    <span style="color: #ffd866;">environment: ai-review</span>     <span style="color: #888;"># reviewer gate</span>
+    <span style="color: #ffd866;">permissions:
+      contents: read
+      pull-requests: write</span>     <span style="color: #888;"># only what's needed</span>
+    steps:
+      - uses: anthropics/claude-code-action<span style="color: #ffd866;">@93cb6efe...</span>
+        <span style="color: #ffd866;">env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY:  ${{ github.event.pull_request.body }}</span>
+        with:
+          prompt: |
+            Review PR. Title in $PR_TITLE, body in $PR_BODY</pre>
+                <p style="font-size: 12pt; color: var(--muted-color); margin-top: 8px;">Untrusted data passed as env-vars; AI treats it as text, not instructions.</p>
+              </div>
+            </div>
+          </div>
+        </section>
       </section>
 
       <section>
@@ -1037,7 +1074,7 @@ jobs:
           <h2>Publish Job: Gated by Environment</h2>
           <div class="content">
             <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 18px;">
-              <pre style="background: #1a1a2e; color: #e4e4f1; padding: 14px 16px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 11.5pt; line-height: 1.35; margin: 0; overflow: auto;">  publish-pypi:
+              <pre style="background: #1a1a2e; color: #e4e4f1; padding: 14px 16px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 11.5pt; line-height: 1.4; margin: 0;">  publish-pypi:
     <span style="color: #ff8a8a;">needs: build</span>          <span style="color: #888;"># consume artifact, not source</span>
     <span style="color: #ff8a8a;">environment: release</span>  <span style="color: #888;"># required reviewers gate</span>
     runs-on: ubuntu-latest
@@ -1045,84 +1082,34 @@ jobs:
       id-token: write</span>  <span style="color: #888;"># OIDC, no stored token</span>
     steps:
       - uses: actions/download-artifact@3e5f45b2...
-        with:
-          name: dist
-          path: dist/
-      - uses: <span style="color: #ff8a8a;">pypa/gh-action-pypi-publish</span>@cef22109...
-        <span style="color: #888;"># no token: needed - OIDC handles it</span>
-
-  publish-npm:
-    needs: build
-    environment: release
-    permissions:
-      id-token: write
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/download-artifact@3e5f45b2...
-      - uses: actions/setup-node@a0853c24...
-        with: { registry-url: 'https://registry.npmjs.org' }
+        with: { name: dist, path: dist/ }
       - name: <span style="color: #ffd866;">Smoke-test before publish</span>
         run: |
           <span style="color: #888;"># catches the Claude Code 59.8 MB anomaly</span>
-          ls -lh dist/ ; du -sh dist/*
-          [ $(stat -c%s dist/*.tgz) -lt 10000000 ] || exit 1
-      - run: <span style="color: #ff8a8a;">npm publish --provenance</span></pre>
+          ls -lh dist/
+          [ $(stat -c%s dist/*.whl) -lt 10000000 ] || exit 1
+      - uses: <span style="color: #ff8a8a;">pypa/gh-action-pypi-publish</span>@cef22109...
+        <span style="color: #888;"># no token: needed - OIDC + attestations</span></pre>
               <div>
                 <p style="font-weight: 700; font-size: 15pt; color: var(--accent-blue); margin-bottom: 10px;">Why this is safe</p>
                 <ul style="font-size: 13pt;">
                   <li><code>needs: build</code> consumes the artifact from the unprivileged build job - publish never sees source code or installs deps</li>
-                  <li><code>environment: release</code> requires a human "Approve" click before the job runs - last checkpoint even if everything upstream is compromised</li>
-                  <li><code>id-token: write</code> mints a short-lived OIDC token per publish - no long-lived PyPI / npm token in repo secrets</li>
-                  <li><code>--provenance</code> creates a signed SLSA attestation - how PyPI detected the forged Ultralytics releases</li>
+                  <li><code>environment: release</code> requires a human "Approve" click - last checkpoint even if everything upstream is compromised</li>
+                  <li><code>id-token: write</code> mints a short-lived OIDC token per publish - no long-lived PyPI token in repo secrets</li>
                   <li><strong>Size smoke-test</strong> aborts the publish if the tarball is anomalously large - the Claude Code 59.8 MB lesson</li>
+                  <li>PyPI <strong>attestations</strong> (SLSA) are signed automatically - how PyPI detected the forged Ultralytics releases</li>
                 </ul>
-                <p style="font-size: 12pt; color: var(--muted-color); margin-top: 8px;">If malware ran during <code>npm ci</code> in the build job, it sees no publishing credentials - because there are none in that job.</p>
+                <p style="font-size: 12pt; color: var(--muted-color); margin-top: 8px;">npm equivalent: <code>actions/setup-node</code> with <code>registry-url</code>, then <code>npm publish --provenance</code>. Same shape.</p>
               </div>
             </div>
           </div>
         </section>
       </section>
 
-      <section id="workflow-ai-controls">
-        <h2>AI Actions in YAML</h2>
-        <div class="content">
-          <p style="margin-bottom: 14px; font-size: 14pt;">Part 2's principles, expressed at workflow level. SHA-pinning and <code>environment:</code> gating look identical to any other action. The new pattern is <strong>prompt injection via event data</strong>.</p>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-            <div>
-              <p style="font-weight: 700; font-size: 13pt; color: var(--primary-color); margin-bottom: 6px;"><i class="fa-solid fa-xmark"></i> Vulnerable: PR title interpolated into prompt</p>
-<pre style="background: #1a1a2e; color: #e4e4f1; padding: 12px 14px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 11pt; line-height: 1.35; margin: 0; border-left: 4px solid var(--primary-color);">- uses: anthropics/claude-code-action<span style="color: #ff8a8a;">@v1</span>
-  <span style="color: #888;"># floating tag - hijackable</span>
-  with:
-    prompt: |
-      Review this PR:
-      title = <span style="color: #ff8a8a;">${{ github.event.pull_request.title }}</span>
-      body  = <span style="color: #ff8a8a;">${{ github.event.pull_request.body }}</span></pre>
-              <p style="font-size: 12pt; color: var(--muted-color); margin-top: 8px;">PR title <code>"; rm -rf /; #</code> becomes part of the prompt. Attacker steers the AI.</p>
-            </div>
-            <div>
-              <p style="font-weight: 700; font-size: 13pt; color: var(--secondary-color); margin-bottom: 6px;"><i class="fa-solid fa-check"></i> Hardened: SHA-pin, env-vars, gated</p>
-<pre style="background: #1a1a2e; color: #e4e4f1; padding: 12px 14px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 11pt; line-height: 1.35; margin: 0; border-left: 4px solid var(--secondary-color);">ai-review:
-  <span style="color: #ffd866;">environment: ai-review</span>     <span style="color: #888;"># reviewer gate</span>
-  <span style="color: #ffd866;">permissions:
-    contents: read
-    pull-requests: write</span>     <span style="color: #888;"># only what's needed</span>
-  steps:
-    - uses: anthropics/claude-code-action<span style="color: #ffd866;">@93cb6efe...</span>
-      <span style="color: #ffd866;">env:
-        PR_TITLE: ${{ github.event.pull_request.title }}
-        PR_BODY:  ${{ github.event.pull_request.body }}</span>
-      with:
-        prompt: |
-          Review PR. Title in $PR_TITLE, body in $PR_BODY</pre>
-              <p style="font-size: 12pt; color: var(--muted-color); margin-top: 8px;">Untrusted data passed as env-vars; AI treats it as text, not instructions.</p>
-            </div>
-          </div>
-        </div>
-      </section>
 
       <section>
         <section id="workflow-validation">
-          <h2>Continuous Validation in YAML</h2>
+          <h2>Continuous Validation: zizmor + Dependabot</h2>
           <div class="content">
             <p style="margin-bottom: 12px; font-size: 14pt;">SHA pins drift; new workflows skip the rules. Add automated validation to keep the deck healthy.</p>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
