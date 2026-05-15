@@ -1,79 +1,108 @@
 # AGENTS.md
 
-Operating guide for AI agents (Claude Code, ChatGPT codex agents, Copilot CLI, etc.) working in this repo. Read this before making changes; cross-reference `README.md` for the human-facing version.
+Operating rules for AI agents working in this repo. Read this before doing anything. Cross-reference `README.md` for the human-facing version.
 
-## Mental model
+## What this repo is
 
-This repo holds **Reveal.js presentations** plus a **GitHub Actions pipeline** that renders each deck to PDF and deposits it to a [Zenodo](https://zenodo.org/) record under the `uw-ssec` community. Two long-lived branches drive separate Zenodo targets:
+Reveal.js presentations + a GitHub Actions pipeline that renders each deck to PDF and deposits it to Zenodo under the [`uw-ssec`](https://zenodo.org/communities/uw-ssec/) community.
 
-- `staging` → `sandbox.zenodo.org` (safe, throwaway records)
+- `staging` → `sandbox.zenodo.org` (throwaway records)
 - `main` → `zenodo.org` (real DOIs, permanent)
+- PRs render but never publish.
 
-PRs render but never publish. The trigger paths are scoped to `<deck>/**` and `.github/workflows/build-pdf.yml`.
+## Core principles
 
-## Where things live
+- **Think before acting.** Read the surrounding file/slide first. Mirror its conventions instead of inventing new ones.
+- **Make surgical changes.** Touch only what the task requires. Don't reformat, rename, or "tidy" adjacent code.
+- **Prefer the boring option.** Inline `style="…"` everywhere? Keep it. SHA-pinned actions? Keep it. The deck preaches these patterns — don't break them.
+- **State what changed and why** in your final reply. Don't bury edits in long preambles.
 
-| Path                               | What it is                                                |
-| ---------------------------------- | --------------------------------------------------------- |
-| `index.html`                       | Landing-page gallery; links each deck.                    |
-| `<deck-slug>/index.html`           | The deck itself (Reveal.js).                              |
-| `<deck-slug>/zenodo.json`          | Metadata for that deck's Zenodo record.                   |
-| `.github/workflows/build-pdf.yml`  | Two-job workflow: `build` (PR + push), `publish` (push).  |
-| `.github/scripts/zenodo_publish.py`| Driver invoked by the `publish` job.                      |
-| `.github/scripts/requirements.txt` | Pinned Python deps (`requests`).                          |
+## Project rules
 
-## Conventions
+- **Branch off `staging`.** PRs target `staging`. After staging publishes successfully to sandbox, the user opens a separate PR `staging` → `main`.
+- **SHA-pin every `uses:` action** with a 40-char commit SHA and a `# vX.Y.Z` tag comment. The deck literally argues for this; the workflow has to model it.
+- **Workflow permissions are deny-by-default.** `permissions: {}` at the top, each job opts in. `build` is `contents: read`; `publish` is `contents: read` and reads secrets only.
+- **Versioning is CalVer (`YYYY.MM.DD`).** Same-day re-publishes bump `.N`. Do not switch to git-SHA versioning.
+- **Existing Zenodo records are found by keyword tag `uw-ssec-deck:<slug>`.** Changing a deck's slug orphans its DOI history. Don't change slugs casually.
+- **Reveal.js aspect is `1280×720`.** Match the workflow's `--size`.
+- **Preserve slide `id` attributes** when restructuring — they're deep links.
+- **Footnote citations stay.** Every slide ending in a `.footnote` block keeps it. Trim wording, don't drop sources.
+- **Fix slide overflow inline**, on the offending element (font-size / line-height / shorter wording). Don't edit global CSS for one slide's problem.
+- **Path filter list stays in sync** with the deck directories the workflow handles (`<deck>/**`).
 
-### Slides
+## Never do
 
-- Reveal.js is loaded from a CDN at a pinned version in each deck's `index.html` — don't replace the CDN URL with a bare `@latest`.
-- Slide aspect is `1280×720`. Don't change without updating `--size` in the workflow.
-- When trimming or restructuring slides, preserve the section `id` attributes so deep links survive.
-- Citations live in a `.footnote` block at the bottom of each slide. Keep them; don't drop source attributions.
+- ❌ **Never add AI attribution to commit messages or PR bodies.** No `Co-Authored-By: Claude …`, no `🤖 Generated with Claude Code`. The deck has an explicit AI Attribution slide; commit-level disclosure is duplicative noise the user has already rejected.
+- ❌ **Never push directly to `main`.** Promote via PR from `staging`.
+- ❌ **Never make the `publish` job fire on PRs or feature branches.** That would mint real (or sandbox) Zenodo records from unreviewed code.
+- ❌ **Never run the publish script against production from a local machine** without explicit go-ahead — Zenodo production records are permanent.
+- ❌ **Never replace SHA-pins with tag refs** (`actions/checkout@v4`). Always full-SHA + comment.
+- ❌ **Never bump `decktape`, `pnpm`, or Python without asking.** Versions are pinned for a reason.
+- ❌ **Never delete a deck's `zenodo.json` or change its `slug`/`community`** without explicit confirmation.
+- ❌ **Never invent new CSS classes** to do what `card`, `card-red`, `card-blue`, `card-green`, `check-item`, `footnote`, etc. already do.
+- ❌ **Never re-Read a file** you just edited to "verify" — the harness errors on failed edits.
+- ❌ **Never use the Read tool on a skill file.** Invoke skills via the `Skill` tool.
 
-### Workflow & scripts
+## Patterns to match
 
-- **SHA-pin every `uses:` action** with a 40-char commit SHA and a trailing `# vX.Y.Z` tag comment. This is partly what the security deck preaches — don't break the pattern.
-- The deck recommends `permissions: {}` at workflow level with per-job opt-in. Mirror this when adding jobs.
-- `decktape` runs in headless Chromium that lacks the SUID sandbox on GitHub-hosted runners; keep `--chrome-arg=--no-sandbox`.
-- `zenodo_publish.py` finds an existing Zenodo record by keyword tag `uw-ssec-deck:<slug>`. Changing a deck's slug orphans its history — don't do it casually.
-- Versioning is CalVer `YYYY.MM.DD` (UTC), bumped to `.N` on same-day re-publishes. Do not switch back to git-SHA versioning without discussion.
+**Slide hardening — fix overflow on the offending pre/list, not global CSS:**
 
-### Editing patterns
+```html
+<!-- ❌ -->
+<style>.content pre { font-size: 10pt; }</style>
 
-- Reveal slides are hand-styled with inline `style="…"` and class names like `card-red`, `card-blue`. Match surrounding usage rather than introducing new abstractions.
-- When fixing overflow on a slide, prefer reducing font size / line-height in the slide's own pre/list elements rather than editing global CSS.
-- Use absolute paths in tool calls; the cwd is `/Users/lsetiawan/AgentRepos/presentations` in local sessions.
+<!-- ✅ -->
+<pre style="… font-size: 10pt; line-height: 1.3; …">…</pre>
+```
 
-## Workflow for changes
+**Workflow actions — always SHA + comment:**
 
-1. **Always branch off `staging`**, not `main`. PRs target `staging`.
-2. Commits should be focused and have a meaningful message. Multi-line bodies are encouraged for non-trivial changes.
-3. **Do not include AI-tool attribution lines in commit messages** (e.g., no `Co-Authored-By: <AI assistant>` trailers). User preference; carry the disclosure in the presentation's AI Attribution slide instead.
-4. Don't push to `main` directly; promote work by opening a PR `staging` → `main` after the staging publish looks right.
-5. The `publish` job only fires on push to `main` or `staging`. Never edit it to fire on PRs — that would mint real Zenodo records from unreviewed code.
+```yaml
+# ❌
+- uses: actions/checkout@v4
 
-## Adding a new deck (checklist)
+# ✅
+- uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+```
 
-When the user asks to add a new presentation:
+**Untrusted event data — bind via env, not interpolation:**
+
+```yaml
+# ❌
+- run: echo "${{ github.event.pull_request.title }}"
+
+# ✅
+- env:
+    PR_TITLE: ${{ github.event.pull_request.title }}
+  run: echo "$PR_TITLE"
+```
+
+**Headless Chrome on GitHub runners — always pass --no-sandbox:**
+
+```bash
+# ✅
+decktape reveal --chrome-arg=--no-sandbox …
+```
+
+## Adding a new deck
 
 1. Create `<deck-slug>/index.html` plus assets.
 2. Add a gallery card to root `index.html`.
-3. Add `<deck-slug>/zenodo.json` (see README.md for the schema; include `slug`, `community`, `title`, `upload_type`, `description`, `creators` with ORCIDs, `keywords`, `license`, `pdf`).
-4. Extend `.github/workflows/build-pdf.yml` with a build step that renders this deck's PDF and a publish step that runs `zenodo_publish.py <deck-slug>`. Keep the path filter list in sync.
-5. Open a PR to `staging`; let the user verify the sandbox record before promoting to `main`.
+3. Add `<deck-slug>/zenodo.json` with: `slug`, `community: "uw-ssec"`, `title`, `upload_type: "presentation"`, `description` (HTML ok), `creators` with ORCIDs, `keywords`, `license`, `pdf`.
+4. Extend `.github/workflows/build-pdf.yml`: add a build step that renders this deck and a publish step that runs `python .github/scripts/zenodo_publish.py <deck-slug>`. Update the path filter.
+5. Open a PR to `staging`. Verify the sandbox record. Then user opens `staging` → `main`.
 
-## Things to ask before doing
+## Confirm before doing
 
-- Anything that would create or update a real Zenodo record (DOI implications).
-- Changes to slug, ORCIDs, creators list, or community identifier in `zenodo.json`.
-- Adding new top-level directories or moving the `.github/scripts/` layout.
-- Switching package managers, Python versions, or pinned tool versions (`decktape`, `pnpm`, action SHAs).
+- Any change that would create or update a real Zenodo record.
+- Changing a deck's `slug`, `community`, `creators`, or ORCIDs.
+- Moving `.github/scripts/` or top-level directories.
+- Switching package managers, Python versions, or pinned tool versions.
 
 ## Local commands
 
 ```bash
-# Serve the repo for local browsing / decktape
+# Serve repo for local browsing / decktape
 python3 -m http.server 8000
 
 # Render a deck to PDF locally
@@ -87,4 +116,12 @@ ZENODO_TOKEN='<sandbox-token>' ZENODO_SANDBOX=true \
   python .github/scripts/zenodo_publish.py <deck-slug>
 ```
 
-Sandbox records can be deleted from the Zenodo UI — production records cannot. Default to sandbox when in doubt.
+Sandbox records can be deleted from the UI; production records cannot. Default to sandbox when in doubt.
+
+## Tech stack
+
+- Reveal.js 5.1.0 (loaded from `cdn.jsdelivr.net`).
+- decktape 3.12.0 (pinned by commit SHA in the workflow).
+- pnpm 9.15.0 via Corepack.
+- Python 3.12 + `requests==2.32.3` for the publish script.
+- GitHub-hosted `ubuntu-latest` runners.
