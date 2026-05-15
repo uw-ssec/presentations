@@ -63,16 +63,10 @@
               </div>
             </div>
             <div>
-              <!-- PLACEHOLDER: Antenna web interface screenshot -->
-              <!-- Asset: assets/antenna-screenshot.png -->
-              <div class="diagram-placeholder" style="height: 280px;">
-                <i class="fa-regular fa-image" style="font-size: 28pt; color: var(--color-neutral-400);"></i>
-                <p class="diagram-label">Placeholder: Antenna Web Interface</p>
-                <p style="font-size: 11pt; color: var(--muted-color); text-align: center; max-width: 220px;">
-                  Image catalog view or monitoring dashboard<br>
-                  Asset: <code>assets/antenna-screenshot.png</code>
-                </p>
-              </div>
+              <figure class="screenshot-frame">
+                <img src="assets/antenna-screenshot.png"
+                     alt="Antenna web platform showing project navigation, image review, and classification workflow panels">
+              </figure>
             </div>
           </div>
         </div>
@@ -265,7 +259,44 @@ ami worker</code></pre>
       </section>
 
       <!-- ══════════════════════════════════════════════════════════
-           SLIDE 8 · Performance baseline
+           SLIDE 8 · Why batch data loading matters
+           ══════════════════════════════════════════════════════════ -->
+      <section id="batch-data-loader">
+        <h2>Why Batch Data Loading Matters</h2>
+        <div class="content">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-bottom: 16px;">
+            <div class="card-red">
+              <p style="font-size: 12pt; color: var(--primary-color); font-weight: 700; margin-bottom: 8px;">
+                <i class="fa-solid fa-arrow-up-from-bracket"></i>&nbsp; Request / response or push
+              </p>
+              <ul>
+                <li>Caller sends images, then waits or guesses when to send more</li>
+                <li>Caller cannot see worker throughput, GPU memory, or safe concurrency</li>
+                <li>Network and image I/O stay on the critical path</li>
+              </ul>
+            </div>
+            <div class="card-blue">
+              <p style="font-size: 12pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 8px;">
+                <i class="fa-solid fa-boxes-stacked"></i>&nbsp; Batch data loader
+              </p>
+              <ul>
+                <li>Worker is in the driver seat: it can choose batch size and pull when ready</li>
+                <li>Multiple workers load and decode images in the background</li>
+                <li>Prefetched batches keep data ready while the GPU processes the current batch</li>
+              </ul>
+            </div>
+          </div>
+          <div class="card-green">
+            <p style="font-size: 15pt; text-align: center;">
+              <strong>Design shift:</strong> image loading becomes a queue the worker keeps full,
+              instead of a blocking request the pipeline waits on.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════
+           SLIDE 9 · Performance baseline
            ══════════════════════════════════════════════════════════ -->
       <section id="baseline">
         <h2>The Performance Baseline</h2>
@@ -292,7 +323,7 @@ ami worker</code></pre>
       </section>
 
       <!-- ══════════════════════════════════════════════════════════
-           SLIDE 9 · Fix 1 — Keep data on the GPU
+           SLIDE 10 · Fix 1 — Keep data on the GPU
            ══════════════════════════════════════════════════════════ -->
       <section id="fix1-gpu-tensors">
         <h2>Fix 1 &mdash; Keep Data on the GPU Between Stages</h2>
@@ -318,7 +349,7 @@ ami worker</code></pre>
       </section>
 
       <!-- ══════════════════════════════════════════════════════════
-           SLIDE 10 · Fix 2 — Pinned memory and batch collation
+           SLIDE 11 · Fix 2 — Pinned memory and batch collation
            ══════════════════════════════════════════════════════════ -->
       <section id="fix2-pinned-memory">
         <h2>Fix 2 &mdash; Pinned Memory &amp; Batch Collation</h2>
@@ -351,7 +382,7 @@ ami worker</code></pre>
       </section>
 
       <!-- ══════════════════════════════════════════════════════════
-           SLIDE 11 · Fix 3 — CUDA streams
+           SLIDE 12 · Fix 3 — CUDA streams
            ══════════════════════════════════════════════════════════ -->
       <section id="fix3-cuda-streams">
         <h2>Fix 3 &mdash; CUDA Streams for Prefetching</h2>
@@ -376,7 +407,7 @@ ami worker</code></pre>
       </section>
 
       <!-- ══════════════════════════════════════════════════════════
-           SLIDE 12 · Fix 4 — Async result posting
+           SLIDE 13 · Fix 4 — Async result posting
            ══════════════════════════════════════════════════════════ -->
       <section id="fix4-async-posting">
         <h2>Fix 4 &mdash; Async Result Posting</h2>
@@ -439,7 +470,7 @@ ami worker</code></pre>
       </section>
 
       <!-- ══════════════════════════════════════════════════════════
-           SLIDE 13 · Combined results  (warm background — climax slide)
+           SLIDE 14 · Combined results  (warm background — climax slide)
            ══════════════════════════════════════════════════════════ -->
       <section id="results" class="warm-slide">
         <h2>Combined Results</h2>
@@ -490,7 +521,7 @@ ami worker</code></pre>
       </section>
 
       <!-- ══════════════════════════════════════════════════════════
-           SLIDE 14 · Summary and generalization
+           SLIDE 15 · Summary and generalization
            ══════════════════════════════════════════════════════════ -->
       <section id="summary">
         <h2>Summary &amp; Generalization</h2>
@@ -530,7 +561,7 @@ ami worker</code></pre>
       </section>
 
       <!-- ══════════════════════════════════════════════════════════
-           SLIDE 15 · Links and Q&A
+           SLIDE 16 · Links and Q&A
            ══════════════════════════════════════════════════════════ -->
       <section id="links-qa">
         <h2>Links &amp; Q&amp;A</h2>
