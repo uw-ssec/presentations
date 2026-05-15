@@ -1,0 +1,59 @@
+name: Build Presentation PDFs
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'security-in-age-of-ai/**'
+      - '.github/workflows/build-pdf.yml'
+  workflow_dispatch:
+
+# Practice what the deck preaches: deny by default, opt in per job.
+permissions: {}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # commit the generated PDF back to the branch
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true  # needed for the commit-back step
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install decktape
+        run: npm install -g decktape@3.12.0
+
+      - name: Serve repository over HTTP
+        # decktape's reveal.js automation needs http://, not file://
+        run: npx --yes http-server . -p 8000 -s &
+
+      - name: Wait for server
+        run: npx --yes wait-on http://localhost:8000
+
+      - name: Build security-in-age-of-ai PDF
+        run: |
+          decktape reveal \
+            --size 1280x720 \
+            --load-pause 500 \
+            http://localhost:8000/security-in-age-of-ai/index.html \
+            security-in-age-of-ai/security-in-age-of-ai.pdf
+
+      - name: Commit PDF back to branch
+        # Skips the commit if there are no changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore(pdf): rebuild presentation PDFs"
+          file_pattern: "security-in-age-of-ai/*.pdf"
+
+      - name: Upload PDF as workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-in-age-of-ai-pdf
+          path: security-in-age-of-ai/security-in-age-of-ai.pdf
