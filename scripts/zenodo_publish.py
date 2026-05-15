@@ -19,12 +19,14 @@ Required environment:
 Optional environment:
     ZENODO_SANDBOX   When set to ``true``/``1``, target
                      sandbox.zenodo.org instead of zenodo.org.
-    GIT_COMMIT_SHA   Recorded as the ``version`` field; the script
-                     skips publishing when a record's most recent
-                     version already matches this SHA.
+
+Versioning is CalVer (``YYYY.MM.DD``, UTC). When more than one publish
+happens on the same day, the version becomes ``YYYY.MM.DD.N`` with
+``N`` incremented from the previous record's version.
 """
 from __future__ import annotations
 
+import datetime
 import json
 import os
 import sys
@@ -134,6 +136,24 @@ def load_deck_metadata(deck_dir: Path) -> dict:
     return json.loads(cfg_path.read_text())
 
 
+def next_calver(existing: dict | None) -> str:
+    """Compute today's CalVer, bumping ``.N`` if it collides with the
+    previous record's version (e.g. multiple publishes per day)."""
+    today = datetime.datetime.now(datetime.timezone.utc).strftime("%Y.%m.%d")
+    if existing is None:
+        return today
+    prev = ((existing.get("metadata") or {}).get("version") or "").strip()
+    if prev == today:
+        return f"{today}.2"
+    if prev.startswith(f"{today}."):
+        try:
+            n = int(prev.rsplit(".", 1)[-1])
+        except ValueError:
+            return f"{today}.2"
+        return f"{today}.{n + 1}"
+    return today
+
+
 def build_metadata(deck: dict, slug: str, version: str | None) -> dict:
     keywords = list(deck.get("keywords", []))
     tag = f"{KEYWORD_PREFIX}:{slug}"
@@ -157,12 +177,6 @@ def build_metadata(deck: dict, slug: str, version: str | None) -> dict:
     return metadata
 
 
-def already_published_at_sha(existing: dict, sha: str | None) -> bool:
-    if not sha:
-        return False
-    return (existing.get("metadata") or {}).get("version") == sha
-
-
 def main(argv: list[str]) -> int:
     if len(argv) != 2:
         sys.exit("usage: zenodo_publish.py <deck-dir>")
@@ -173,7 +187,6 @@ def main(argv: list[str]) -> int:
 
     token = required_env("ZENODO_TOKEN")
     sandbox = truthy(env("ZENODO_SANDBOX"))
-    commit_sha = env("GIT_COMMIT_SHA")
 
     deck = load_deck_metadata(deck_dir)
     slug = deck.get("slug") or deck_dir.name
@@ -186,14 +199,9 @@ def main(argv: list[str]) -> int:
     tag = f"{KEYWORD_PREFIX}:{slug}"
     existing = zen.find_existing(tag)
 
-    if existing and already_published_at_sha(existing, commit_sha):
-        print(
-            f"existing record {existing['id']} already at commit {commit_sha}; "
-            "nothing to do"
-        )
-        return 0
-
-    metadata = build_metadata(deck, slug, commit_sha)
+    version = next_calver(existing)
+    print(f"version: {version}")
+    metadata = build_metadata(deck, slug, version)
 
     if existing is None:
         print(f"no existing record for {tag}; creating new deposition")

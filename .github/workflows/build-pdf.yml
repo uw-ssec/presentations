@@ -108,5 +108,4 @@ jobs:
         env:
           ZENODO_TOKEN: ${{ secrets.ZENODO_TOKEN }}
           ZENODO_SANDBOX: ${{ vars.ZENODO_SANDBOX || 'true' }}
-          GIT_COMMIT_SHA: ${{ github.sha }}
         run: python scripts/zenodo_publish.py security-in-age-of-ai
