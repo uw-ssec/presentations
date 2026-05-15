@@ -1257,6 +1257,34 @@ updates:
         <div class="footnote">Sources: CISA, GitHub Security, Wiz, Unit 42, Datadog Security Labs, Elastic, Microsoft Security, ReversingLabs, Socket, StepSecurity, Anthropic Red Team, copy.fail, Tenable. See individual slide footnotes for primary citations.</div>
       </section>
 
+      <section id="ai-attribution">
+        <h2>AI Attribution</h2>
+        <div class="content">
+          <p style="margin-bottom: 14px; font-size: 15pt;">In the spirit of this talk's subject, here is how AI assisted in building it — and where humans stayed in the loop.</p>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div>
+              <p style="font-weight: 700; font-size: 15pt; color: var(--accent-blue); margin-bottom: 8px;"><i class="fa-solid fa-robot"></i> Tools used</p>
+              <ul style="font-size: 13pt;">
+                <li><strong>Claude Code</strong> (Anthropic CLI, Claude models via <strong>AWS Bedrock</strong>) — drafting and editing slides, restructuring sections, generating YAML examples, Reveal.js scaffolding</li>
+                <li><strong>ChatGPT</strong> (GPT models via <strong>Microsoft Foundry</strong>) — early brainstorming on framing and narrative arc, cross-checking explanations</li>
+              </ul>
+              <p style="font-size: 12pt; color: var(--muted-color); margin-top: 8px;">Model access funded by <a href="https://nairrpilot.org/" style="color: var(--accent-blue);">NAIRR Pilot</a> (Microsoft Foundry GPT) and <a href="https://escience.washington.edu/software-engineering/cloud/aws-credits/" style="color: var(--accent-blue);">eScience AWS Credits</a> (Bedrock Claude).</p>
+            </div>
+            <div>
+              <p style="font-weight: 700; font-size: 15pt; color: var(--secondary-color); margin-bottom: 8px;"><i class="fa-solid fa-user-check"></i> Human-in-the-loop</p>
+              <ul style="font-size: 13pt;">
+                <li><strong>Sources verified by humans</strong> — every CVE, incident, and dated event was checked against the cited primary source (CISA, vendor advisories, post-mortems)</li>
+                <li><strong>Editorial control</strong> — slide order, emphasis, and what to cut were authored decisions, not AI suggestions</li>
+                <li><strong>Code examples reviewed</strong> — YAML and shell snippets were read and corrected before inclusion</li>
+              </ul>
+            </div>
+          </div>
+          <div class="card-blue" style="margin-top: 14px; padding: 10px 14px;">
+            <p style="font-size: 13pt;"><i class="fa-solid fa-triangle-exclamation" style="color: var(--accent-blue); margin-right: 6px;"></i> AI-assisted content can hallucinate citations, dates, and CVE numbers. If you reuse material from this deck, re-verify against the linked primary sources before relying on it.</p>
+          </div>
+        </div>
+      </section>
+
       <section id="thank-you" class="section-divider" data-state="is-section-divider">
         <h1>Thank You</h1>
         <p class="subtitle">Questions &amp; Discussion</p>
