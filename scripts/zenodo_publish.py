@@ -35,7 +35,7 @@ from pathlib import Path
 import requests
 
 
-COMMUNITY = "uw-ssec"
+DEFAULT_COMMUNITY = "uw-ssec"
 KEYWORD_PREFIX = "uw-ssec-deck"
 
 
@@ -160,12 +160,13 @@ def build_metadata(deck: dict, slug: str, version: str | None) -> dict:
     if tag not in keywords:
         keywords.append(tag)
 
+    community = deck.get("community", DEFAULT_COMMUNITY)
     metadata: dict = {
         "upload_type": deck.get("upload_type", "presentation"),
         "title": deck["title"],
         "description": deck["description"],
         "creators": deck["creators"],
-        "communities": [{"identifier": COMMUNITY}],
+        "communities": [{"identifier": community}],
         "keywords": keywords,
         "access_right": "open",
         "license": deck.get("license", "cc-by-4.0"),

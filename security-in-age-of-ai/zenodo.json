@@ -1,5 +1,6 @@
 {
   "slug": "security-in-age-of-ai",
+  "community": "uw-ssec",
   "title": "Security in the Age of AI",
   "upload_type": "presentation",
   "description": "<p>Open Source Supply Chain Security: Threats, Mitigations &amp; Hardened Workflows.</p><p>Slides from the UW Scientific Software Engineering Center (SSEC) Research Software Engineering Meetup. Covers GitHub Actions attack classes, recent supply-chain incidents (tj-actions, Shai-Hulud, Ultralytics, Copy Fail), the convergence of frontier AI and security disclosure, and hardened consumer and publisher CI/CD workflows for npm and PyPI.</p>",
