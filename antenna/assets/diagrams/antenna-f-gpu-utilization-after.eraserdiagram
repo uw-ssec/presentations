@@ -1,0 +1,33 @@
+// F. GPU Utilization After Optimization
+// Direct GPU data flow and stream overlap keep compute work queued with only small gaps.
+
+direction right
+colorMode bold
+typeface clean
+
+CPU [color: blue, label: "CPU"] {
+  Enqueue 1 [color: blue, label: "enqueue"]
+  Enqueue 2 [color: blue, label: "enqueue"]
+  Enqueue 3 [color: blue, label: "enqueue"]
+  Enqueue 4 [color: blue, label: "enqueue"]
+
+  Enqueue 1 > Enqueue 2 > Enqueue 3 > Enqueue 4
+}
+
+GPU [label: "GPU"] {
+  Kernel batch 1 [color: "#2ad2c9", label: "kernel batch 1"]
+  Handoff 1 [color: blue, label: "gap"]
+  Kernel batch 2 [color: "#2ad2c9", label: "kernel batch 2"]
+  Handoff 2 [color: blue, label: "gap"]
+  Kernel batch 3 [color: "#2ad2c9", label: "kernel batch 3"]
+  Handoff 3 [color: blue, label: "gap"]
+  Batch 4 [color: "#2ad2c9", label: "batch 4"]
+
+  Kernel batch 1 > Handoff 1 > Kernel batch 2 > Handoff 2 > Kernel batch 3 > Handoff 3 > Batch 4
+}
+
+legend [position: bottom-left] {
+  [color: blue, label: "CPU enqueue"]
+  [color: "#2ad2c9", label: "GPU work"]
+  [color: blue, label: "handoff gap"]
+}

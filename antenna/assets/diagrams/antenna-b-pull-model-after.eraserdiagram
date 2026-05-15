@@ -1,0 +1,21 @@
+// B. Pull Model After: Workers Scale Horizontally
+// Antenna exposes job state; workers pull batches when they have local capacity.
+
+direction right
+colorMode pastel
+typeface clean
+
+Antenna [color: blue, label: "Antenna\njob source of truth"]
+
+Jobs API [color: orange, label: "Jobs API\npoll, lease, update"] {
+  Queue [shape: rectangle, color: orange, label: "batched work queue"]
+}
+
+Worker A [color: blue, label: "Worker A\nlocal processing"]
+Worker B [color: blue, label: "Worker B\nlocal processing"]
+
+Antenna > Jobs API: publish jobs
+Worker A > Jobs API: poll + pull batch
+Jobs API > Worker A: post results
+Worker B > Jobs API: poll + pull batch
+Jobs API > Worker B: post results

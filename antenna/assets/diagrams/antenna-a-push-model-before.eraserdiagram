@@ -1,0 +1,16 @@
+// A. Push Model Before: Synchronous Endpoint
+// Antenna initiates work and blocks while the public processing service runs.
+
+colorMode pastel
+typeface clean
+
+Antenna [color: blue, label: "Antenna\njob orchestration"]
+Public Endpoint [color: orange, label: "Public Endpoint\nProcessing Service"]
+Worker Runtime [color: blue, label: "Worker Runtime\nservice-owned"]
+
+Antenna > Public Endpoint: POST job payload
+activate Antenna
+Public Endpoint > Worker Runtime: Start processing
+Worker Runtime > Public Endpoint: Result returned
+Public Endpoint > Antenna: Synchronous response
+deactivate Antenna

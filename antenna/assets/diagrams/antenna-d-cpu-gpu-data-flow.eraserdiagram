@@ -1,0 +1,22 @@
+// D. CPU-GPU Data Flow
+// The optimized path removes CPU image materialization from the hot loop.
+
+direction right
+colorMode pastel
+typeface clean
+
+Before [color: orange, label: "Before: device data leaves the GPU"] {
+  GPU array before [color: "#2ad2c9", label: "GPU array"]
+  PIL Image [color: orange, label: "PIL Image\n(CPU memory)"]
+  GPU kernel before [color: "#2ad2c9", label: "GPU\nkernel input"]
+
+  GPU array before > PIL Image: extra copies
+  PIL Image > GPU kernel before: synchronization
+}
+
+After [color: blue, label: "After: direct GPU-to-GPU path"] {
+  GPU source [color: "#2ad2c9", label: "GPU\nsource array"]
+  GPU kernel after [color: "#2ad2c9", label: "GPU\nkernel input"]
+
+  GPU source > GPU kernel after: no CPU materialization
+}

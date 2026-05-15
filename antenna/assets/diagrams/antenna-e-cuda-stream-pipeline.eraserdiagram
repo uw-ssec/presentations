@@ -1,0 +1,40 @@
+// E. CUDA Stream Pipeline
+// Streams overlap transfer and compute so later batches begin before earlier batches finish.
+
+direction right
+colorMode bold
+typeface clean
+
+Before [label: "Before: sequential work"] {
+  Single stream [label: "Single stream"] {
+    T1 before [color: blue, label: "T1\nTransfer"]
+    C1 before [color: "#2ad2c9", label: "C1\nCompute"]
+    T2 before [color: blue, label: "T2\nTransfer"]
+    C2 before [color: "#2ad2c9", label: "C2\nCompute"]
+    Wait [color: orange, label: "wait"]
+
+    T1 before > C1 before > T2 before > C2 before > Wait
+  }
+}
+
+After [label: "After: overlapped streams"] {
+  Stream 1 [label: "Stream 1"] {
+    S1 T1 [color: blue, label: "T1"]
+    S1 C1 [color: "#2ad2c9", label: "C1"]
+    S1 T3 [color: blue, label: "T3"]
+
+    S1 T1 > S1 C1 > S1 T3
+  }
+
+  Stream 2 [label: "Stream 2"] {
+    S2 T2 [color: blue, label: "T2"]
+    S2 C2 [color: "#2ad2c9", label: "C2"]
+
+    S2 T2 > S2 C2
+  }
+}
+
+legend [position: bottom-left] {
+  [color: blue, label: Transfer]
+  [color: "#2ad2c9", label: Compute]
+}

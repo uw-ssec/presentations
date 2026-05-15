@@ -1,0 +1,31 @@
+// C. GPU Utilization Before Optimization
+// CPU-side image conversion and transfer setup leave the GPU waiting between kernels.
+
+direction right
+colorMode bold
+typeface clean
+
+CPU [color: blue, label: "CPU"] {
+  PIL convert [color: blue, label: "PIL convert"]
+  Host copy 1 [color: blue, label: "host copy"]
+  Prepare [color: blue, label: "prepare"]
+  Host copy 2 [color: blue, label: "host copy"]
+
+  PIL convert > Host copy 1 > Prepare > Host copy 2
+}
+
+GPU [label: "GPU"] {
+  GPU idle 1 [color: orange, label: "idle"]
+  GPU kernel 1 [color: "#2ad2c9", label: "kernel"]
+  GPU idle 2 [color: orange, label: "idle"]
+  GPU kernel 2 [color: "#2ad2c9", label: "kernel"]
+  GPU idle 3 [color: orange, label: "idle"]
+
+  GPU idle 1 > GPU kernel 1 > GPU idle 2 > GPU kernel 2 > GPU idle 3
+}
+
+legend [position: bottom-left] {
+  [color: blue, label: CPU setup]
+  [color: "#2ad2c9", label: GPU work]
+  [color: orange, label: GPU idle]
+}
