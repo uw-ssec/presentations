@@ -6,7 +6,7 @@ on:
       - 'security-in-age-of-ai/**'
       - '.github/workflows/build-pdf.yml'
   push:
-    branches: [main]
+    branches: [main, staging]
     paths:
       - 'security-in-age-of-ai/**'
       - '.github/workflows/build-pdf.yml'
@@ -75,11 +75,12 @@ jobs:
           path: security-in-age-of-ai/security-in-age-of-ai.pdf
 
   # ── Publish ──────────────────────────────────────────────────────
-  # Only on push to main: deposit the verified artifact to Zenodo
-  # under the uw-ssec community. First run creates a new record;
-  # later runs publish a new version of the existing record.
+  # Push to main   → production zenodo.org
+  # Push to staging → sandbox.zenodo.org (for testing the full flow)
+  # First run on each target creates a new record; later runs publish
+  # a new version of the existing record.
   publish:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging')
     needs: build
     runs-on: ubuntu-latest
     permissions:
@@ -106,6 +107,8 @@ jobs:
 
       - name: Publish to Zenodo (uw-ssec community)
         env:
-          ZENODO_TOKEN: ${{ secrets.ZENODO_TOKEN }}
-          ZENODO_SANDBOX: ${{ vars.ZENODO_SANDBOX || 'true' }}
+          # staging → sandbox, main → production. Each Zenodo host has
+          # its own account and its own token.
+          ZENODO_TOKEN: ${{ github.ref == 'refs/heads/staging' && secrets.ZENODO_SANDBOX_TOKEN || secrets.ZENODO_TOKEN }}
+          ZENODO_SANDBOX: ${{ github.ref == 'refs/heads/staging' && 'true' || 'false' }}
         run: python scripts/zenodo_publish.py security-in-age-of-ai
