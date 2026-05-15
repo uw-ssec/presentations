@@ -58,8 +58,11 @@ jobs:
         run: pnpm dlx wait-on http://localhost:8000
 
       - name: Build security-in-age-of-ai PDF
+        # --chrome-arg=--no-sandbox: GitHub-hosted Ubuntu runners can't use
+        # Chrome's SUID sandbox; safe inside this throwaway runner.
         run: |
           decktape reveal \
+            --chrome-arg=--no-sandbox \
             --size 1280x720 \
             --load-pause 500 \
             http://localhost:8000/security-in-age-of-ai/index.html \
