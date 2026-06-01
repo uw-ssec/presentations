@@ -210,6 +210,8 @@
   flex: 1;
   flex-direction: column;
   justify-content: flex-start;
+  min-height: 0;
+  overflow: hidden;
   padding-top: var(--content-gap);
   text-align: left;
   z-index: 1;
@@ -878,7 +880,7 @@
 
 .stream-track {
   flex: 1;
-  height: 28px;
+  height: 40px;
   display: flex;
   border: 1px solid var(--color-neutral-200);
   border-radius: 3px;
@@ -890,7 +892,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 9pt;
+  font-size: 11pt;
   font-weight: 700;
   font-family: var(--ui-font);
   letter-spacing: 0.04em;
@@ -956,8 +958,47 @@ pre.code-block code {
 .diagram-full {
   display: block;
   inline-size: 100%;
-  max-block-size: 72vh;
+  max-block-size: 55vh;
+  min-height: 0;
   object-fit: contain;
+}
+
+/* Intro sentence above full-width visual (pattern A / C slides) */
+.slide-intro {
+  color: var(--color-neutral-700);
+  font-size: 15pt;
+  font-weight: 600;
+  line-height: 1.4;
+  margin-bottom: 14px;
+  max-width: 960px;
+}
+
+/* Stat banner strip (pattern B — Slides 9 and 14) */
+.stat-banner {
+  align-items: baseline;
+  border-bottom: 1px solid var(--color-neutral-200);
+  display: flex;
+  gap: 16px;
+  margin-bottom: 14px;
+  padding: 6px 0 12px;
+}
+
+.stat-banner .stat-number {
+  font-size: 40pt;
+}
+
+.stat-banner-desc {
+  color: var(--muted-color);
+  font-family: var(--ui-font);
+  font-size: 13pt;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+/* Full-height screenshot frame variant (Slide 2) */
+.screenshot-frame.screenshot-flex {
+  flex: 1;
+  height: auto;
 }
 
 @media print {
