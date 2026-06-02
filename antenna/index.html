@@ -11,11 +11,17 @@
   <link href="https://fonts.googleapis.com/css2?family=Encode+Sans:wght@300;400;500;600;700;800&family=Encode+Sans+Compressed:wght@400;600;700&family=Open+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
   <!-- Reveal.js core -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
 
   <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Custom Controls Plugin (required for chalkboard buttons) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js-plugins@latest/customcontrols/style.css">
+
+  <!-- Reveal.js chalkboard plugin -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js-plugins@latest/chalkboard/style.css">
 
   <!-- SSEC design system + antenna extensions -->
   <link rel="stylesheet" href="styles.css">
@@ -28,7 +34,7 @@
            SLIDE 1 · Title
            ══════════════════════════════════════════════════════════ -->
       <section id="title" class="section-divider" data-state="is-section-divider">
-        <p class="event-tag">SciPy 2026 &middot; 30-minute talk</p>
+        <p class="event-tag">SciPy 2026</p>
         <h1>Efficient Federated Inference on Entomology Images with PyTorch</h1>
         <p class="subtitle">
           Carlos Garcia Jurado Suarez<br>
@@ -48,12 +54,16 @@
         <h2>What is Antenna?</h2>
         <div class="content">
           <p class="slide-intro">Mila Institute's open-source platform — classifying insects from automated wildlife camera-trap images to support biodiversity monitoring at scale.</p>
-          <figure class="screenshot-frame screenshot-flex">
-            <img src="assets/antenna-screenshot.png"
-                 alt="Antenna web platform showing project navigation, image review, and classification workflow panels">
-          </figure>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <figure class="screenshot-frame screenshot-flex">
+              <img src="assets/antenna-screenshot-crop.png"
+                   alt="Antenna web platform showing project navigation, image review, and classification workflow panels">
+            </figure>
+            <img src="assets/intro.webp"
+                 alt="Antenna platform interface"
+                 style="max-width: 100%; height: auto;">
+          </div>
         </div>
-        <div class="footnote">insectai.org — open source, community-driven &middot; Researchers submit image batches and review classification results.</div>
       </section>
 
       <!-- ══════════════════════════════════════════════════════════
@@ -62,6 +72,10 @@
       <section id="scaling-problem">
         <h2>The Scaling Problem</h2>
         <div class="content">
+          <iframe src="assets/diagrams/antenna-orchestration.html"
+                  class="diagram-full" style="flex: 1; border: none; overflow: hidden;"
+                  scrolling="no">
+          </iframe>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 16px;">
             <div class="card-red">
               <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 8px;">
@@ -76,7 +90,7 @@
                 <i class="fa-solid fa-gauge-high"></i>&nbsp; Throughput ceiling
               </p>
               <p style="font-size: 15pt;">
-                Synchronous design prevented scaling to large jobs or multiple models.
+                Synchronous design prevented scaling to large jobs: >300 image jobs would stall.
               </p>
             </div>
           </div>
@@ -101,14 +115,14 @@
            ══════════════════════════════════════════════════════════ -->
       <section id="push-model">
         <h2>How the Original System Worked</h2>
-        <div class="content" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: center;">
+        <div class="content" style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px; align-items: center;">
           <img src="assets/diagrams/before-simple.png"
                alt="Diagram A — Push model: Antenna pushes to a public Processing Service endpoint and waits on a synchronous blocking response"
                class="diagram-full">
           <img id="push-model-seq" src="assets/diagrams/antenna-a-push-model-before.svg"
                alt="Diagram A — Push model: Antenna pushes to a public Processing Service endpoint and waits on a synchronous blocking response"
                class="diagram-full fragment"
-               style="max-height: 80%;">
+               style="width: 100%; height: auto; transform: scale(0.9);">
         </div>
       </section>
 
@@ -128,7 +142,7 @@
       <!-- ══════════════════════════════════════════════════════════
            SLIDE 6 · ami worker implementation
            ══════════════════════════════════════════════════════════ -->
-      <section id="ami-worker">
+      <!-- <section id="ami-worker">
         <h2>Worker Implementation &mdash; <code>ami worker</code></h2>
         <div class="content">
           <p class="slide-intro"><code>ami worker</code> polls <code>/jobs</code>, runs the ML pipeline, and posts results — add more workers to scale. Ships in <code>ami-data-companion</code>.</p>
@@ -140,7 +154,7 @@ ami worker register --pipeline insects-v2
 ami worker</code></pre>
         </div>
         <div class="footnote">pip install ami-data-companion &middot; github.com/RolnickLab/ami-data-companion</div>
-      </section>
+      </section> -->
 
       <!-- ══════════════════════════════════════════════════════════
            SLIDE 7 · Part 1 results
@@ -148,35 +162,36 @@ ami worker</code></pre>
       <section id="part1-results">
         <h2>Part 1 Results</h2>
         <div class="content">
-          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 16px;">
+          <div style="display: grid; gap: 16px; margin-bottom: 16px;">
+          <!-- <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 16px;"> -->
             <div class="card-green">
               <p style="font-size: 13pt; color: var(--secondary-color); font-weight: 700; margin-bottom: 6px;">
                 <i class="fa-solid fa-check-circle"></i>&nbsp; Deploy anywhere
               </p>
-              <p style="font-size: 15pt;">Workers run anywhere with outbound HTTP — HPC clusters, firewalls, local machines.</p>
+              <p style="font-size: 15pt;">Workers run anywhere with outbound HTTP: HPC clusters, firewalled networks, local machines.</p>
             </div>
-            <div class="card-green">
+            <div class="card-green fragment">
+              <p style="font-size: 13pt; color: var(--secondary-color); font-weight: 700; margin-bottom: 6px;">
+                <i class="fa-solid fa-network-wired"></i>&nbsp; Multi-institution
+              </p>
+              <p style="font-size: 15pt;">Workers can span institutions and different hardware, no uniformity needed.</p>
+            </div>
+            <div class="card-green fragment">
               <p style="font-size: 13pt; color: var(--secondary-color); font-weight: 700; margin-bottom: 6px;">
                 <i class="fa-solid fa-layer-group"></i>&nbsp; Horizontal scaling
               </p>
               <p style="font-size: 15pt;">Add workers without changing Antenna; each independently polls and claims batches.</p>
             </div>
-            <div class="card-green">
+            <!-- <div class="card-green fragment">
               <p style="font-size: 13pt; color: var(--secondary-color); font-weight: 700; margin-bottom: 6px;">
-                <i class="fa-solid fa-puzzle-piece"></i>&nbsp; Extensibility
+                <i class="fa-solid fa-puzzle-piece"></i>&nbsp; Worker speed
               </p>
-              <p style="font-size: 15pt;">New ML pipelines register and pull independently.</p>
-            </div>
-            <div class="card-green">
-              <p style="font-size: 13pt; color: var(--secondary-color); font-weight: 700; margin-bottom: 6px;">
-                <i class="fa-solid fa-network-wired"></i>&nbsp; Multi-institution
-              </p>
-              <p style="font-size: 15pt;">Workers span institutions on different hardware — no central coordination needed.</p>
-            </div>
+              <p style="font-size: 15pt;">Allow workers to control their own processing speed based on available resources.</p>
+            </div> -->
           </div>
-          <div class="card-blue">
+          <div class="card-blue fragment">
             <p style="font-size: 15pt; text-align: center;">
-              Inverting push &rarr; pull makes distributed ML inference <strong>self-scaling</strong>.
+              Inverting push/pull &rarr; workers control the speed.
             </p>
           </div>
         </div>
@@ -430,7 +445,9 @@ ami worker</code></pre>
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js-plugins@latest/customcontrols/plugin.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js-plugins@latest/chalkboard/plugin.js"></script>
   <script>
     Reveal.initialize({
       width: 1280,
@@ -442,6 +459,26 @@ ami worker</code></pre>
       hash: true,
       transition: 'slide',
       center: false,
+      customcontrols: {
+        controls: [
+          { icon: '<i class="fa fa-pen-square"></i>',
+            title: 'Toggle chalkboard (B)',
+            action: 'RevealChalkboard.toggleChalkboard();'
+          },
+          { icon: '<i class="fa fa-pen"></i>',
+            title: 'Toggle notes canvas (C)',
+            action: 'RevealChalkboard.toggleNotesCanvas();'
+          }
+        ]
+      },
+      chalkboard: {
+        drawingCursorColor: 'rgba(255, 255, 255, 1)',
+        chalkWidth: 3,
+      },
+      plugins: [
+        RevealChalkboard,
+        RevealCustomControls,
+      ],
     });
 
     document.addEventListener('keydown', (e) => {

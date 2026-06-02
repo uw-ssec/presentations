@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Antenna — model orchestration</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #f8f7f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* min-height: 100vh; */
+    font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+    padding: 0;
+  }
+
+  .card {
+    background: #ffffff;
+    border-radius: 16px;
+    border: 0.5px solid rgba(0,0,0,0.1);
+    padding: 0;
+    max-width: 720px;
+    width: 100%;
+  }
+
+  h1 {
+    font-size: 15px;
+    font-weight: 500;
+    color: #1a1a1a;
+    margin-bottom: 0.0rem;
+    letter-spacing: -0.2px;
+  }
+
+  .subtitle {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 1.5rem;
+  }
+
+  svg { width: 100%; height: auto; display: block; }
+
+  @keyframes dash { to { stroke-dashoffset: -20; } }
+  .flow { animation: dash 1.6s linear infinite; }
+  .flow-2 { animation: dash 1.6s linear infinite 0.53s; }
+  .flow-3 { animation: dash 1.6s linear infinite 1.06s; }
+
+  @media (prefers-color-scheme: dark) {
+    body  { background: #1a1a18; }
+    .card { background: #242422; border-color: rgba(255,255,255,0.08); }
+    h1    { color: #e8e6de; }
+    .subtitle { color: #555; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .flow, .flow-2, .flow-3 { animation: none; }
+  }
+</style>
+</head>
+<body>
+<div class="card">
+  <!-- <h1>Antenna — model orchestration</h1>
+  <p class="subtitle">Antenna dispatches inference requests to models hosted by partner research institutions</p> -->
+
+  <svg viewBox="0 0 660 280" role="img" xmlns="http://www.w3.org/2000/svg">
+    <!-- <title>Antenna calling models hosted by research institutions</title> -->
+    <!-- <desc>Left-to-right diagram showing Antenna as an orchestrator on the left, connected by arrows to three institution-hosted models on the right: University A, Institute B, and University C.</desc> -->
+
+    <defs>
+      <marker id="arr-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M2 1L8 5L2 9" fill="none" stroke="#378ADD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </marker>
+      <marker id="arr-gray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M2 1L8 5L2 9" fill="none" stroke="#B4B2A9" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </marker>
+    </defs>
+
+    <!-- ── Antenna ── -->
+    <rect x="30" y="100" width="152" height="80" rx="12" fill="#E6F1FB" stroke="#1D9E75" stroke-width="1"/>
+    <text x="106" y="132" text-anchor="middle" dominant-baseline="central" font-size="15" font-weight="500" fill="#085041">Antenna</text>
+    <!-- <text x="106" y="154" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#0F6E56">orchestrator</text> -->
+
+    <!-- ── connector lines (animated dashes) ── -->
+    <!-- to University A -->
+    <line class="flow"   x1="182" y1="130" x2="434" y2="60"  stroke="#378ADD" stroke-width="1.5" stroke-dasharray="5 5" fill="none"/>
+    <!-- to Institute B -->
+    <line class="flow-2" x1="182" y1="140" x2="434" y2="140" stroke="#378ADD" stroke-width="1.5" stroke-dasharray="5 5" fill="none"/>
+    <!-- to University C -->
+    <line class="flow-3" x1="182" y1="150" x2="434" y2="220" stroke="#378ADD" stroke-width="1.5" stroke-dasharray="5 5" fill="none"/>
+
+    <!-- arrowheads at institution end -->
+    <line x1="426" y1="62"  x2="434" y2="60"  stroke="#378ADD" stroke-width="1.5" marker-end="url(#arr-blue)" fill="none"/>
+    <line x1="426" y1="140" x2="434" y2="140" stroke="#378ADD" stroke-width="1.5" marker-end="url(#arr-blue)" fill="none"/>
+    <line x1="426" y1="218" x2="434" y2="220" stroke="#378ADD" stroke-width="1.5" marker-end="url(#arr-blue)" fill="none"/>
+
+    <!-- return arrows (gray, subtle) -->
+    <line x1="434" y1="54"  x2="188" y2="126" stroke="#B4B2A9" stroke-width="1" marker-end="url(#arr-gray)" fill="none" opacity="0.7"/>
+    <line x1="434" y1="134" x2="188" y2="134" stroke="#B4B2A9" stroke-width="1" marker-end="url(#arr-gray)" fill="none" opacity="0.7"/>
+    <line x1="434" y1="214" x2="188" y2="146" stroke="#B4B2A9" stroke-width="1" marker-end="url(#arr-gray)" fill="none" opacity="0.7"/>
+
+    <!-- ── University A ── -->
+    <rect x="434" y="24" width="196" height="72" rx="10" fill="#E6F1FB" stroke="#378ADD" stroke-width="0.5"/>
+    <text x="532" y="48" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#0C447C">University A</text>
+    <text x="532" y="68" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#185FA5">hosted model · REST API</text>
+
+    <!-- ── Institute B ── -->
+    <rect x="434" y="104" width="196" height="72" rx="10" fill="#E6F1FB" stroke="#378ADD" stroke-width="0.5"/>
+    <text x="532" y="128" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#0C447C">Institute B</text>
+    <text x="532" y="148" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#185FA5">hosted model · REST API</text>
+
+    <!-- ── University C ── -->
+    <rect x="434" y="184" width="196" height="72" rx="10" fill="#E6F1FB" stroke="#378ADD" stroke-width="0.5"/>
+    <text x="532" y="208" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#0C447C">University C</text>
+    <text x="532" y="228" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#185FA5">hosted model · REST API</text>
+
+    <!-- ── legend ── -->
+    <!-- <line x1="30" y1="264" x2="58" y2="264" stroke="#378ADD" stroke-width="1.5" stroke-dasharray="5 5" marker-end="url(#arr-blue)" fill="none"/>
+    <text x="66" y="264" dominant-baseline="central" font-size="11" fill="#888">inference request</text>
+    <line x1="180" y1="264" x2="208" y2="264" stroke="#B4B2A9" stroke-width="1" marker-end="url(#arr-gray)" fill="none"/>
+    <text x="216" y="264" dominant-baseline="central" font-size="11" fill="#888">model response</text> -->
+  </svg>
+</div>
+</body>
+</html>
