@@ -969,6 +969,11 @@ pre.code-block code {
   max-block-size: none;
 }
 
+#fix1-batches .diagram-full {
+  block-size: 100%;
+  max-block-size: none;
+}
+
 #batch-data-loader .content,
 #baseline .content {
   padding-top: 12px;

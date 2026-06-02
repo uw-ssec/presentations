@@ -79,7 +79,7 @@
                   scrolling="no">
           </iframe>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 16px;">
-            <div class="card-red">
+            <div class="card-red fragment">
               <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 8px;">
                 <i class="fa-solid fa-plug-circle-exclamation"></i>&nbsp; Integration barrier
               </p>
@@ -87,7 +87,7 @@
                 Public HTTP endpoint required, a blocker for HPC clusters and university firewalls.
               </p>
             </div>
-            <div class="card-red">
+            <div class="card-red fragment">
               <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 8px;">
                 <i class="fa-solid fa-gauge-high"></i>&nbsp; Throughput ceiling
               </p>
@@ -96,27 +96,27 @@
               </p>
             </div>
           </div>
-          <div class="card-blue">
+          <!-- <div class="card-blue">
             <p style="font-size: 15pt; text-align: center;">
               <strong>This talk:</strong> async pull architecture &amp; PyTorch GPU optimization — solving both.
             </p>
-          </div>
+          </div> -->
         </div>
       </section>
 
       <!-- ══════════════════════════════════════════════════════════
            SECTION DIVIDER · Part 1
            ══════════════════════════════════════════════════════════ -->
-      <section id="divider-part1" class="section-divider" data-state="is-section-divider">
+      <!-- <section id="divider-part1" class="section-divider" data-state="is-section-divider">
         <h1>Part 1: Async Pull Architecture</h1>
         <p>Inverting the communication model to unlock distributed ML inference</p>
-      </section>
+      </section> -->
 
       <!-- ══════════════════════════════════════════════════════════
            SLIDE 4 · Original push model
            ══════════════════════════════════════════════════════════ -->
       <section id="push-model">
-        <h2>How the Original System Worked</h2>
+        <h2>Architecture: Original Push Model</h2>
         <div class="content" style="display: grid; grid-template-columns: 2fr 3fr; gap: 0px; align-items: center;">
           <img src="assets/diagrams/before-simple.png"
                alt="Diagram A — Push model: Antenna pushes to a public Processing Service endpoint and waits on a synchronous blocking response"
@@ -132,7 +132,7 @@
            SLIDE 5 · Pull model redesign
            ══════════════════════════════════════════════════════════ -->
       <section id="pull-model">
-        <h2>The Redesign &mdash; Pull Model</h2>
+        <h2>Architecture: Redesigned Pull Model</h2>
         <div class="content">
           <p class="slide-intro">Inverting the direction: PS workers <strong>poll</strong> Antenna's job queue — no public endpoint needed, and each additional worker adds capacity automatically.</p>
           <img src="assets/diagrams/after-simple.png"
@@ -162,7 +162,7 @@ ami worker</code></pre>
            SLIDE 7 · Part 1 results
            ══════════════════════════════════════════════════════════ -->
       <section id="part1-results">
-        <h2>Part 1 Results</h2>
+        <h2>Architecture: Results</h2>
         <div class="content">
           <div style="display: grid; gap: 16px; margin-bottom: 16px;">
           <!-- <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 16px;"> -->
@@ -202,16 +202,16 @@ ami worker</code></pre>
       <!-- ══════════════════════════════════════════════════════════
            SECTION DIVIDER · Part 2
            ══════════════════════════════════════════════════════════ -->
-      <section id="divider-part2" class="section-divider" data-state="is-section-divider">
+      <!-- <section id="divider-part2" class="section-divider" data-state="is-section-divider">
         <h1>Part 2: PyTorch GPU Inference Optimization</h1>
         <p>From 1,674 seconds to 108 seconds &mdash; a 15&times; improvement on a single GPU</p>
-      </section>
+      </section> -->
 
       <!-- ══════════════════════════════════════════════════════════
            SLIDE 8 · Why batch data loading matters
            ══════════════════════════════════════════════════════════ -->
       <section id="batch-data-loader">
-        <h2>Why Batch Data Loading Matters</h2>
+        <h2>Optimization: Data Loading</h2>
         <div class="content">
           <!-- <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-bottom: 16px;">
             <div class="card-red">
@@ -248,7 +248,7 @@ ami worker</code></pre>
            SLIDE 9 · Performance baseline
            ══════════════════════════════════════════════════════════ -->
       <section id="baseline">
-        <h2>The Performance Baseline</h2>
+        <h2>Optimization: Baseline</h2>
         <div class="content">
           <div class="stat-banner">
             <div class="stat-number">1,674s</div>
@@ -260,17 +260,43 @@ ami worker</code></pre>
         </div>
       </section>
       <section id="fix1-batches">
-        <h2>Fixes 1-2 &mdash; Multiple Batches, async posts</h2>
+        <h2>Optimization: Fixes</h2>
         <div class="content">
           <iframe src="assets/timeline-before.html"
-                  class="diagram-full" style="flex: 1; border: none;"
+                  class="diagram-full" style="flex: 1; border: none; overflow: hidden;"
+                  scrolling="no"
                   title="Before — sequential pipeline, GPU starved"></iframe>
         </div>
+        <div id="code-fixes" class="r-stack" style="max-width: 90%;">
+          <pre class="code-block fragment current-visible" data-fragment-index="0" style="width: 100%;"><code class="language-python" data-trim data-noescape>class RESTDataset(torch.utils.data.IterableDataset):
+# pulls rows from /jobs/{job_id} until exhausted
+# downloads images from S3
+# assembles batches of stacked tensors</code></pre>
+</code></pre>            
+</code>
+</pre>
+<pre class="code-block fragment current-visible" data-fragment-index="1" style="width: 100%;"><code class="language-python" data-trim data-noescape>return torch.utils.data.DataLoader(
+  dataset,
+  batch_size=1, # batches built in the dataset workers, not by DataLoader
+  pin_memory=True, # DMA transfer to GPU
+  collate_fn=_no_op_collate_fn # nothing to collate since each dataset item is already a batch
+  ...)
+</code></pre>
+<pre class="code-block fragment current-visible" data-fragment-index="2" style="width: 100%;"><code class="language-python" data-trim data-noescape>torch.cuda.Stream()
+  ...
+  with torch.cuda.stream(self.stream):
+  self.next_batch = v.to(self.device, non_blocking=True)                    
+</code></pre>
+<pre class="code-block fragment current-visible" data-fragment-index="3" style="width: 100%;"><code class="language-python" data-trim data-noescape>torchvision.transforms.ToPILImage()
+</code></pre>
+<pre class="code-block fragment current-visible" data-fragment-index="4" style="width: 100%;"><code class="language-python" data-trim data-noescape>ThreadPoolExecutor.submit(...)
+</code></pre>
+</div>        
       </section>
 
 
       
-      <section id="fix1-gpu-tensors">
+      <!-- <section id="fix1-gpu-tensors">
         <h2>Fix 1 &mdash; Keep Data on the GPU Between Stages</h2>
         <div class="content">
           <p class="slide-intro">Between detection and classification, tensors were converted to <strong>PIL images</strong> — forcing a <strong>GPU &rarr; CPU &rarr; GPU</strong> round-trip for every image. Fix: keep tensors on GPU throughout.</p>
@@ -278,12 +304,12 @@ ami worker</code></pre>
                alt="Diagram D — Data flow before/after: GPU detect → CPU PIL Image → GPU classify becomes GPU detect → GPU classify directly"
                class="diagram-full" style="flex: 1;">
         </div>
-      </section>
+      </section> -->
 
       <!-- ══════════════════════════════════════════════════════════
            SLIDE 11 · Fix 2 — Pinned memory and batch collation
            ══════════════════════════════════════════════════════════ -->
-      <section id="fix2-pinned-memory">
+      <!-- <section id="fix2-pinned-memory">
         <h2>Fix 2 &mdash; Pinned Memory &amp; Batch Collation</h2>
         <div class="content">
           <p class="slide-intro"><code>pin_memory=True</code> enables <strong>DMA transfers</strong>; batch collation moved to DataLoader workers — GPU pipeline never stalls waiting for data.</p>
@@ -296,12 +322,12 @@ ami worker</code></pre>
   collate_fn=collate,   # off main thread
 )</code></pre>
         </div>
-      </section>
+      </section> -->
 
       <!-- ══════════════════════════════════════════════════════════
            SLIDE 12 · Fix 3 — CUDA streams
            ══════════════════════════════════════════════════════════ -->
-      <section id="fix3-cuda-streams">
+      <!-- <section id="fix3-cuda-streams">
         <h2>Fix 3 &mdash; CUDA Streams for Prefetching</h2>
         <div class="content">
           <p class="slide-intro">Stream A processes batch N while stream B <strong>prefetches batch N+1</strong> into GPU memory — eliminating the idle gap between batches.</p>
@@ -309,12 +335,12 @@ ami worker</code></pre>
                alt="Diagram E — CUDA stream pipeline: before shows sequential transfer then compute; after shows two overlapping streams"
                class="diagram-full" style="flex: 1;">
         </div>
-      </section>
+      </section> -->
 
       <!-- ══════════════════════════════════════════════════════════
            SLIDE 13 · Fix 4 — Async result posting
            ══════════════════════════════════════════════════════════ -->
-      <section id="fix4-async-posting">
+      <!-- <section id="fix4-async-posting">
         <h2>Fix 4 &mdash; Async Result Posting</h2>
         <div class="content">
           <p class="slide-intro">Results were posted <strong>synchronously</strong> — GPU sat idle during each HTTP round-trip. <code>ResultPoster</code> moves posting to a background thread, overlapping I/O with compute.</p>
@@ -355,15 +381,15 @@ ami worker</code></pre>
             </div>
           </div>
         </div>
-      </section>
+      </section> -->
 
       <!-- ══════════════════════════════════════════════════════════
            SLIDE 14 · Combined results  (warm background — climax slide)
            ══════════════════════════════════════════════════════════ -->
       <section id="results" class="warm-slide">
-        <h2>Combined Results</h2>
+        <h2>Optimization: Results</h2>
         <div class="content">
-          <div class="stat-banner">
+          <div class="stat-banner fragment" style="margin-bottom: 16px;">
             <div class="stat-number stat-number-hero">15&times;</div>
             <div>
               <div class="stat-banner-desc">faster on a single GPU &middot; RTX A6000</div>
@@ -375,9 +401,9 @@ ami worker</code></pre>
               </div>
             </div>
           </div>
-          <div class="card-green" style="margin-bottom: 12px;">
+          <!-- <div class="card-green" style="margin-bottom: 12px;">
             <p style="font-size: 13pt;"><strong>Key insight:</strong> GPU, CPU, Network, GPU/CPU bus — keep every resource busy. Each fix addressed a different idle point; the gains compound.</p>
-          </div>
+          </div> -->
           <iframe src="assets/timeline-after.html"
                   class="diagram-full" style="flex: 1; border: none;"
                   title="After — pipelined, GPU always busy"></iframe>
@@ -387,15 +413,15 @@ ami worker</code></pre>
       <!-- ══════════════════════════════════════════════════════════
            SECTION DIVIDER · Conclusion
            ══════════════════════════════════════════════════════════ -->
-      <section id="divider-conclusion" class="section-divider" data-state="is-section-divider">
+      <!-- <section id="divider-conclusion" class="section-divider" data-state="is-section-divider">
         <h1>Conclusion &amp; Takeaways</h1>
         <p>Generalizable patterns for federated ML inference</p>
-      </section>
+      </section> -->
 
       <!-- ══════════════════════════════════════════════════════════
            SLIDE 15 · Summary and generalization
            ══════════════════════════════════════════════════════════ -->
-      <section id="summary">
+      <!-- <section id="summary">
         <h2>Summary &amp; Generalization</h2>
         <div class="content">
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 16px;">
@@ -424,7 +450,7 @@ ami worker</code></pre>
           </div>
         </div>
         <div class="footnote">Antenna is open source &mdash; insectai.org &middot; github.com/RolnickLab</div>
-      </section>
+      </section> -->
 
       <!-- ══════════════════════════════════════════════════════════
            SLIDE 16 · Links and Q&A
