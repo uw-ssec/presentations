@@ -963,6 +963,26 @@ pre.code-block code {
   object-fit: contain;
 }
 
+/* Let the batch data-loader iframe use the full slide content area. */
+#batch-data-loader .diagram-full {
+  block-size: 100%;
+  max-block-size: none;
+}
+
+#batch-data-loader .content,
+#baseline .content {
+  padding-top: 12px;
+}
+
+#baseline .stat-banner {
+  margin-bottom: 6px;
+  padding: 4px 0 8px;
+}
+
+#baseline .diagram-full {
+  max-block-size: none;
+}
+
 /* Intro sentence above full-width visual (pattern A / C slides) */
 .slide-intro {
   color: var(--color-neutral-700);

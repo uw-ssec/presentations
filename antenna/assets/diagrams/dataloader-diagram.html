@@ -14,16 +14,17 @@
     justify-content: center;
     min-height: 100vh;
     font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
-    padding: 2rem;
+    padding: 0;
   }
 
   .card {
     background: #ffffff;
-    border-radius: 16px;
+    border-radius: 12px;
     border: 0.5px solid rgba(0,0,0,0.1);
-    padding: 2rem 2rem 1.5rem;
-    max-width: 780px;
+    padding: 0.5rem;
+    max-width: none;
     width: 100%;
+    height: 100vh;
   }
 
   h1 {
@@ -40,14 +41,13 @@
     margin-bottom: 1.5rem;
   }
 
-  svg { width: 100%; height: auto; display: block; }
+  svg { width: 100%; height: 100%; display: block; }
 
   @keyframes pulse       { 0%,100%{opacity:1} 50%{opacity:0.5} }
   @keyframes gpu-glow    { 0%,100%{opacity:0.15} 50%{opacity:0.35} }
 
   .w-busy     { animation: pulse 1.4s ease-in-out infinite; }
   .w-busy-2   { animation: pulse 1.4s ease-in-out infinite 0.45s; }
-  .w-busy-3   { animation: pulse 1.4s ease-in-out infinite 0.9s; }
   .gpu-glow   { animation: gpu-glow 2.2s ease-in-out infinite; }
 
   @media (prefers-color-scheme: dark) {
@@ -58,16 +58,16 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .w-busy, .w-busy-2, .w-busy-3, .gpu-glow { animation: none; }
+    .w-busy, .w-busy-2, .gpu-glow { animation: none; }
   }
 </style>
 </head>
 <body>
 <div class="card">
-  <h1>PyTorch DataLoader — inference pipeline</h1>
-  <p class="subtitle">CPU workers load &amp; preprocess in parallel · batches queue in pinned memory · GPU consumes continuously</p>
+  <!-- <h1>PyTorch DataLoader — inference pipeline</h1> -->
+  <!-- <p class="subtitle">CPU workers load &amp; preprocess in parallel · batches queue in pinned memory · GPU consumes continuously</p> -->
 
-  <svg viewBox="0 0 680 400" role="img" xmlns="http://www.w3.org/2000/svg">
+  <svg viewBox="0 0 680 280" role="img" xmlns="http://www.w3.org/2000/svg">
     <title>PyTorch DataLoader inference pipeline</title>
     <desc>Diagram showing multiple CPU worker processes loading and preprocessing data in parallel, building a prefetch queue of pinned-memory batches that the GPU consumes one at a time for inference.</desc>
 
@@ -78,7 +78,7 @@
     </defs>
 
     <!-- ───────── Dataset ───────── -->
-    <rect x="14" y="50" width="96" height="284" rx="10" fill="#F1EFE8" stroke="#888780" stroke-width="0.5"/>
+    <rect x="14" y="50" width="96" height="160" rx="10" fill="#F1EFE8" stroke="#888780" stroke-width="0.5"/>
     <text x="62" y="74" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#444441">Dataset</text>
     <!-- sample rows -->
     <rect x="24" y="90"  width="76" height="13" rx="3" fill="#B4B2A9" opacity="0.55"/>
@@ -86,15 +86,11 @@
     <rect x="24" y="128" width="76" height="13" rx="3" fill="#B4B2A9" opacity="0.55"/>
     <rect x="24" y="147" width="76" height="13" rx="3" fill="#B4B2A9" opacity="0.55"/>
     <rect x="24" y="166" width="76" height="13" rx="3" fill="#B4B2A9" opacity="0.55"/>
-    <rect x="24" y="185" width="76" height="13" rx="3" fill="#B4B2A9" opacity="0.55"/>
-    <rect x="24" y="204" width="76" height="13" rx="3" fill="#B4B2A9" opacity="0.55"/>
-    <rect x="24" y="223" width="76" height="13" rx="3" fill="#B4B2A9" opacity="0.55"/>
-    <rect x="24" y="242" width="76" height="13" rx="3" fill="#B4B2A9" opacity="0.55"/>
-    <text x="62" y="296" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#888780">images /</text>
-    <text x="62" y="312" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#888780">records</text>
+    <text x="62" y="190" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#888780">images</text>
+    <!-- <text x="62" y="248" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#888780">records</text> -->
 
     <!-- ───────── CPU Workers container ───────── -->
-    <rect x="128" y="28" width="162" height="328" rx="12" fill="none" stroke="#B5D4F4" stroke-width="1" stroke-dasharray="5 3"/>
+    <rect x="128" y="28" width="162" height="170" rx="12" fill="none" stroke="#B5D4F4" stroke-width="1" stroke-dasharray="5 3"/>
     <text x="209" y="16" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#185FA5">CPU workers  (num_workers=N)</text>
 
     <!-- worker 1 -->
@@ -109,23 +105,12 @@
     <text x="209" y="168" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#185FA5">load · decode · transform</text>
     <rect x="150" y="183" width="118" height="5" rx="2" fill="#378ADD" opacity="0.4" class="w-busy-2"/>
 
-    <!-- worker 3 -->
-    <rect x="140" y="210" width="138" height="66" rx="8" fill="#E6F1FB" stroke="#378ADD" stroke-width="0.5"/>
-    <text x="209" y="233" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#0C447C">Worker 3</text>
-    <text x="209" y="252" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#185FA5">load · decode · transform</text>
-    <rect x="150" y="267" width="118" height="5" rx="2" fill="#378ADD" opacity="0.4" class="w-busy-3"/>
-
-    <!-- worker N ghost -->
-    <rect x="140" y="296" width="138" height="42" rx="8" fill="none" stroke="#B5D4F4" stroke-width="0.5" stroke-dasharray="4 3"/>
-    <text x="209" y="317" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#185FA5">Worker N  ···</text>
-
     <!-- arrows: dataset → workers -->
     <line x1="111" y1="98"  x2="138" y2="75"  stroke="#378ADD" stroke-width="1" marker-end="url(#arr)" fill="none"/>
     <line x1="111" y1="192" x2="138" y2="160" stroke="#378ADD" stroke-width="1" marker-end="url(#arr)" fill="none"/>
-    <line x1="111" y1="248" x2="138" y2="244" stroke="#378ADD" stroke-width="1" marker-end="url(#arr)" fill="none"/>
 
     <!-- ───────── Prefetch queue container ───────── -->
-    <rect x="310" y="28" width="168" height="328" rx="12" fill="none" stroke="#9FE1CB" stroke-width="1" stroke-dasharray="5 3"/>
+    <rect x="310" y="28" width="168" height="200" rx="12" fill="none" stroke="#9FE1CB" stroke-width="1" stroke-dasharray="5 3"/>
     <text x="394" y="16" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#0F6E56">Prefetch queue  (prefetch_factor)</text>
 
     <!-- batch slots -->
@@ -137,58 +122,45 @@
     <text x="394" y="133" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#085041">Batch N+1</text>
     <text x="394" y="151" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#0F6E56">tensor · pinned memory</text>
 
-    <rect x="322" y="180" width="144" height="56" rx="8" fill="#E1F5EE" stroke="#1D9E75" stroke-width="0.5"/>
-    <text x="394" y="201" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#085041">Batch N+2</text>
-    <text x="394" y="219" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#0F6E56">tensor · pinned memory</text>
-
-    <!-- empty slot -->
-    <rect x="322" y="248" width="144" height="56" rx="8" fill="none" stroke="#9FE1CB" stroke-width="0.5" stroke-dasharray="4 3"/>
-    <text x="394" y="276" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#0F6E56">being filled ···</text>
-
     <!-- note -->
-    <text x="394" y="332" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#0F6E56">main thread blocks only</text>
-    <text x="394" y="348" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#0F6E56">if queue is empty</text>
+    <text x="394" y="196" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#0F6E56">main thread blocks only</text>
+    <text x="394" y="212" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#0F6E56">if queue is empty</text>
 
     <!-- arrows: workers → queue -->
-    <line x1="279" y1="75"  x2="319" y2="72"  stroke="#378ADD" stroke-width="1.5" marker-end="url(#arr)" fill="none"/>
+    <line x1="279" y1="75"  x2="319" y2="140" stroke="#378ADD" stroke-width="1.5" marker-end="url(#arr)" fill="none"/>
     <line x1="279" y1="160" x2="319" y2="140" stroke="#378ADD" stroke-width="1.5" marker-end="url(#arr)" fill="none"/>
-    <line x1="279" y1="244" x2="319" y2="208" stroke="#378ADD" stroke-width="1.5" marker-end="url(#arr)" fill="none"/>
 
     <!-- ───────── GPU ───────── -->
     <!-- glow layer (animated) -->
-    <rect class="gpu-glow" x="504" y="90" width="158" height="192" rx="12" fill="#1D9E75"/>
+    <rect class="gpu-glow" x="504" y="78" width="158" height="150" rx="12" fill="#1D9E75"/>
     <!-- body -->
-    <rect x="504" y="90" width="158" height="192" rx="12" fill="#E1F5EE" stroke="#1D9E75" stroke-width="0.5"/>
-    <text x="583" y="120" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#085041">GPU</text>
-    <text x="583" y="144" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#0F6E56">model forward pass</text>
-    <text x="583" y="160" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#0F6E56">inference</text>
+    <rect x="504" y="78" width="158" height="150" rx="12" fill="#E1F5EE" stroke="#1D9E75" stroke-width="0.5"/>
+    <text x="583" y="105" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#085041">GPU</text>
+    <text x="583" y="128" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#0F6E56">model forward pass</text>
+    <text x="583" y="144" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#0F6E56">inference</text>
     <!-- active batch pill -->
-    <rect x="524" y="182" width="118" height="28" rx="6" fill="#085041"/>
-    <text x="583" y="196" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#9FE1CB">processing batch N</text>
+    <rect x="524" y="164" width="118" height="28" rx="6" fill="#085041"/>
+    <text x="583" y="178" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#9FE1CB">processing batch N</text>
     <!-- VRAM label -->
-    <text x="583" y="256" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#0F6E56">VRAM</text>
+    <text x="583" y="210" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#0F6E56">VRAM</text>
 
     <!-- arrow: queue → GPU -->
-    <line x1="478" y1="145" x2="502" y2="175" stroke="#1D9E75" stroke-width="2" marker-end="url(#arr-teal)" fill="none"/>
-    <text x="484" y="156" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#0F6E56">.to(device)</text>
+    <line x1="478" y1="145" x2="502" y2="152" stroke="#1D9E75" stroke-width="2" marker-end="url(#arr-teal)" fill="none"/>
+    <!-- <text x="484" y="156" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#0F6E56">.to(device)</text> -->
 
-    <!-- output arrow -->
-    <line x1="583" y1="283" x2="583" y2="316" stroke="#888780" stroke-width="1.5" marker-end="url(#arr-gray)" fill="none"/>
-    <!-- predictions box -->
-    <rect x="520" y="318" width="126" height="44" rx="8" fill="#F1EFE8" stroke="#888780" stroke-width="0.5"/>
-    <text x="583" y="340" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#444441">Predictions</text>
+    <!-- output section removed -->
 
     <!-- ───────── main thread bar ───────── -->
-    <rect x="310" y="376" width="352" height="20" rx="6" fill="none" stroke="#D3D1C7" stroke-width="0.5"/>
-    <text x="486" y="386" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#888780">main thread — iterates DataLoader, calls model(batch)</text>
+    <!-- <rect x="310" y="376" width="352" height="20" rx="6" fill="none" stroke="#D3D1C7" stroke-width="0.5"/> -->
+    <!-- <text x="486" y="386" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#888780">main thread — iterates DataLoader, calls model(batch)</text> -->
 
     <!-- ───────── legend ───────── -->
-    <rect x="14"  y="376" width="10" height="10" rx="2" fill="#B5D4F4"/>
-    <text x="30"  y="381" dominant-baseline="central" font-size="11" fill="#185FA5">CPU workers</text>
-    <rect x="110" y="376" width="10" height="10" rx="2" fill="#9FE1CB"/>
-    <text x="126" y="381" dominant-baseline="central" font-size="11" fill="#0F6E56">GPU / queue</text>
-    <rect x="196" y="376" width="10" height="10" rx="2" fill="#D3D1C7"/>
-    <text x="212" y="381" dominant-baseline="central" font-size="11" fill="#888780">dataset / output</text>
+    <rect x="14"  y="252" width="10" height="10" rx="2" fill="#B5D4F4"/>
+    <text x="30"  y="257" dominant-baseline="central" font-size="11" fill="#185FA5">CPU workers</text>
+    <rect x="110" y="252" width="10" height="10" rx="2" fill="#9FE1CB"/>
+    <text x="126" y="257" dominant-baseline="central" font-size="11" fill="#0F6E56">GPU / queue</text>
+    <rect x="196" y="252" width="10" height="10" rx="2" fill="#D3D1C7"/>
+    <text x="212" y="257" dominant-baseline="central" font-size="11" fill="#888780">dataset</text>
   </svg>
 </div>
 </body>

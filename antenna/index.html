@@ -13,6 +13,8 @@
   <!-- Reveal.js core -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reset.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/monokai.css">
+  <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/zenburn.css"> -->
 
   <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -82,7 +84,7 @@
                 <i class="fa-solid fa-plug-circle-exclamation"></i>&nbsp; Integration barrier
               </p>
               <p style="font-size: 15pt;">
-                Public HTTP endpoint required — a blocker for HPC clusters and university firewalls.
+                Public HTTP endpoint required, a blocker for HPC clusters and university firewalls.
               </p>
             </div>
             <div class="card-red">
@@ -115,14 +117,14 @@
            ══════════════════════════════════════════════════════════ -->
       <section id="push-model">
         <h2>How the Original System Worked</h2>
-        <div class="content" style="display: grid; grid-template-columns: 1fr 3fr; gap: 20px; align-items: center;">
+        <div class="content" style="display: grid; grid-template-columns: 2fr 3fr; gap: 0px; align-items: center;">
           <img src="assets/diagrams/before-simple.png"
                alt="Diagram A — Push model: Antenna pushes to a public Processing Service endpoint and waits on a synchronous blocking response"
                class="diagram-full">
-          <img id="push-model-seq" src="assets/diagrams/antenna-a-push-model-before.svg"
+          <img id="push-model-seq" src="assets/diagrams/antenna-a-push-model-before.png"
                alt="Diagram A — Push model: Antenna pushes to a public Processing Service endpoint and waits on a synchronous blocking response"
                class="diagram-full fragment"
-               style="width: 100%; height: auto; transform: scale(0.9);">
+               style="width: 100%; height: auto; transform: scale(0.8);">
         </div>
       </section>
 
@@ -211,7 +213,7 @@ ami worker</code></pre>
       <section id="batch-data-loader">
         <h2>Why Batch Data Loading Matters</h2>
         <div class="content">
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-bottom: 16px;">
+          <!-- <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-bottom: 16px;">
             <div class="card-red">
               <p style="font-size: 12pt; color: var(--primary-color); font-weight: 700; margin-bottom: 8px;">
                 <i class="fa-solid fa-arrow-up-from-bracket"></i>&nbsp; Request / response or push
@@ -230,12 +232,15 @@ ami worker</code></pre>
                 <li>Prefetched batches keep data ready while the GPU processes the current one</li>
               </ul>
             </div>
-          </div>
-          <div class="card-green">
+          </div> -->
+          <iframe src="assets/diagrams/dataloader-diagram.html"
+          class="diagram-full" style="flex: 1; border: none;"          
+          title="PyTorch Data loading"></iframe>
+          <!-- <div class="card-green">
             <p style="font-size: 15pt; text-align: center;">
               Image loading becomes a queue the worker keeps full — not a blocking request.
-            </p>
-          </div>
+            </p> -->
+          <!-- </div> -->
         </div>
       </section>
 
@@ -254,10 +259,17 @@ ami worker</code></pre>
                   title="Before — sequential pipeline, GPU starved"></iframe>
         </div>
       </section>
+      <section id="fix1-batches">
+        <h2>Fixes 1-2 &mdash; Multiple Batches, async posts</h2>
+        <div class="content">
+          <iframe src="assets/timeline-before.html"
+                  class="diagram-full" style="flex: 1; border: none;"
+                  title="Before — sequential pipeline, GPU starved"></iframe>
+        </div>
+      </section>
 
-      <!-- ══════════════════════════════════════════════════════════
-           SLIDE 10 · Fix 1 — Keep data on the GPU
-           ══════════════════════════════════════════════════════════ -->
+
+      
       <section id="fix1-gpu-tensors">
         <h2>Fix 1 &mdash; Keep Data on the GPU Between Stages</h2>
         <div class="content">
@@ -275,7 +287,8 @@ ami worker</code></pre>
         <h2>Fix 2 &mdash; Pinned Memory &amp; Batch Collation</h2>
         <div class="content">
           <p class="slide-intro"><code>pin_memory=True</code> enables <strong>DMA transfers</strong>; batch collation moved to DataLoader workers — GPU pipeline never stalls waiting for data.</p>
-          <pre class="code-block" style="flex: 1; font-size: 15pt;"><code>DataLoader(
+          <pre class="code-block" style="flex: 1; font-size: 15pt;">
+            <code class="language-python" data-trim data-noescape>DataLoader(
   dataset,
   batch_size=32,
   pin_memory=True,      # DMA transfer
@@ -446,6 +459,7 @@ ami worker</code></pre>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/plugin/highlight/highlight.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/reveal.js-plugins@latest/customcontrols/plugin.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/reveal.js-plugins@latest/chalkboard/plugin.js"></script>
   <script>
@@ -476,6 +490,7 @@ ami worker</code></pre>
         chalkWidth: 3,
       },
       plugins: [
+        RevealHighlight,
         RevealChalkboard,
         RevealCustomControls,
       ],

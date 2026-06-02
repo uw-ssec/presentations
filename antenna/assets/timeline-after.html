@@ -14,107 +14,124 @@
     height: 100vh;
     font-family: ui-sans-serif, system-ui, sans-serif;
   }
-  svg { width: 100%; max-width: 900px; height: auto; }
+  svg { width: 100%; height: 100%; display: block; }
 </style>
 </head>
 <body>
-<svg viewBox="0 0 780 230" role="img" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 780 370" role="img" xmlns="http://www.w3.org/2000/svg">
   <title>After — pipelined, GPU always busy</title>
-  <desc>Three horizontal timelines showing dataloader workers, main thread, and GPU after the optimization. All three resources are active in parallel with no idle segments. GPU runs continuously.</desc>
+  <desc>Four horizontal timelines showing dataloader workers, main thread, async , and GPU after the optimization. GPU runs continuously with no idle time.</desc>
 
+  <g transform="translate(0,8) scale(1,1.35)">
   <!-- title -->
   <text x="10" y="20" font-size="15" font-weight="500" fill="#1a1a1a" letter-spacing="-0.2">After — pipelined, GPU always busy</text>
 
   <!-- lane labels -->
   <text x="10" y="52"  font-size="11" fill="#666">Dataloader workers</text>
   <text x="10" y="102" font-size="11" fill="#666">Main thread (CPU)</text>
-  <text x="10" y="152" font-size="11" fill="#666">GPU</text>
+  <text x="10" y="152" font-size="11" fill="#666">async</text>
+  <text x="10" y="202" font-size="11" fill="#666">GPU</text>
 
-  <!-- ── Dataloader workers (y=40, h=24) ── -->
+  <!-- ── Dataloader workers (y=40, h=24) — no gaps ── -->
   <rect x="160" y="40" width="110" height="24" rx="4" fill="#B5D4F4"/>
-  <text x="215" y="56" text-anchor="middle" font-size="10" fill="#0C447C">fetch + collate B1</text>
+  <text x="215" y="56" text-anchor="middle" font-size="10" fill="#0C447C">fetch + collate </text>
 
   <rect x="270" y="40" width="120" height="24" rx="4" fill="#B5D4F4"/>
-  <text x="330" y="56" text-anchor="middle" font-size="10" fill="#0C447C">fetch + collate B2</text>
+  <text x="330" y="56" text-anchor="middle" font-size="10" fill="#0C447C">fetch + collate </text>
 
   <rect x="390" y="40" width="120" height="24" rx="4" fill="#B5D4F4"/>
-  <text x="450" y="56" text-anchor="middle" font-size="10" fill="#0C447C">fetch + collate B3</text>
+  <text x="450" y="56" text-anchor="middle" font-size="10" fill="#0C447C">fetch + collate </text>
 
   <rect x="510" y="40" width="120" height="24" rx="4" fill="#B5D4F4"/>
-  <text x="570" y="56" text-anchor="middle" font-size="10" fill="#0C447C">fetch + collate B4</text>
+  <text x="570" y="56" text-anchor="middle" font-size="10" fill="#0C447C">fetch + collate </text>
 
   <text x="642" y="56" font-size="13" fill="#999">···</text>
 
-  <!-- ── Main thread (y=90, h=24) ── -->
-  <!-- DMA B1 via CUDA stream -->
-  <rect x="160" y="90" width="110" height="24" rx="4" fill="#D3D1C7"/>
-  <text x="215" y="106" text-anchor="middle" font-size="10" fill="#3a3a38">DMA B1 (CUDA stream)</text>
+  <!-- ── Main thread (y=90, h=24) — model(B) spans full detect+classify per batch ── -->
+  <rect x="270" y="90" width="180" height="24" rx="4" fill="#D3D1C7"/>
+  <text x="360" y="106" text-anchor="middle" font-size="10" fill="#3a3a38">model()</text>
 
-  <!-- DMA B2 + post B1 -->
-  <rect x="270" y="90" width="65" height="24" rx="4" fill="#D3D1C7"/>
-  <text x="302" y="106" text-anchor="middle" font-size="10" fill="#3a3a38">DMA B2</text>
+  <rect x="450" y="90" width="120" height="24" rx="4" fill="#D3D1C7"/>
+  <text x="510" y="106" text-anchor="middle" font-size="10" fill="#3a3a38">model()</text>
 
-  <rect x="335" y="90" width="55" height="24" rx="4" fill="#D3D1C7"/>
-  <text x="362" y="106" text-anchor="middle" font-size="10" fill="#3a3a38">post B1</text>
-
-  <!-- DMA B3 + post B2 -->
-  <rect x="390" y="90" width="65" height="24" rx="4" fill="#D3D1C7"/>
-  <text x="422" y="106" text-anchor="middle" font-size="10" fill="#3a3a38">DMA B3</text>
-
-  <rect x="455" y="90" width="55" height="24" rx="4" fill="#D3D1C7"/>
-  <text x="482" y="106" text-anchor="middle" font-size="10" fill="#3a3a38">post B2</text>
-
-  <!-- DMA B4 + post B3 -->
-  <rect x="510" y="90" width="65" height="24" rx="4" fill="#D3D1C7"/>
-  <text x="542" y="106" text-anchor="middle" font-size="10" fill="#3a3a38">DMA B4</text>
-
-  <rect x="575" y="90" width="55" height="24" rx="4" fill="#D3D1C7"/>
-  <text x="602" y="106" text-anchor="middle" font-size="10" fill="#3a3a38">post B3</text>
+  <rect x="570" y="90" width="60" height="24" rx="4" fill="#D3D1C7"/>
+  <text x="600" y="106" text-anchor="middle" font-size="10" fill="#3a3a38">model()</text>
 
   <text x="642" y="106" font-size="13" fill="#999">···</text>
 
-  <!-- ── GPU (y=140, h=24) ── -->
-  <!-- GPU starts after first DMA, then never stops -->
-  <rect x="270" y="140" width="120" height="24" rx="4" fill="#9FE1CB"/>
-  <text x="330" y="156" text-anchor="middle" font-size="10" fill="#085041">detect B1</text>
+  <!-- ── Async /  (y=140, h=24) ── -->
+  <!-- to(cuda) : ends at x=270 where detect  starts -->
+  <rect x="200" y="140" width="70" height="24" rx="4" fill="#F4D6A0"/>
+  <text x="235" y="156" text-anchor="middle" font-size="9" fill="#6A4300">to(cuda) </text>
 
-  <rect x="390" y="140" width="60" height="24" rx="4" fill="#5DCAA5"/>
-  <text x="420" y="156" text-anchor="middle" font-size="10" fill="#085041">classify B1</text>
+  <!-- to(cuda)  fits in classify  window (390–450); ends at x=450 = detect  start -->
+  <rect x="405" y="140" width="45" height="24" rx="4" fill="#F4D6A0"/>
+  <text x="427" y="156" text-anchor="middle" font-size="9" fill="#6A4300">to(cuda)</text>
 
-  <rect x="450" y="140" width="60" height="24" rx="4" fill="#9FE1CB"/>
-  <text x="480" y="156" text-anchor="middle" font-size="10" fill="#085041">detect B2</text>
+  <!-- post  starts AFTER classify  ends (x=450) -->
+  <rect x="450" y="140" width="45" height="24" rx="4" fill="#C8B8E8"/>
+  <text x="472" y="156" text-anchor="middle" font-size="9" fill="#3A1878">post </text>
 
-  <rect x="510" y="140" width="60" height="24" rx="4" fill="#5DCAA5"/>
-  <text x="540" y="156" text-anchor="middle" font-size="10" fill="#085041">classify B2</text>
+  <!-- to(cuda)  fits in classify  window (510–570); ends at x=570 = detect  start -->
+  <rect x="525" y="140" width="45" height="24" rx="4" fill="#F4D6A0"/>
+  <text x="547" y="156" text-anchor="middle" font-size="9" fill="#6A4300">to(cuda)</text>
 
-  <rect x="570" y="140" width="60" height="24" rx="4" fill="#9FE1CB"/>
-  <text x="600" y="156" text-anchor="middle" font-size="10" fill="#085041">detect B3</text>
+  <!-- post  starts AFTER classify  ends (x=570) -->
+  <rect x="570" y="140" width="45" height="24" rx="4" fill="#C8B8E8"/>
+  <text x="592" y="156" text-anchor="middle" font-size="9" fill="#3A1878">post </text>
 
-  <text x="642" y="156" font-size="13" fill="#999">···</text>
+  <!-- post  starts after detect  ends (x=630) -->
+  <rect x="630" y="140" width="45" height="24" rx="4" fill="#C8B8E8"/>
+  <text x="652" y="156" text-anchor="middle" font-size="9" fill="#3A1878">post </text>
+
+  <!-- ── GPU (y=190, h=24) — no gaps ── -->
+  <rect x="270" y="190" width="120" height="24" rx="4" fill="#9FE1CB"/>
+  <text x="330" y="206" text-anchor="middle" font-size="10" fill="#085041">detect </text>
+
+  <rect x="390" y="190" width="60" height="24" rx="4" fill="#5DCAA5"/>
+  <text x="420" y="206" text-anchor="middle" font-size="10" fill="#085041">classify </text>
+
+  <rect x="450" y="190" width="60" height="24" rx="4" fill="#9FE1CB"/>
+  <text x="480" y="206" text-anchor="middle" font-size="10" fill="#085041">detect </text>
+
+  <rect x="510" y="190" width="60" height="24" rx="4" fill="#5DCAA5"/>
+  <text x="540" y="206" text-anchor="middle" font-size="10" fill="#085041">classify </text>
+
+  <rect x="570" y="190" width="60" height="24" rx="4" fill="#9FE1CB"/>
+  <text x="600" y="206" text-anchor="middle" font-size="10" fill="#085041">detect </text>
+
+  <text x="642" y="206" font-size="13" fill="#999">···</text>
 
   <!-- "GPU busy continuously" bracket -->
-  <line x1="270" y1="170" x2="630" y2="170" stroke="#1D9E75" stroke-width="1"/>
-  <line x1="270" y1="167" x2="270" y2="173" stroke="#1D9E75" stroke-width="1"/>
-  <line x1="630" y1="167" x2="630" y2="173" stroke="#1D9E75" stroke-width="1"/>
-  <text x="450" y="181" text-anchor="middle" font-size="10" fill="#0F6E56">GPU busy continuously — no idle</text>
+  <line x1="270" y1="220" x2="630" y2="220" stroke="#1D9E75" stroke-width="1"/>
+  <line x1="270" y1="217" x2="270" y2="223" stroke="#1D9E75" stroke-width="1"/>
+  <line x1="630" y1="217" x2="630" y2="223" stroke="#1D9E75" stroke-width="1"/>
+  <text x="450" y="231" text-anchor="middle" font-size="10" fill="#0F6E56">GPU busy continuously — no idle</text>
 
   <!-- time axis -->
-  <line x1="160" y1="196" x2="748" y2="196" stroke="#ccc" stroke-width="1"/>
-  <polygon points="748,193 756,196 748,199" fill="#ccc"/>
-  <text x="760" y="200" font-size="10" fill="#999">time →</text>
+  <line x1="160" y1="242" x2="748" y2="242" stroke="#ccc" stroke-width="1"/>
+  <polygon points="748,239 756,242 748,245" fill="#ccc"/>
+  <text x="760" y="246" font-size="10" fill="#999">time →</text>
 
   <!-- legend -->
-  <rect x="160" y="214" width="11" height="11" rx="2" fill="#B5D4F4"/>
-  <text x="176" y="224" font-size="10" fill="#0C447C">dataloader workers</text>
+  <rect x="160" y="256" width="11" height="11" rx="2" fill="#B5D4F4"/>
+  <text x="176" y="266" font-size="10" fill="#0C447C">dataloader workers</text>
 
-  <rect x="310" y="214" width="11" height="11" rx="2" fill="#D3D1C7"/>
-  <text x="326" y="224" font-size="10" fill="#3a3a38">main thread (DMA + post)</text>
+  <rect x="305" y="256" width="11" height="11" rx="2" fill="#D3D1C7"/>
+  <text x="321" y="266" font-size="10" fill="#3a3a38">main thread</text>
 
-  <rect x="490" y="214" width="11" height="11" rx="2" fill="#9FE1CB"/>
-  <text x="506" y="224" font-size="10" fill="#085041">GPU detect</text>
+  <rect x="400" y="256" width="11" height="11" rx="2" fill="#F4D6A0"/>
+  <text x="416" y="266" font-size="10" fill="#6A4300">to(cuda)</text>
 
-  <rect x="580" y="214" width="11" height="11" rx="2" fill="#5DCAA5"/>
-  <text x="596" y="224" font-size="10" fill="#085041">GPU classify</text>
+  <rect x="475" y="256" width="11" height="11" rx="2" fill="#C8B8E8"/>
+  <text x="491" y="266" font-size="10" fill="#3A1878">post</text>
+
+  <rect x="530" y="256" width="11" height="11" rx="2" fill="#9FE1CB"/>
+  <text x="546" y="266" font-size="10" fill="#085041">GPU detect</text>
+
+  <rect x="620" y="256" width="11" height="11" rx="2" fill="#5DCAA5"/>
+  <text x="636" y="266" font-size="10" fill="#085041">GPU classify</text>
+  </g>
 </svg>
 </body>
 </html>
