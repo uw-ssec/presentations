@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Antenna Poster — SciPy 2026</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Encode+Sans:wght@300;400;500;600;700;800&family=Encode+Sans+Compressed:wght@400;600;700&family=Open+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    /* ── SSEC design tokens ─────────────────────────────────────────── */
+    :root {
+      --purple-950: #1a0038;
+      --purple-900: #32006e;
+      --purple-700: #4b2e83;
+      --purple-600: #5a3d94;
+      --purple-200: #c5b4e3;
+      --purple-100: #e0d7f0;
+      --gold-700:   #85754d;
+      --gold-500:   #b7a57a;
+      --gold-200:   #e8e3d3;
+      --gold-50:    #f9f7f2;
+      --teal-600:   #1fb8b0;
+      --teal-500:   #2ad2c9;
+      --teal-300:   #8fe9e4;
+      --green-600:  #2e7d32;
+      --green-100:  #e8f5e9;
+      --neutral-900: #1a1d1f;
+      --neutral-700: #373a3c;
+      --neutral-600: #555a5e;
+      --neutral-300: #c2c6ca;
+      --neutral-200: #d5d8de;
+      --neutral-100: #eceef0;
+      --white:       #ffffff;
+
+      --font-heading: "Encode Sans", Helvetica, sans-serif;
+      --font-ui:      "Encode Sans Compressed", "Encode Sans", Helvetica, sans-serif;
+      --font-body:    "Open Sans", Helvetica, sans-serif;
+      --font-mono:    "JetBrains Mono", "Fira Code", monospace;
+    }
+
+    /* ── Page & reset ───────────────────────────────────────────────── */
+    @page { size: 48in 36in landscape; margin: 0; }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 48in;
+      height: 36in;
+      overflow: hidden;
+      background: var(--white);
+      font-family: var(--font-body);
+      color: var(--neutral-900);
+    }
+
+    /* ── Root grid ──────────────────────────────────────────────────── */
+    .poster {
+      width: 48in;
+      height: 36in;
+      display: grid;
+      grid-template-rows: 1.8in 1fr 0.9in;   /* header | body | footer */
+      grid-template-columns: 1fr;
+    }
+
+    /* ── Header ─────────────────────────────────────────────────────── */
+    .header {
+      background: var(--purple-950);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 0.7in;
+      border-bottom: 0.08in solid var(--gold-500);
+    }
+
+    .header-title {
+      font-family: var(--font-heading);
+      font-size: 52pt;
+      font-weight: 700;
+      color: var(--white);
+      max-width: 28in;
+      line-height: 1.15;
+    }
+
+    .header-event {
+      font-family: var(--font-ui);
+      font-size: 34pt;
+      font-weight: 700;
+      color: var(--teal-300);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.06in;
+    }
+
+    .header-affil {
+      font-family: var(--font-ui);
+      font-size: 26pt;
+      color: var(--gold-200);
+      text-align: right;
+      line-height: 1.5;
+    }
+
+    /* ── Body — 3 columns ───────────────────────────────────────────── */
+    .body {
+      display: grid;
+      grid-template-columns: 11.5in 25in 11.5in;
+      overflow: hidden;
+    }
+
+    /* ── Shared column styles ────────────────────────────────────────── */
+    .col {
+      padding: 0.45in 0.5in;
+      display: flex;
+      flex-direction: column;
+      gap: 0.22in;
+      overflow: hidden;
+    }
+
+    .col-left {
+      background:
+        linear-gradient(90deg, rgba(75, 46, 131, 0.08), transparent 60%),
+        var(--white);
+      border-right: 2px solid var(--neutral-200);
+    }
+
+    .col-right {
+      background:
+        linear-gradient(270deg, rgba(75, 46, 131, 0.08), transparent 60%),
+        var(--white);
+      border-left: 2px solid var(--neutral-200);
+    }
+
+    /* ── Center column ───────────────────────────────────────────────── */
+    .col-center {
+      background: var(--purple-950);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.5in 0.6in 0.3in;
+      gap: 0;
+    }
+
+    /* ── Column section headings ─────────────────────────────────────── */
+    .col-heading {
+      font-family: var(--font-heading);
+      font-size: 64pt;
+      font-weight: 800;
+      color: var(--purple-700);
+      padding-bottom: 0.1in;
+      border-bottom: 4px solid var(--gold-500);
+      display: flex;
+      align-items: center;
+      gap: 0.12in;
+      flex-shrink: 0;
+    }
+
+    .col-heading::before {
+      content: "";
+      display: inline-block;
+      width: 0.14in;
+      height: 0.32in;
+      background: var(--purple-700);
+      transform: skewX(-15deg);
+      flex-shrink: 0;
+    }
+
+    /* ── Problem blurb ───────────────────────────────────────────────── */
+    .problem-text {
+      font-size: 18pt;
+      line-height: 1.5;
+      color: var(--neutral-700);
+      flex-shrink: 0;
+    }
+
+    .spacer {
+      height: 1.0in;
+      flex-shrink: 0;
+    }
+    /* ── Diagram labels ──────────────────────────────────────────────── */
+    .diagram-label {
+      font-family: var(--font-ui);
+      font-size: 34pt;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+    .label-before { color: var(--purple-700); }
+    .label-after  { color: var(--green-600);  }
+
+    /* ── Diagram iframes / images ────────────────────────────────────── */
+    .diagram-iframe {
+      border: none;
+      border-radius: 8px;
+      display: block;
+      flex-shrink: 0;
+    }
+
+    .diagram-img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+
+    /* ── Outcome cards (left column) ─────────────────────────────────── */
+    .outcome-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.12in;
+      flex-shrink: 0;
+    }
+
+    .card-green {
+      background: var(--green-100);
+      border-left: 6px solid var(--green-600);
+      border-radius: 8px;
+      padding: 0.12in 0.18in;
+    }
+
+    .card-green .card-title {
+      font-family: var(--font-ui);
+      font-size: 24pt;
+      font-weight: 700;
+      color: var(--green-600);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 4pt;
+    }
+
+    .card-green p {
+      font-size: 24pt;
+      line-height: 1.45;
+      color: var(--neutral-700);
+    }
+
+    /* ── Center — hero stat ──────────────────────────────────────────── */
+    .hero-block {
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .hero-number {
+      font-family: var(--font-heading);
+      font-size: 220pt;
+      font-weight: 800;
+      color: var(--white);
+      line-height: 0.85;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-sub {
+      font-family: var(--font-heading);
+      font-size: 98pt;
+      font-weight: 600;
+      color: var(--teal-300);
+      margin-top: 0.1in;
+      line-height: 1.25;
+    }
+
+    .hero-detail {
+      font-family: var(--font-body);
+      font-size: 62pt;
+      color: var(--purple-200);
+      margin-top: 0.08in;
+    }
+
+    /* ── Center — image ──────────────────────────────────────────────── */
+    .center-img {
+      width: 100%;
+      object-fit: cover;
+      object-position: center top;
+      border-radius: 12px;
+      display: block;
+      flex: 1;
+      min-height: 0;
+      height: 0;
+    }
+
+    /* ── Center — authors ────────────────────────────────────────────── */
+    .authors-block {
+      text-align: center;
+      flex-shrink: 0;
+      padding-top: 0.18in;
+      border-top: 2px solid rgba(255,255,255,0.15);
+      width: 100%;
+    }
+
+    .authors-names {
+      font-family: var(--font-heading);
+      font-size: 36pt;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 0.06in;
+    }
+
+    .authors-affil {
+      font-family: var(--font-body);
+      font-size: 24pt;
+      color: var(--purple-200);
+      line-height: 1.5;
+    }
+
+    /* ── Right — optimization cards ─────────────────────────────────── */
+    .fix-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1in;
+      flex-shrink: 0;
+    }
+
+    .card-fix {
+      background: var(--purple-100);
+      border-left: 6px solid var(--purple-700);
+      border-radius: 8px;
+      padding: 0.1in 0.16in;
+      display: grid;
+      grid-template-columns: 3.6in 1fr;
+      gap: 0.12in;
+      align-items: start;
+    }
+
+    .fix-name {
+      font-family: var(--font-mono);
+      font-size: 24pt;
+      font-weight: 500;
+      color: var(--purple-700);
+      line-height: 1.3;
+    }
+
+    .fix-desc {
+      font-size: 24pt;
+      color: var(--neutral-700);
+      line-height: 1.4;
+    }
+
+    /* ── Right — result stat ─────────────────────────────────────────── */
+    .result-stat {
+      background: linear-gradient(135deg, var(--purple-100), var(--gold-50));
+      border-radius: 12px;
+      padding: 0.18in 0.22in;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .result-numbers {
+      font-family: var(--font-heading);
+      font-size: 40pt;
+      font-weight: 800;
+      color: var(--neutral-900);
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 0.15in;
+    }
+
+    .result-before {
+      color: var(--purple-700);
+      text-decoration: line-through;
+      text-decoration-color: rgba(75,46,131,0.5);
+    }
+
+    .result-arrow {
+      color: var(--gold-700);
+      font-size: 32pt;
+    }
+
+    .result-after {
+      color: var(--green-600);
+    }
+
+    .result-desc {
+      font-size: 17pt;
+      color: var(--neutral-600);
+      margin-top: 0.06in;
+    }
+
+    /* ── Footer ──────────────────────────────────────────────────────── */
+    .footer {
+      background: var(--gold-50);
+      border-top: 3px solid var(--gold-500);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5in;
+      padding: 0 0.7in;
+    }
+
+    .footer-link {
+      font-family: var(--font-mono);
+      font-size: 36pt;
+      color: var(--neutral-700);
+    }
+
+    .footer-sep {
+      color: var(--gold-500);
+      font-size: 30pt;
+    }
+
+  </style>
+</head>
+<body>
+<div class="poster">
+
+  <!-- ══ HEADER ══════════════════════════════════════════════════════ -->
+  <header class="header">
+    <div>
+      <div class="header-event">SciPy 2026</div>
+      <div class="header-title">Efficient Federated Inference on Entomology Images with PyTorch</div>
+    </div>
+    <div class="header-affil">
+      UW eScience Institute<br>
+      Mila Institute
+    </div>
+  </header>
+
+  <!-- ══ BODY ════════════════════════════════════════════════════════ -->
+  <div class="body">
+
+    <!-- ── LEFT: Architecture ──────────────────────────────────────── -->
+    <div class="col col-left">
+      <div class="col-heading">Pull Architecture</div>
+
+      <div class="diagram-label label-before">Antenna Platform</div>
+      <img
+        src="assets/antenna-screenshot-crop.png"
+        alt="Antenna web platform — project navigation, image review, and classification workflow"
+        class="diagram-img"
+        style="max-height:9.6in; object-fit:contain; object-position:left top; flex-shrink:0;"/>
+
+        <div class="spacer"></div>
+        <div class="diagram-label label-before">Before — Push model</div>
+        <p class="problem-text">
+          Original design required a <strong>public HTTP endpoint</strong> — blocking HPC clusters and firewalled networks.
+          Synchronous requests limited throughput.
+        </p>
+        <iframe
+        src="assets/diagrams/antenna-orchestration.html"
+        class="diagram-iframe"
+        style="width:100%; height:3.8in;"
+        scrolling="no">
+      </iframe>
+      
+      <div class="spacer"></div>
+      <div class="diagram-label label-after">After — Pull model</div>
+      <img
+        src="assets/diagrams/after-simple.png"
+        alt="Pull model: workers poll Antenna job queue"
+        class="diagram-img"
+        style="max-height:4.4in; object-fit:contain; object-position:left;">
+
+      <div class="outcome-list">
+        <div class="card-green">
+          <div class="card-title">Deploy anywhere</div>
+          <p>Workers run on HPC clusters, firewalled networks, or local machines — outbound HTTP only.</p>
+        </div>
+        <div class="card-green">
+          <div class="card-title">Multi-institution</div>
+          <p>Workers span institutions and hardware types; no uniformity required.</p>
+        </div>
+        <div class="card-green">
+          <div class="card-title">Horizontal scaling</div>
+          <p>Each additional worker independently polls and claims batches — no Antenna changes needed.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CENTER: Core message ────────────────────────────────────── -->
+    <div class="col-center">
+      <div class="hero-block">
+        <div class="hero-number">15×</div>
+        <div class="hero-sub">faster GPU inference</div>
+        <div class="hero-detail">Architecture inversion &amp; PyTorch pipeline optimization</div>
+      </div>
+
+      <img
+        src="assets/intro.webp"
+        alt="Automated camera-trap insect images classified by Antenna"
+        class="center-img">
+
+      <div class="authors-block">
+        <div class="authors-names">
+          Carlos Garcia Jurado Suarez&thinsp;&middot;&thinsp;Michael Bunsen&thinsp;&middot;&thinsp;Vanessa Mac
+        </div>
+        <div class="authors-affil">
+          UW eScience Institute &nbsp;/&nbsp; Mila Institute &mdash; Quebec AI Institute
+        </div>
+      </div>
+    </div>
+
+    <!-- ── RIGHT: GPU optimizations ───────────────────────────────── -->
+    <div class="col col-right">
+      <div class="col-heading">GPU Pipeline</div>
+
+      <div class="diagram-label label-before">PyTorch DataLoader</div>
+      <iframe
+        src="assets/diagrams/dataloader-diagram.html"
+        class="diagram-iframe"
+        style="width:100%; height:3.2in; flex-shrink:0;"
+        scrolling="no">
+      </iframe>
+
+      <div class="spacer"></div>
+      <div class="diagram-label label-before">Before — GPU starved</div>
+      <iframe
+        src="assets/timeline-before.html"
+        class="diagram-iframe"
+        style="width:100%; height:2.8in;"
+        scrolling="no">
+      </iframe>
+
+      <div class="fix-list">
+        <div class="card-fix">
+          <div class="fix-name">RESTDataset<br>IterableDataset</div>
+          <div class="fix-desc">Pulls batches from <code>/jobs</code> API continuously — GPU never starves waiting for data</div>
+        </div>
+        <div class="card-fix">
+          <div class="fix-name">pin_memory=True</div>
+          <div class="fix-desc">DMA transfers from pinned host memory — eliminates extra CPU copy on every batch</div>
+        </div>
+        <div class="card-fix">
+          <div class="fix-name">torch.cuda.Stream</div>
+          <div class="fix-desc">Prefetch batch N+1 while GPU processes batch N — transfer and compute overlap</div>
+        </div>
+        <div class="card-fix">
+          <div class="fix-name">ThreadPoolExecutor</div>
+          <div class="fix-desc">Result posting moved to background thread — GPU never idles on HTTP round-trips</div>
+        </div>
+      </div>
+
+      <div class="spacer"></div>
+      <div class="diagram-label label-after">After — GPU always busy</div>
+      <iframe
+        src="assets/timeline-after.html"
+        class="diagram-iframe"
+        style="width:100%; height:2.8in;"
+        scrolling="no">
+      </iframe>
+
+      <div class="result-stat">
+        <div class="result-numbers">
+          <span class="result-before">1,674s</span>
+          <span class="result-arrow">&rarr;</span>
+          <span class="result-after">108s</span>
+        </div>
+        <div class="result-desc">per 1,000 images &middot; RTX A6000 &middot; 42K-image job in 77 min</div>
+      </div>
+    </div>
+
+  </div><!-- /body -->
+
+  <!-- ══ FOOTER ══════════════════════════════════════════════════════ -->
+  <footer class="footer">
+    <span class="footer-link">insectai.org</span>
+    <span class="footer-sep">&middot;</span>
+    <span class="footer-link">github.com/RolnickLab/antenna</span>
+    <span class="footer-sep">&middot;</span>
+    <span class="footer-link">github.com/RolnickLab/ami-data-companion</span>
+  </footer>
+
+</div>
+</body>
+</html>
