@@ -6,19 +6,18 @@
 <!-- <title>Before — GPU pipeline timeline</title> -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
+  html, body {
     background: transparent;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
+    height: 100%;
+    overflow: hidden;
     font-family: ui-sans-serif, system-ui, sans-serif;
   }
-  svg { width: 100%; height: auto; display: block; }
+  body { display: flex; align-items: stretch; }
+  svg { width: 100%; height: 100%; display: block; }
 </style>
 </head>
 <body>
-<svg viewBox="0 0 780 320" role="img" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 780 228" preserveAspectRatio="xMidYMid meet" role="img" xmlns="http://www.w3.org/2000/svg">
   <!-- <title>Before — sequential pipeline, GPU starved</title> -->
   <desc>Three horizontal timelines showing dataloader workers, main thread, and GPU before the optimization. GPU and main thread have large red idle segments.</desc>
 

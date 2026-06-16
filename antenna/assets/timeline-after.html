@@ -6,23 +6,22 @@
 <title>After — GPU pipeline timeline</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
+  html, body {
     background: transparent;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
+    height: 100%;
+    overflow: hidden;
     font-family: ui-sans-serif, system-ui, sans-serif;
   }
-  svg { width: 100%; height: auto; display: block; }
+  body { display: flex; align-items: stretch; }
+  svg { width: 100%; height: 100%; display: block; }
 </style>
 </head>
 <body>
-<svg viewBox="0 0 780 370" role="img" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 780 308" preserveAspectRatio="xMidYMid meet" role="img" xmlns="http://www.w3.org/2000/svg">
   <title>After — pipelined, GPU always busy</title>
   <desc>Four horizontal timelines showing dataloader workers, main thread, async , and GPU after the optimization. GPU runs continuously with no idle time.</desc>
 
-  <g transform="translate(0,8) scale(1,1.35)">
+  <g transform="translate(0,8) scale(1,1.1)">
   <!-- lane labels -->
   <text x="10" y="52"  font-size="11" fill="#666">Dataloader workers</text>
   <text x="10" y="102" font-size="11" fill="#666">async</text>

@@ -161,7 +161,7 @@ ami worker</code></pre>
       <!-- ══════════════════════════════════════════════════════════
            SLIDE 7 · Part 1 results
            ══════════════════════════════════════════════════════════ -->
-      <section id="part1-results">
+      <section id="part1-results" data-visibility="hidden">
         <h2>Architecture: Results</h2>
         <div class="content">
           <div style="display: grid; gap: 16px; margin-bottom: 16px;">
@@ -197,7 +197,7 @@ ami worker</code></pre>
             </p>
           </div>
         </div>
-      </section>
+      </section> -->
 
       <!-- ══════════════════════════════════════════════════════════
            SECTION DIVIDER · Part 2
@@ -207,42 +207,6 @@ ami worker</code></pre>
         <p>From 1,674 seconds to 108 seconds &mdash; a 15&times; improvement on a single GPU</p>
       </section> -->
 
-      <!-- ══════════════════════════════════════════════════════════
-           SLIDE 8 · Why batch data loading matters
-           ══════════════════════════════════════════════════════════ -->
-      <section id="batch-data-loader">
-        <h2>Optimization: Data Loading</h2>
-        <div class="content">
-          <!-- <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-bottom: 16px;">
-            <div class="card-red">
-              <p style="font-size: 12pt; color: var(--primary-color); font-weight: 700; margin-bottom: 8px;">
-                <i class="fa-solid fa-arrow-up-from-bracket"></i>&nbsp; Request / response or push
-              </p>
-              <ul>
-                <li>Caller sends images and waits — can't see GPU throughput or safe concurrency</li>
-                <li>Network and image I/O stay on the critical path</li>
-              </ul>
-            </div>
-            <div class="card-blue">
-              <p style="font-size: 12pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 8px;">
-                <i class="fa-solid fa-boxes-stacked"></i>&nbsp; Batch data loader
-              </p>
-              <ul>
-                <li>Worker chooses batch size and pulls when ready</li>
-                <li>Prefetched batches keep data ready while the GPU processes the current one</li>
-              </ul>
-            </div>
-          </div> -->
-          <iframe src="assets/diagrams/dataloader-diagram.html"
-          class="diagram-full" style="flex: 1; border: none;"          
-          title="PyTorch Data loading"></iframe>
-          <!-- <div class="card-green">
-            <p style="font-size: 15pt; text-align: center;">
-              Image loading becomes a queue the worker keeps full — not a blocking request.
-            </p> -->
-          <!-- </div> -->
-        </div>
-      </section>
 
       <!-- ══════════════════════════════════════════════════════════
            SLIDE 9 · Performance baseline
@@ -285,7 +249,7 @@ ami worker</code></pre>
 <pre class="code-block fragment current-visible" data-fragment-index="2" style="width: 100%;"><code class="language-python" data-trim data-noescape>torch.cuda.Stream()
   ...
   with torch.cuda.stream(self.stream):
-  self.next_batch = v.to(self.device, non_blocking=True)                    
+    self.next_batch = v.to(self.device, non_blocking=True)                    
 </code></pre>
 <pre class="code-block fragment current-visible" data-fragment-index="3" style="width: 100%;"><code class="language-python" data-trim data-noescape>torchvision.transforms.ToPILImage()
 </code></pre>
@@ -479,6 +443,42 @@ ami worker</code></pre>
           </div>
         </div>
         <div class="footnote">Carlos Garcia Jurado Suarez &middot; UW eScience Institute / Mila Institute &middot; SciPy 2026</div>
+      </section>
+      <!-- ══════════════════════════════════════════════════════════
+           SLIDE 8 · Why batch data loading matters
+           ══════════════════════════════════════════════════════════ -->
+      <section id="batch-data-loader">
+        <h2>Optimization: Data Loading</h2>
+        <div class="content">
+          <!-- <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-bottom: 16px;">
+            <div class="card-red">
+              <p style="font-size: 12pt; color: var(--primary-color); font-weight: 700; margin-bottom: 8px;">
+                <i class="fa-solid fa-arrow-up-from-bracket"></i>&nbsp; Request / response or push
+              </p>
+              <ul>
+                <li>Caller sends images and waits — can't see GPU throughput or safe concurrency</li>
+                <li>Network and image I/O stay on the critical path</li>
+              </ul>
+            </div>
+            <div class="card-blue">
+              <p style="font-size: 12pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 8px;">
+                <i class="fa-solid fa-boxes-stacked"></i>&nbsp; Batch data loader
+              </p>
+              <ul>
+                <li>Worker chooses batch size and pulls when ready</li>
+                <li>Prefetched batches keep data ready while the GPU processes the current one</li>
+              </ul>
+            </div>
+          </div> -->
+          <iframe src="assets/diagrams/dataloader-diagram.html"
+          class="diagram-full" style="flex: 1; border: none;"          
+          title="PyTorch Data loading"></iframe>
+          <!-- <div class="card-green">
+            <p style="font-size: 15pt; text-align: center;">
+              Image loading becomes a queue the worker keeps full — not a blocking request.
+            </p> -->
+          <!-- </div> -->
+        </div>
       </section>
 
     </div>
