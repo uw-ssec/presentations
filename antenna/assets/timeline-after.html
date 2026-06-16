@@ -14,7 +14,7 @@
     height: 100vh;
     font-family: ui-sans-serif, system-ui, sans-serif;
   }
-  svg { width: 100%; height: 100%; display: block; }
+  svg { width: 100%; height: auto; display: block; }
 </style>
 </head>
 <body>
@@ -23,9 +23,6 @@
   <desc>Four horizontal timelines showing dataloader workers, main thread, async , and GPU after the optimization. GPU runs continuously with no idle time.</desc>
 
   <g transform="translate(0,8) scale(1,1.35)">
-  <!-- title -->
-  <text x="10" y="20" font-size="15" font-weight="500" fill="#1a1a1a" letter-spacing="-0.2">After — pipelined, GPU always busy</text>
-
   <!-- lane labels -->
   <text x="10" y="52"  font-size="11" fill="#666">Dataloader workers</text>
   <text x="10" y="102" font-size="11" fill="#666">async</text>
