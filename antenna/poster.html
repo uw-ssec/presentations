@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Encode+Sans:wght@300;400;500;600;700;800&family=Encode+Sans+Compressed:wght@400;600;700&family=Open+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
   <style>
+    * { -wevkit-print-color-adjust: exact; print-color-adjust: exact; }
     /* ── SSEC design tokens ─────────────────────────────────────────── */
     :root {
       --purple-950: #1a0038;
@@ -205,6 +206,55 @@
       flex-shrink: 0;
     }
 
+    /* ── Color legend (left column) ─────────────────────────────────── */
+    .color-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 0.12in;
+      flex-shrink: 0;
+      margin-top: 0.5in;
+      margin-bottom: 0.5in;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.18in;
+    }
+
+    .legend-swatch {
+      display: block;
+      width: 0.38in;
+      height: 0.38in;
+      border-radius: 6px;
+      border-width: 3px;
+      border-style: solid;
+      flex-shrink: 0;
+      margin-top: 0.04in;
+    }
+
+    .legend-text {
+      display: flex;
+      flex-direction: column;
+      gap: 0.03in;
+    }
+
+    .legend-label {
+      font-family: var(--font-ui);
+      font-size: 26pt;
+      font-weight: 700;
+      color: var(--neutral-900);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .legend-desc {
+      font-family: var(--font-body);
+      font-size: 24pt;
+      color: var(--neutral-600);
+      line-height: 1.4;
+    }
+
     /* ── Outcome cards (left column) ─────────────────────────────────── */
     .outcome-list {
       display: flex;
@@ -267,16 +317,51 @@
       margin-top: 0.08in;
     }
 
-    /* ── Center — image ──────────────────────────────────────────────── */
-    .center-img {
-      width: 100%;
-      object-fit: cover;
-      object-position: center top;
-      border-radius: 12px;
-      display: block;
+    /* ── Center — image pair ─────────────────────────────────────────── */
+    .center-images {
+      position: relative;
       flex: 1;
       min-height: 0;
-      height: 0;
+      width: 100%;
+    }
+
+    .center-img-main {
+      position: absolute;
+      width: 11in;        /* 1280px ÷ 11in ≈ 116 DPI */
+      height: auto;
+      border-radius: 12px;
+      border: 6px solid rgba(255,255,255,0.18);
+      filter: drop-shadow(0 6px 18px rgba(0,0,0,0.32));
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) translate(0.4in, 0.6in) rotate(2deg);
+      z-index: 1;
+    }
+
+    .center-img-screenshot {
+      position: absolute;
+      width: 11in;         /* 2391px ÷ 8in ≈ 299 DPI */
+      height: auto;
+      border-radius: 12px;
+      border: 6px solid rgba(255,255,255,0.18);
+      filter: drop-shadow(0 6px 18px rgba(0,0,0,0.32));
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) translate(-4.5in, -6in) rotate(-5deg);
+      z-index: 2;
+    }
+
+    .center-img-track {
+      position: absolute;
+      width: 9.5in;       /* 1162px ÷ 9.5in ≈ 122 DPI */
+      height: auto;
+      border-radius: 12px;
+      border: 6px solid rgba(255,255,255,0.18);
+      filter: drop-shadow(0 6px 18px rgba(0,0,0,0.32));
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) translate(4.5in, 6.2in) rotate(6deg);
+      z-index: 3;
     }
 
     /* ── Center — authors ────────────────────────────────────────────── */
@@ -421,40 +506,48 @@
 
     <!-- ── LEFT: Architecture ──────────────────────────────────────── -->
     <div class="col col-left">
-      <div class="col-heading">Pull Architecture</div>
+      <div class="col-heading">Async Architecture</div>
 
-      <div class="diagram-label label-before">Antenna Platform</div>
-      <img
-        src="assets/antenna-screenshot-crop.png"
-        alt="Antenna web platform — project navigation, image review, and classification workflow"
-        class="diagram-img"
-        style="max-height:9.6in; object-fit:contain; object-position:left top; flex-shrink:0;"/>
+      <div class="color-legend">
+        <div class="legend-item">
+          <span class="legend-swatch" style="background:#E6F1FB; border-color:#378ADD;"></span>
+          <div class="legend-text">
+            <span class="legend-label">Antenna platform</span>
+            <span class="legend-desc">Hosts datasets, model predictions and metadata. Orchestrates model inference on images.</span>
+          </div>
+        </div>
+        <div class="legend-item">
+          <span class="legend-swatch" style="background:#f8d8c0; border-color:#c4805a;"></span>
+          <div class="legend-text">
+            <span class="legend-label">Processing services</span>
+            <span class="legend-desc">External services providing inference for various models.</span>
+          </div>
+        </div>
+      </div>
 
-        <div class="spacer"></div>
-        <div class="diagram-label label-before">Before — Push model</div>
+      <div class="diagram-label label-before">Before: Request/Response</div>
         <p class="problem-text">
-          Original design required a <strong>public HTTP endpoint</strong> — blocking HPC clusters and firewalled networks.
+          Original design required a <strong>public HTTP endpoint</strong>, blocking HPC clusters and firewalled networks.
           Synchronous requests limited throughput.
         </p>
         <iframe
         src="assets/diagrams/antenna-orchestration.html"
         class="diagram-iframe"
-        style="width:100%; height:3.8in;"
+        style="width:100%; height:5.5in;"
         scrolling="no">
       </iframe>
-      
-      <div class="spacer"></div>
-      <div class="diagram-label label-after">After — Pull model</div>
+
+      <div class="diagram-label label-after">After: Async job queues</div>
       <img
         src="assets/diagrams/after-simple.png"
         alt="Pull model: workers poll Antenna job queue"
         class="diagram-img"
-        style="max-height:4.4in; object-fit:contain; object-position:left;">
+        style="max-height:6.5in; object-fit:contain; object-position:left;">
 
       <div class="outcome-list">
         <div class="card-green">
           <div class="card-title">Deploy anywhere</div>
-          <p>Workers run on HPC clusters, firewalled networks, or local machines — outbound HTTP only.</p>
+          <p>Workers run on HPC clusters, firewalled networks, or local machines. Only outbound HTTP required.</p>
         </div>
         <div class="card-green">
           <div class="card-title">Multi-institution</div>
@@ -462,7 +555,7 @@
         </div>
         <div class="card-green">
           <div class="card-title">Horizontal scaling</div>
-          <p>Each additional worker independently polls and claims batches — no Antenna changes needed.</p>
+          <p>Each additional worker independently polls and claims batches.</p>
         </div>
       </div>
     </div>
@@ -471,14 +564,25 @@
     <div class="col-center">
       <div class="hero-block">
         <div class="hero-number">15×</div>
-        <div class="hero-sub">faster GPU inference</div>
-        <div class="hero-detail">Architecture inversion &amp; PyTorch pipeline optimization</div>
+        <div class="hero-sub">faster single-GPU inference,</div>
+        <div class="hero-sub">horizontally scalable</div>
+        <div class="hero-detail">Job queue architecture &amp; PyTorch pipeline optimization</div>
       </div>
 
-      <img
-        src="assets/intro.webp"
-        alt="Automated camera-trap insect images classified by Antenna"
-        class="center-img">
+      <div class="center-images">
+        <img
+          src="assets/intro.webp"
+          alt="Automated camera-trap insect images classified by Antenna"
+          class="center-img-main">
+        <img
+          src="assets/antenna-screenshot-crop.png"
+          alt="Antenna web platform showing project navigation, image review, and classification workflow"
+          class="center-img-screenshot">
+        <img
+          src="assets/track.png"
+          alt="Antenna classification review interface showing identified insect species"
+          class="center-img-track">
+      </div>
 
       <div class="authors-block">
         <div class="authors-names">
@@ -492,7 +596,7 @@
 
     <!-- ── RIGHT: GPU optimizations ───────────────────────────────── -->
     <div class="col col-right">
-      <div class="col-heading">GPU Pipeline</div>
+      <div class="col-heading">GPU Optimizations</div>
 
       <div class="diagram-label label-before">PyTorch DataLoader</div>
       <iframe
@@ -503,35 +607,36 @@
       </iframe>
 
       <div class="spacer"></div>
-      <div class="diagram-label label-before">Before — GPU starved</div>
+      <div class="diagram-label label-before">Before: GPU starved</div>
       <iframe
         src="assets/timeline-before.html"
         class="diagram-iframe"
-        style="width:100%; height:4.6in;"
+        style="width:100%; height:3.6in;"
         scrolling="no">
       </iframe>
 
+      <div class="diagram-label label-after">Optimizations</div>
       <div class="fix-list">
         <div class="card-fix">
           <div class="fix-name">RESTDataset<br>IterableDataset</div>
-          <div class="fix-desc">Pulls batches from <code>/jobs</code> API continuously — GPU never starves waiting for data</div>
+          <div class="fix-desc">Pulls batches from <code>/jobs</code> API continuously; GPU never starves waiting for data</div>
         </div>
         <div class="card-fix">
-          <div class="fix-name">pin_memory=True</div>
-          <div class="fix-desc">DMA transfers from pinned host memory — eliminates extra CPU copy on every batch</div>
+          <div class="fix-name"><code>pin_memory=True</code></div>
+          <div class="fix-desc">DMA transfers from pinned host memory; eliminates extra CPU copy on every batch</div>
         </div>
         <div class="card-fix">
-          <div class="fix-name">torch.cuda.Stream</div>
-          <div class="fix-desc">Prefetch batch N+1 while GPU processes batch N — transfer and compute overlap</div>
+          <div class="fix-name"><code>torch.cuda.Stream</code></div>
+          <div class="fix-desc">Prefetch batch N+1 while GPU processes batch N; data transfer and compute overlap</div>
         </div>
         <div class="card-fix">
-          <div class="fix-name">ThreadPoolExecutor</div>
-          <div class="fix-desc">Result posting moved to background thread — GPU never idles on HTTP round-trips</div>
+          <div class="fix-name"><code>ThreadPoolExecutor</code></div>
+          <div class="fix-desc">Result posting moved to background thread; GPU never idles on HTTP round-trips</div>
         </div>
       </div>
 
       <div class="spacer"></div>
-      <div class="diagram-label label-after">After — GPU always busy</div>
+      <div class="diagram-label label-after">After: GPU always busy</div>
       <iframe
         src="assets/timeline-after.html"
         class="diagram-iframe"
