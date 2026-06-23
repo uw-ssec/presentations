@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<!-- <title>Before — GPU pipeline timeline</title> -->
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body {
@@ -14,6 +13,10 @@
   }
   body { display: flex; align-items: stretch; }
   svg { width: 100%; height: 100%; display: block; }
+
+  /* ── Font-size scale ── */
+  text          { font-size: 14px; }   /* default: bar labels, legend, axis */
+  .lane-label   { font-size: 14px; }   /* row headings */
 </style>
 </head>
 <body>
@@ -28,82 +31,80 @@
   </defs>
 
   <g transform="translate(0,8) scale(1,1.05)">
-  <!-- title -->
-  <!-- <text x="10" y="20" font-size="15" font-weight="500" fill="#1a1a1a" letter-spacing="-0.2">Before — sequential, GPU starved</text> -->
 
   <!-- lane labels -->
-  <text x="10" y="52"  font-size="11" fill="#666">Dataloader workers</text>
-  <text x="10" y="102" font-size="11" fill="#666">Main thread (CPU)</text>
-  <text x="10" y="152" font-size="11" fill="#666">GPU</text>
+  <text class="lane-label" x="10" y="52"  fill="#666">Dataloader workers</text>
+  <text class="lane-label" x="10" y="102" fill="#666">Main thread (CPU)</text>
+  <text class="lane-label" x="10" y="152" fill="#666">GPU</text>
 
   <!-- ── Dataloader workers (y=40, h=24) ── -->
   <rect x="160" y="40" width="122" height="24" rx="4" fill="#B5D4F4"/>
-  <text x="221" y="56" text-anchor="middle" font-size="10" fill="#0C447C">fetch + download B1</text>
+  <text x="221" y="56" text-anchor="middle" fill="#0C447C">fetch B1</text>
 
   <rect x="290" y="40" width="360" height="24" rx="4" fill="url(#hatch)"/>
-  <text x="470" y="56" text-anchor="middle" font-size="10" fill="#7a1f1f">idle — not yet asked for B2</text>
+  <text x="470" y="56" text-anchor="middle" fill="#7a1f1f">not yet asked for B2</text>
 
   <!-- ── Main thread (y=90, h=24) ── -->
   <rect x="160" y="90" width="130" height="24" rx="4" fill="url(#hatch)"/>
-  <text x="225" y="106" text-anchor="middle" font-size="10" fill="#7a1f1f">idle — waiting</text>
+  <text x="225" y="106" text-anchor="middle" fill="#7a1f1f">waiting</text>
 
   <rect x="290" y="90" width="54" height="24" rx="4" fill="#D3D1C7"/>
-  <text x="317" y="106" text-anchor="middle" font-size="10" fill="#3a3a38">collate</text>
+  <text x="317" y="106" text-anchor="middle" fill="#3a3a38">collate</text>
 
   <rect x="344" y="90" width="66" height="24" rx="4" fill="#F4D6A0"/>
-  <text x="377" y="106" text-anchor="middle" font-size="10" fill="#6A4300">.to('cuda')</text>
+  <text x="377" y="106" text-anchor="middle" fill="#6A4300">.to('cuda')</text>
 
   <rect x="410" y="90" width="78" height="24" rx="4" fill="url(#hatch)"/>
-  <text x="449" y="106" text-anchor="middle" font-size="10" fill="#7a1f1f">idle</text>
+  <text x="449" y="106" text-anchor="middle" fill="#7a1f1f">idle</text>
 
   <rect x="488" y="90" width="90" height="24" rx="4" fill="#F7C1C1"/>
-  <text x="533" y="106" text-anchor="middle" font-size="10" fill="#7a1f1f">PIL round-trip ⚠</text>
+  <text x="533" y="106" text-anchor="middle" fill="#7a1f1f">PIL round-trip</text>
 
   <rect x="578" y="90" width="68" height="24" rx="4" fill="url(#hatch)"/>
-  <text x="612" y="106" text-anchor="middle" font-size="10" fill="#7a1f1f">idle</text>
+  <text x="612" y="106" text-anchor="middle" fill="#7a1f1f">idle</text>
 
   <rect x="646" y="90" width="50" height="24" rx="4" fill="#D3D1C7"/>
-  <text x="671" y="106" text-anchor="middle" font-size="10" fill="#3a3a38">post</text>
+  <text x="671" y="106" text-anchor="middle" fill="#3a3a38">post</text>
 
   <rect x="696" y="90" width="44" height="24" rx="4" fill="url(#hatch)"/>
-  <text x="718" y="106" text-anchor="middle" font-size="10" fill="#7a1f1f">idle</text>
+  <text x="718" y="106" text-anchor="middle" fill="#7a1f1f">idle</text>
 
   <!-- ── GPU (y=140, h=24) ── -->
   <rect x="160" y="140" width="250" height="24" rx="4" fill="url(#hatch)"/>
-  <text x="285" y="156" text-anchor="middle" font-size="10" fill="#7a1f1f">idle — waiting for CPU</text>
+  <text x="285" y="156" text-anchor="middle" fill="#7a1f1f">waiting for CPU</text>
 
   <rect x="410" y="140" width="78" height="24" rx="4" fill="#9FE1CB"/>
-  <text x="449" y="156" text-anchor="middle" font-size="10" fill="#085041">detect B1</text>
+  <text x="449" y="156" text-anchor="middle" fill="#085041">detect B1</text>
 
   <rect x="488" y="140" width="90" height="24" rx="4" fill="url(#hatch)"/>
-  <text x="533" y="156" text-anchor="middle" font-size="10" fill="#7a1f1f">idle — PIL copy</text>
+  <text x="533" y="156" text-anchor="middle" fill="#7a1f1f">PIL copy</text>
 
   <rect x="578" y="140" width="68" height="24" rx="4" fill="#9FE1CB"/>
-  <text x="612" y="156" text-anchor="middle" font-size="10" fill="#085041">classify B1</text>
+  <text x="612" y="156" text-anchor="middle" fill="#085041">classify B1</text>
 
   <rect x="646" y="140" width="94" height="24" rx="4" fill="url(#hatch)"/>
-  <text x="693" y="156" text-anchor="middle" font-size="10" fill="#7a1f1f">idle — waiting for B2</text>
+  <text x="693" y="156" text-anchor="middle" fill="#7a1f1f">waiting for B2</text>
 
   <!-- time axis -->
-  <line x1="160" y1="178" x2="748" y2="178" stroke="#ccc" stroke-width="1"/>
-  <polygon points="748,175 756,178 748,181" fill="#ccc"/>
-  <text x="760" y="182" font-size="10" fill="#999">time →</text>
+  <line x1="160" y1="178" x2="695" y2="178" stroke="#ccc" stroke-width="1"/>
+  <!-- <polygon points="748,175 756,178 748,181" fill="#ccc"/> -->
+  <text x="700" y="182" fill="#999">time →</text>
 
   <!-- legend -->
-  <rect x="160" y="196" width="11" height="11" rx="2" fill="url(#hatch)"/>
-  <text x="176" y="206" font-size="10" fill="#7a1f1f">idle / wasted</text>
+  <!-- <rect x="160" y="196" width="11" height="11" rx="2" fill="url(#hatch)"/>
+  <text x="176" y="206" fill="#7a1f1f">idle / wasted</text>
 
   <rect x="270" y="196" width="11" height="11" rx="2" fill="#B5D4F4"/>
-  <text x="286" y="206" font-size="10" fill="#0C447C">dataloader workers</text>
+  <text x="286" y="206" fill="#0C447C">dataloader workers</text>
 
   <rect x="410" y="196" width="11" height="11" rx="2" fill="#D3D1C7"/>
-  <text x="426" y="206" font-size="10" fill="#3a3a38">main thread</text>
+  <text x="426" y="206" fill="#3a3a38">main thread</text>
 
   <rect x="520" y="196" width="11" height="11" rx="2" fill="#9FE1CB"/>
-  <text x="536" y="206" font-size="10" fill="#085041">GPU active</text>
+  <text x="536" y="206" fill="#085041">GPU active</text>
 
   <rect x="620" y="196" width="11" height="11" rx="2" fill="#F7C1C1"/>
-  <text x="636" y="206" font-size="10" fill="#7a1f1f">PIL round-trip</text>
+  <text x="636" y="206" fill="#7a1f1f">PIL round-trip</text> -->
   </g>
 </svg>
 </body>
