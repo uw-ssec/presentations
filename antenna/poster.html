@@ -255,6 +255,57 @@
       line-height: 1.4;
     }
 
+    /* ── Stack grid (left column) ────────────────────────────────────── */
+    .stack-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.1in;
+      flex-shrink: 0;
+    }
+
+    .stack-chip {
+      display: flex;
+      align-items: center;
+      gap: 0.1in;
+      padding: 0.1in 0.14in;
+      border-radius: 8px;
+      font-family: var(--font-ui);
+      font-size: 21pt;
+      font-weight: 700;
+      color: white;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+
+    .stack-logo {
+      width: 0.42in;
+      height: 0.42in;
+      flex-shrink: 0;
+    }
+
+    /* ── QR code block (left column) ────────────────────────────────── */
+    .qr-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.08in;
+      flex-shrink: 0;
+    }
+
+    .qr-code {
+      width: 3.2in;
+      height: 3.2in;
+      display: block;
+      border-radius: 8px;
+    }
+
+    .qr-url {
+      font-family: var(--font-mono);
+      font-size: 19pt;
+      color: var(--neutral-600);
+      text-align: center;
+    }
+
     /* ── Outcome cards (left column) ─────────────────────────────────── */
     .outcome-list {
       display: flex;
@@ -525,6 +576,7 @@
         </div>
       </div>
 
+
       <div class="diagram-label label-before">Before: Request/Response</div>
         <p class="problem-text">
           Original design required a <strong>public HTTP endpoint</strong>, blocking HPC clusters and firewalled networks.
@@ -557,6 +609,39 @@
           <div class="card-title">Horizontal scaling</div>
           <p>Each additional worker independently polls and claims batches.</p>
         </div>
+      </div>
+      <div class="spacer"></div>
+      <div class="diagram-label" style="color: var(--neutral-700);">Stack</div>
+      <div class="stack-grid">
+        <div class="stack-chip" style="background:#092E20;">
+          <img src="https://cdn.simpleicons.org/django/white" class="stack-logo" alt="">
+          <span>Django</span>
+        </div>
+        <div class="stack-chip" style="background:#27AAE1;">
+          <img src="https://cdn.simpleicons.org/natsdotio/white" class="stack-logo" alt="">
+          <span>NATS JetStream</span>
+        </div>
+        <div class="stack-chip" style="background:#DC382D;">
+          <img src="https://cdn.simpleicons.org/redis/white" class="stack-logo" alt="">
+          <span>Redis</span>
+        </div>
+        <div class="stack-chip" style="background:#336791;">
+          <img src="https://cdn.simpleicons.org/postgresql/white" class="stack-logo" alt="">
+          <span>PostgreSQL</span>
+        </div>
+        <div class="stack-chip" style="background:#2496ED; grid-column: span 2; justify-content: center;">
+          <img src="https://cdn.simpleicons.org/docker/white" class="stack-logo" alt="">
+          <span>Docker Compose</span>
+        </div>
+      </div>
+
+      <div class="spacer"></div>
+      <div class="qr-block">
+        <img
+          src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=https://escience.washington.edu/antenna-optimized-backend-infrastructure/"
+          class="qr-code"
+          alt="QR code — escience.washington.edu/antenna-optimized-backend-infrastructure">
+        <div class="qr-url">escience.washington.edu/antenna-optimized-backend-infrastructure</div>
       </div>
     </div>
 
