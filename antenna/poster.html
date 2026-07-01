@@ -343,6 +343,16 @@
       flex-shrink: 0;
     }
 
+    .hero-tagline {
+      font-family: var(--font-heading);
+      font-size: 72pt;
+      font-weight: 700;
+      font-style: italic;
+      color: var(--gold-500);
+      letter-spacing: -0.01em;
+      margin-bottom: 0.12in;
+    }
+
     .hero-number {
       font-family: var(--font-heading);
       font-size: 220pt;
@@ -548,7 +558,7 @@
     </div>
     <div class="header-affil">
       UW eScience Institute<br>
-      Mila Institute
+      Mila &mdash; Quebec Artificial Intelligence Institute
     </div>
   </header>
 
@@ -579,7 +589,7 @@
 
       <div class="diagram-label label-before">Before: Request/Response</div>
         <p class="problem-text">
-          Original design required a <strong>public HTTP endpoint</strong>, blocking HPC clusters and firewalled networks.
+          Original design required a <strong>public HTTP endpoint</strong>, hard to deploy on HPC clusters and firewalled networks.
           Synchronous requests limited throughput.
         </p>
         <iframe
@@ -648,6 +658,7 @@
     <!-- ── CENTER: Core message ────────────────────────────────────── -->
     <div class="col-center">
       <div class="hero-block">
+        <div class="hero-tagline">Don't make your GPU wait</div>
         <div class="hero-number">15×</div>
         <div class="hero-sub">faster single-GPU inference,</div>
         <div class="hero-sub">horizontally scalable</div>
@@ -671,10 +682,10 @@
 
       <div class="authors-block">
         <div class="authors-names">
-          Carlos Garcia Jurado Suarez&thinsp;&middot;&thinsp;Michael Bunsen&thinsp;&middot;&thinsp;Vanessa Mac
+          Carlos Garcia Jurado Suarez<sup style="font-size:0.5em;vertical-align:super;">1</sup>&thinsp;&middot;&thinsp;Michael Bunsen<sup style="font-size:0.5em;vertical-align:super;">2</sup>&thinsp;&middot;&thinsp;Vanessa Mac<sup style="font-size:0.5em;vertical-align:super;">2</sup>
         </div>
         <div class="authors-affil">
-          UW eScience Institute &nbsp;/&nbsp; Mila Institute &mdash; Quebec AI Institute
+          <sup>1</sup>&thinsp;UW eScience Institute &nbsp;/&nbsp; <sup>2</sup>&thinsp;Mila &mdash; Quebec Artificial Intelligence Institute
         </div>
       </div>
     </div>
@@ -703,7 +714,7 @@
       <div class="diagram-label label-after">Optimizations</div>
       <div class="fix-list">
         <div class="card-fix">
-          <div class="fix-name">RESTDataset<br>IterableDataset</div>
+          <div class="fix-name"><code>RESTDataset<br>(IterableDataset)<code></div>
           <div class="fix-desc">Pulls batches from <code>/jobs</code> API continuously; GPU never starves waiting for data</div>
         </div>
         <div class="card-fix">
