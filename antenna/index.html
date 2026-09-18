@@ -514,14 +514,15 @@ ami worker</code></pre>
            SLIDE · CUDA streams deep dive
            ══════════════════════════════════════════════════════════ -->
       <section id="cuda-streams-deep-dive">
-        <h2>Optimization: CUDA Stream Prefetch</h2>
+        <h2>Optimization: CUDA Prefetch Stream</h2>
         <div class="content">
-          <p class="slide-intro">A second CUDA stream transfers batch N+1 to GPU memory while stream 0 is computing batch N. Transfer and compute run concurrently, so the GPU never sits idle waiting for data.</p>
-          <iframe src="assets/diagrams/cuda-streams-diagram.html"
+          <p class="slide-intro">A second CUDA stream transfers batch N+1 to GPU memory while stream 0 is computing batch N.</p>
+          <iframe id="cuda-streams-iframe" src="assets/diagrams/cuda-streams-diagram.html"
                   class="diagram-full" style="flex: 1; border: none; overflow: hidden;"
                   scrolling="no"
                   title="CUDA streams before and after"></iframe>
-          <pre class="code-block" style="font-size: 13pt;"><code class="language-python" data-trim>stream = torch.cuda.Stream()
+          <div class="fragment" id="cuda-after-fragment" style="display:none;"></div>
+          <pre class="code-block fragment" style="font-size: 13pt;"><code class="language-python" data-trim>stream = torch.cuda.Stream()
 with torch.cuda.stream(stream):
     self.next_batch = batch.to(device, non_blocking=True)</code></pre>
         </div>
@@ -842,6 +843,24 @@ with torch.cuda.stream(stream):
         RevealChalkboard,
         RevealCustomControls,
       ],
+    });
+
+    Reveal.on('fragmentshown', function(event) {
+      if (event.fragment.id === 'cuda-after-fragment') {
+        const iframe = document.getElementById('cuda-streams-iframe');
+        if (iframe && iframe.contentWindow) {
+          iframe.contentWindow.postMessage('cuda-show-after', '*');
+        }
+      }
+    });
+
+    Reveal.on('fragmenthidden', function(event) {
+      if (event.fragment.id === 'cuda-after-fragment') {
+        const iframe = document.getElementById('cuda-streams-iframe');
+        if (iframe && iframe.contentWindow) {
+          iframe.contentWindow.postMessage('cuda-hide-after', '*');
+        }
+      }
     });
 
     document.addEventListener('keydown', (e) => {
