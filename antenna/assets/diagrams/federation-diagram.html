@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Multi-institution federation diagram</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: transparent;
+    height: 100%;
+    overflow: hidden;
+    font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+  }
+  body { display: flex; align-items: stretch; }
+  svg { width: 100%; height: 100%; display: block; }
+</style>
+</head>
+<body>
+<svg viewBox="0 0 820 300" preserveAspectRatio="xMidYMid meet" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>Multi-institution federation: workers from different institutions polling one Antenna instance</title>
+
+  <defs>
+    <marker id="arr-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#378ADD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arr-teal" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#1D9E75" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arr-purple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#4b2e83" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <!-- ── Antenna server (left) ── -->
+  <rect x="30" y="60" width="200" height="180" rx="12" fill="#f0ecf7" stroke="#4b2e83" stroke-width="1.2"/>
+  <text x="130" y="88" text-anchor="middle" font-size="15" font-weight="600" fill="#32006e">Antenna</text>
+
+  <!-- Job queue sub-box -->
+  <rect x="46" y="100" width="168" height="50" rx="7" fill="#e0d7f0" stroke="#5a3d94" stroke-width="0.7"/>
+  <text x="130" y="120" text-anchor="middle" font-size="12" font-weight="500" fill="#32006e">Job queue</text>
+  <text x="130" y="138" text-anchor="middle" font-size="11" fill="#5a3d94">pending tasks</text>
+
+  <!-- Pipeline registry sub-box -->
+  <rect x="46" y="164" width="168" height="62" rx="7" fill="#e0d7f0" stroke="#5a3d94" stroke-width="0.7"/>
+  <text x="130" y="183" text-anchor="middle" font-size="12" font-weight="500" fill="#32006e">Pipeline registry</text>
+  <text x="130" y="200" text-anchor="middle" font-size="10.5" fill="#5a3d94">worker-a: moths-v2</text>
+  <text x="130" y="216" text-anchor="middle" font-size="10.5" fill="#5a3d94">worker-b: moths-v2, beetles-v1</text>
+
+  <!-- ── Worker A: UW HPC ── -->
+  <rect x="500" y="20" width="290" height="74" rx="10" fill="#E6F1FB" stroke="#378ADD" stroke-width="1"/>
+  <text x="645" y="44" text-anchor="middle" font-size="13" font-weight="600" fill="#0C447C">Worker A  (UW HPC)</text>
+  <text x="645" y="62" text-anchor="middle" font-size="11" fill="#185FA5">pipeline: moths-v2</text>
+  <rect x="516" y="72" width="90" height="15" rx="4" fill="#378ADD" opacity="0.25"/>
+  <text x="561" y="83" text-anchor="middle" font-size="10" fill="#0C447C">GPU: A100</text>
+
+  <!-- ── Worker B: Mila cluster ── -->
+  <rect x="500" y="114" width="290" height="74" rx="10" fill="#E6F1FB" stroke="#378ADD" stroke-width="1"/>
+  <text x="645" y="138" text-anchor="middle" font-size="13" font-weight="600" fill="#0C447C">Worker B  (Mila cluster)</text>
+  <text x="645" y="156" text-anchor="middle" font-size="11" fill="#185FA5">pipelines: moths-v2, beetles-v1</text>
+  <rect x="516" y="166" width="90" height="15" rx="4" fill="#378ADD" opacity="0.25"/>
+  <text x="561" y="177" text-anchor="middle" font-size="10" fill="#0C447C">GPU: A6000</text>
+
+  <!-- ── Worker C: cloud ── -->
+  <rect x="500" y="208" width="290" height="74" rx="10" fill="#E6F1FB" stroke="#378ADD" stroke-width="1"/>
+  <text x="645" y="232" text-anchor="middle" font-size="13" font-weight="600" fill="#0C447C">Worker C  (cloud)</text>
+  <text x="645" y="250" text-anchor="middle" font-size="11" fill="#185FA5">pipeline: moths-v1</text>
+  <rect x="516" y="260" width="90" height="15" rx="4" fill="#378ADD" opacity="0.25"/>
+  <text x="561" y="271" text-anchor="middle" font-size="10" fill="#0C447C">GPU: T4</text>
+
+  <!-- ── Arrows: workers poll Antenna (blue, left-pointing) ── -->
+  <!-- Worker A -> Antenna -->
+  <path d="M500 57 C420 57 310 110 232 130" fill="none" stroke="#378ADD" stroke-width="1.4"
+        marker-end="url(#arr-blue)" stroke-dasharray="5 3"/>
+  <text x="360" y="73" text-anchor="middle" font-size="10.5" fill="#185FA5">poll /jobs</text>
+
+  <!-- Worker B -> Antenna -->
+  <path d="M500 151 C380 151 310 150 232 150" fill="none" stroke="#378ADD" stroke-width="1.4"
+        marker-end="url(#arr-blue)" stroke-dasharray="5 3"/>
+  <text x="360" y="147" text-anchor="middle" font-size="10.5" fill="#185FA5">poll /jobs</text>
+
+  <!-- Worker C -> Antenna -->
+  <path d="M500 245 C420 245 310 190 232 168" fill="none" stroke="#378ADD" stroke-width="1.4"
+        marker-end="url(#arr-blue)" stroke-dasharray="5 3"/>
+  <text x="360" y="227" text-anchor="middle" font-size="10.5" fill="#185FA5">poll /jobs</text>
+
+  <!-- ── Arrows: results back to Antenna (teal, right-pointing) ── -->
+  <path d="M232 122 C310 100 420 68 500 57" fill="none" stroke="#1D9E75" stroke-width="1.2"
+        marker-end="url(#arr-teal)"/>
+  <path d="M232 158 C310 158 380 160 500 160" fill="none" stroke="#1D9E75" stroke-width="1.2"
+        marker-end="url(#arr-teal)"/>
+  <path d="M232 175 C310 200 420 238 500 245" fill="none" stroke="#1D9E75" stroke-width="1.2"
+        marker-end="url(#arr-teal)"/>
+
+  <!-- results label (one label for all three) -->
+  <text x="362" y="197" text-anchor="middle" font-size="10.5" fill="#0F6E56">post results</text>
+
+  <!-- ── Register label (startup, one-time) ── -->
+  <text x="360" y="285" text-anchor="middle" font-size="10.5" fill="#888">workers register available pipelines once at startup</text>
+
+  <!-- legend -->
+  <line x1="30" y1="285" x2="55" y2="285" stroke="#378ADD" stroke-width="1.4" stroke-dasharray="5 3"/>
+  <text x="60" y="289" font-size="10" fill="#185FA5">poll</text>
+  <line x1="100" y1="285" x2="125" y2="285" stroke="#1D9E75" stroke-width="1.2"/>
+  <text x="130" y="289" font-size="10" fill="#0F6E56">results</text>
+
+</svg>
+</body>
+</html>

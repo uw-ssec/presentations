@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DataLoader sequential vs parallel</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: transparent; height: 100%; overflow: hidden;
+    font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; }
+  body { display: flex; align-items: stretch; }
+  svg { width: 100%; height: 100%; display: block; }
+  text { font-size: 13px; }
+  .lane { font-size: 13px; }
+  .sub  { font-size: 11px; }
+</style>
+</head>
+<body>
+<svg viewBox="0 0 820 290" preserveAspectRatio="xMidYMid meet"
+     role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>DataLoader: sequential vs parallel workers</title>
+  <desc>Before shows the main thread fetching and decoding each image serially while the GPU sits idle. After shows worker processes prefetching in parallel so the GPU runs continuously.</desc>
+
+  <!-- ════════════════════════════════════════
+       BEFORE — num_workers=0, serial
+       ════════════════════════════════════════ -->
+  <text x="100" y="15" font-size="12" font-weight="600" fill="#555">Before: num_workers=0 — main thread blocks on every image</text>
+
+  <!-- lane labels -->
+  <text class="lane" x="8" y="44"  fill="#666">Main thread</text>
+  <text class="lane" x="8" y="84"  fill="#666">GPU</text>
+
+  <!--
+    Batch cycle widths: fetch+decode+transform = 140px (slow, I/O bound)
+                        to(cuda)              =  30px
+                        forward               =  70px
+    Total per cycle = 240px
+    B1: x=100-339   B2: x=340-579  (partial B3 at 580)
+  -->
+
+  <!-- Main thread: B1 -->
+  <rect x="100" y="30" width="140" height="22" rx="3" fill="#B5D4F4"/>
+  <text x="170" y="45" text-anchor="middle" fill="#0C447C">fetch + decode + transform</text>
+
+  <rect x="240" y="30" width="30" height="22" rx="3" fill="#F4D6A0"/>
+  <text x="255" y="45" text-anchor="middle" fill="#6A4300" font-size="10">cuda</text>
+
+  <rect x="270" y="30" width="70" height="22" rx="3" fill="#9FE1CB"/>
+  <text x="305" y="45" text-anchor="middle" fill="#085041">forward B1</text>
+
+  <!-- Main thread: B2 -->
+  <rect x="340" y="30" width="140" height="22" rx="3" fill="#B5D4F4"/>
+  <text x="410" y="45" text-anchor="middle" fill="#0C447C">fetch + decode + transform</text>
+
+  <rect x="480" y="30" width="30" height="22" rx="3" fill="#F4D6A0"/>
+  <text x="495" y="45" text-anchor="middle" fill="#6A4300" font-size="10">cuda</text>
+
+  <rect x="510" y="30" width="70" height="22" rx="3" fill="#9FE1CB"/>
+  <text x="545" y="45" text-anchor="middle" fill="#085041">forward B2</text>
+
+  <!-- Main thread: B3 partial -->
+  <rect x="580" y="30" width="100" height="22" rx="3" fill="#B5D4F4"/>
+  <text x="618" y="45" text-anchor="middle" fill="#0C447C">fetch + dec…</text>
+
+  <text x="694" y="45" fill="#999" font-size="16">…</text>
+
+  <!-- GPU: idle during fetch, active during forward -->
+  <rect x="100" y="70" width="170" height="22" rx="3" fill="#EBEBEB" stroke="#CFCFCF" stroke-width="0.5"/>
+  <text x="185" y="85" text-anchor="middle" fill="#AAAAAA">idle</text>
+
+  <rect x="270" y="70" width="70" height="22" rx="3" fill="#5DCAA5"/>
+  <text x="305" y="85" text-anchor="middle" fill="#085041">B1</text>
+
+  <rect x="340" y="70" width="170" height="22" rx="3" fill="#EBEBEB" stroke="#CFCFCF" stroke-width="0.5"/>
+  <text x="425" y="85" text-anchor="middle" fill="#AAAAAA">idle</text>
+
+  <rect x="510" y="70" width="70" height="22" rx="3" fill="#5DCAA5"/>
+  <text x="545" y="85" text-anchor="middle" fill="#085041">B2</text>
+
+  <rect x="580" y="70" width="100" height="22" rx="3" fill="#EBEBEB" stroke="#CFCFCF" stroke-width="0.5"/>
+  <text x="630" y="85" text-anchor="middle" fill="#AAAAAA">idle</text>
+
+  <!-- GPU idle annotations -->
+  <text class="sub" x="185" y="107" text-anchor="middle" fill="#C0392B">GPU waiting for data</text>
+  <text class="sub" x="425" y="107" text-anchor="middle" fill="#C0392B">GPU waiting for data</text>
+
+  <!-- time axis -->
+  <line x1="100" y1="117" x2="690" y2="117" stroke="#999" stroke-width="1"/>
+  <text x="696" y="121" fill="#999">time →</text>
+
+  <!-- section divider -->
+  <line x1="8" y1="132" x2="812" y2="132" stroke="#E0E0E0" stroke-width="0.8"/>
+
+  <!-- ════════════════════════════════════════
+       AFTER — num_workers=N, parallel prefetch
+       ════════════════════════════════════════ -->
+  <text x="100" y="148" font-size="12" font-weight="600" fill="#555">After: num_workers=N — workers prefetch while GPU computes</text>
+
+  <!-- lane labels -->
+  <text class="lane" x="8" y="174" fill="#666">Workers</text>
+  <text class="sub"  x="8" y="187" fill="#999">(N processes)</text>
+  <text class="lane" x="8" y="214" fill="#666">Main thread</text>
+  <text class="lane" x="8" y="254" fill="#666">GPU</text>
+
+  <!-- Workers lane: continuous prefetch (big blue bar = always loading ahead) -->
+  <rect x="100" y="160" width="590" height="22" rx="3" fill="#B5D4F4"/>
+  <text x="395" y="175" text-anchor="middle" fill="#0C447C">prefetch queue kept full — workers load in parallel, pin_memory=True</text>
+
+  <!-- Main thread: just forward passes -->
+  <rect x="100" y="200" width="90" height="22" rx="3" fill="#9FE1CB"/>
+  <text x="145" y="215" text-anchor="middle" fill="#085041">forward B1</text>
+
+  <rect x="190" y="200" width="90" height="22" rx="3" fill="#9FE1CB"/>
+  <text x="235" y="215" text-anchor="middle" fill="#085041">forward B2</text>
+
+  <rect x="280" y="200" width="90" height="22" rx="3" fill="#9FE1CB"/>
+  <text x="325" y="215" text-anchor="middle" fill="#085041">forward B3</text>
+
+  <rect x="370" y="200" width="90" height="22" rx="3" fill="#9FE1CB"/>
+  <text x="415" y="215" text-anchor="middle" fill="#085041">forward B4</text>
+
+  <rect x="460" y="200" width="90" height="22" rx="3" fill="#9FE1CB"/>
+  <text x="505" y="215" text-anchor="middle" fill="#085041">forward B5</text>
+
+  <text x="564" y="215" fill="#999" font-size="16">…</text>
+
+  <!-- GPU: continuous -->
+  <rect x="100" y="240" width="90" height="22" rx="3" fill="#5DCAA5"/>
+  <text x="145" y="255" text-anchor="middle" fill="#085041">B1</text>
+
+  <rect x="190" y="240" width="90" height="22" rx="3" fill="#5DCAA5"/>
+  <text x="235" y="255" text-anchor="middle" fill="#085041">B2</text>
+
+  <rect x="280" y="240" width="90" height="22" rx="3" fill="#5DCAA5"/>
+  <text x="325" y="255" text-anchor="middle" fill="#085041">B3</text>
+
+  <rect x="370" y="240" width="90" height="22" rx="3" fill="#5DCAA5"/>
+  <text x="415" y="255" text-anchor="middle" fill="#085041">B4</text>
+
+  <rect x="460" y="240" width="90" height="22" rx="3" fill="#5DCAA5"/>
+  <text x="505" y="255" text-anchor="middle" fill="#085041">B5</text>
+
+  <text x="564" y="255" fill="#999" font-size="16">…</text>
+
+  <!-- "GPU busy" bracket -->
+  <line x1="100" y1="270" x2="550" y2="270" stroke="#1D9E75" stroke-width="1"/>
+  <line x1="100" y1="267" x2="100" y2="273" stroke="#1D9E75" stroke-width="1"/>
+  <line x1="550" y1="267" x2="550" y2="273" stroke="#1D9E75" stroke-width="1"/>
+  <text x="325" y="284" text-anchor="middle" fill="#0F6E56" font-size="11">GPU busy continuously</text>
+
+  <!-- time axis -->
+  <line x1="100" y1="288" x2="690" y2="288" stroke="#999" stroke-width="1"/>
+  <text x="696" y="290" fill="#999">time →</text>
+</svg>
+</body>
+</html>

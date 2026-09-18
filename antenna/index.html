@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Efficient Federated Inference on Entomology Images with PyTorch</title>
+  <title>Scaling and Optimizing Inference on Entomology Images</title>
 
   <!-- Google Fonts: SSEC design system -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -36,8 +36,8 @@
            SLIDE 1 · Title
            ══════════════════════════════════════════════════════════ -->
       <section id="title" class="section-divider" data-state="is-section-divider">
-        <p class="event-tag">SciPy 2026</p>
-        <h1>Efficient Federated Inference on Entomology Images with PyTorch</h1>
+        <p class="event-tag">Cross-VISS 2026</p>
+        <h1>Scaling and Optimizing Inference on Entomology Images</h1>
         <p class="subtitle">
           Carlos Garcia Jurado Suarez<br>
           UW eScience Institute &middot; Mila Institute
@@ -47,6 +47,34 @@
           Asset path: assets/antenna-logo.png  OR  assets/insect-bg.jpg
           Source: https://www.insectai.org/
         -->
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════
+           SLIDE 1b · Biodiversity stakes
+           ══════════════════════════════════════════════════════════ -->
+      <section id="biodiversity-stakes" data-visibility="hidden">
+        <h2>Why Automation is Essential</h2>
+        <div class="content">
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+            <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius-md); padding: 20px; text-align: center;">
+              <div style="font-size: 2.8rem; font-weight: 800; color: var(--primary-color); font-family: var(--heading-font); line-height: 1;">½</div>
+              <div style="font-size: 11pt; color: var(--muted-color); margin-top: 8px; line-height: 1.4;">of all living species on Earth are insects, with ~10 million species estimated globally</div>
+            </div>
+            <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius-md); padding: 20px; text-align: center;">
+              <div style="font-size: 2.8rem; font-weight: 800; color: var(--primary-color); font-family: var(--heading-font); line-height: 1;">90%</div>
+              <div style="font-size: 11pt; color: var(--muted-color); margin-top: 8px; line-height: 1.4;">of insect species remain undocumented. We can't protect what we can't identify.</div>
+            </div>
+            <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius-md); padding: 20px; text-align: center;">
+              <div style="font-size: 2.8rem; font-weight: 800; color: var(--primary-color); font-family: var(--heading-font); line-height: 1;">300</div>
+              <div style="font-size: 11pt; color: var(--muted-color); margin-top: 8px; line-height: 1.4;">new species found in <em>one week</em> during a single Panama field deployment. "Just the tip of the iceberg."</div>
+            </div>
+          </div>
+          <div class="card-blue fragment">
+            <p style="font-size: 15pt; text-align: center;">
+              The bottleneck is no longer <strong>sensors</strong>. It is <strong>inference throughput</strong> at the scale of global biodiversity monitoring.
+            </p>
+          </div>
+        </div>
       </section>
 
       <!-- ══════════════════════════════════════════════════════════
@@ -69,13 +97,72 @@
       </section>
 
       <!-- ══════════════════════════════════════════════════════════
+           SLIDE · Hook — results first
+           ══════════════════════════════════════════════════════════ -->
+      <section id="results-hook">
+        <h2>The Short Version</h2>
+        <div class="content">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0; flex: 1; align-items: stretch;">
+
+            <!-- BEFORE -->
+            <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius-md) 0 0 var(--radius-md); padding: 28px 32px; display: flex; flex-direction: column; gap: 20px;">
+              <p style="font-size: 11pt; font-weight: 700; color: var(--primary-color); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px;">Before</p>
+
+              <div>
+                <div style="font-size: 11pt; color: var(--muted-color); margin-bottom: 4px;">Largest job</div>
+                <div style="font-size: 22pt; font-weight: 700; font-family: var(--heading-font); color: var(--primary-color);">~300 images</div>
+                <div style="font-size: 11pt; color: var(--muted-color); margin-top: 2px;">Jobs crashing/stalling</div>
+              </div>
+
+              <div>
+                <div style="font-size: 11pt; color: var(--muted-color); margin-bottom: 4px;">Throughput</div>
+                <div style="font-size: 22pt; font-weight: 700; font-family: var(--heading-font); color: var(--primary-color);">~28 min / 1K images</div>
+              </div>
+
+              <div>
+                <!-- <div style="font-size: 11pt; color: var(--muted-color); margin-bottom: 4px;">Scalability</div> -->
+                <div style="font-size: 15pt; font-weight: 500; color: var(--primary-color);">Not horizontally scalable</div>
+              </div>
+            </div>
+
+            <!-- AFTER -->
+            <div style="background: #e8f7f2; border: 1px solid #9FE1CB; border-radius: 0 var(--radius-md) var(--radius-md) 0; padding: 28px 32px; display: flex; flex-direction: column; gap: 20px;">
+              <p style="font-size: 11pt; font-weight: 700; color: var(--secondary-color); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px;">After</p>
+
+              <div>
+                <div style="font-size: 11pt; color: var(--muted-color); margin-bottom: 4px;">Largest job</div>
+                <div style="font-size: 22pt; font-weight: 700; font-family: var(--heading-font); color: #085041;">42,000 images</div>
+                <div style="font-size: 11pt; color: #0F6E56; margin-top: 2px;">zero failures end-to-end</div>
+              </div>
+
+              <div>
+                <div style="font-size: 11pt; color: var(--muted-color); margin-bottom: 4px;">Throughput</div>
+                <div style="font-size: 22pt; font-weight: 700; font-family: var(--heading-font); color: #085041;">&lt;2 min / 1K images</div>
+                <div style="font-size: 11pt; color: #0F6E56; margin-top: 2px;">15× single-GPU speed-up</div>
+              </div>
+
+              <div>
+                <!-- <div style="font-size: 11pt; color: var(--muted-color); margin-bottom: 4px;">Scalability</div> -->
+                <div style="font-size: 15pt; font-weight: 500; color: #085041;">Scalable across institutions and heterogeneous hardware</div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="card-blue" style="margin-top: 16px;">
+            <p style="font-size: 14pt; text-align: center;">Two independent improvements covered in this talk: <strong>async pull architecture</strong> and <strong>GPU pipeline optimization</strong></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════
            SLIDE 3 · The scaling problem
            ══════════════════════════════════════════════════════════ -->
       <section id="scaling-problem">
         <h2>The Scaling Problem</h2>
         <div class="content">
           <iframe src="assets/diagrams/antenna-orchestration.html"
-                  class="diagram-full" style="flex: 1; border: none; overflow: hidden;"
+                  style="display: block; flex: none; margin: 0 auto; width: 960px; height: 380px; border: none;"
                   scrolling="no">
           </iframe>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 16px;">
@@ -89,10 +176,10 @@
             </div>
             <div class="card-red fragment">
               <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 8px;">
-                <i class="fa-solid fa-gauge-high"></i>&nbsp; Throughput ceiling
+                <i class="fa-solid fa-gauge-high"></i>&nbsp; Throughput limitations
               </p>
               <p style="font-size: 15pt;">
-                Synchronous design prevented scaling to large jobs: >300 image jobs would stall.
+                Online inference architecture used in a batch setting.
               </p>
             </div>
           </div>
@@ -117,27 +204,90 @@
            ══════════════════════════════════════════════════════════ -->
       <section id="push-model">
         <h2>Architecture: Original Push Model</h2>
-        <div class="content" style="display: grid; grid-template-columns: 2fr 3fr; gap: 0px; align-items: center;">
+        <div class="content" style="display: grid; grid-template-columns: 1fr 2fr; gap: 0px; align-items: center;">
           <img src="assets/diagrams/before-simple.png"
                alt="Diagram A — Push model: Antenna pushes to a public Processing Service endpoint and waits on a synchronous blocking response"
                class="diagram-full">
-          <img id="push-model-seq" src="assets/diagrams/antenna-a-push-model-before.png"
+          <img id="push-model-seq" src="assets/diagrams/antenna-a-push-model-before.png" style="place-self: center"
                alt="Diagram A — Push model: Antenna pushes to a public Processing Service endpoint and waits on a synchronous blocking response"
-               class="diagram-full fragment"
-               style="width: 100%; height: auto; transform: scale(0.8);">
+               class="diagram-full fragment">
+        </div>
+        <div class="card-red fragment" style="margin-top: 16px;">
+          <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 8px;">
+            <i class="fa-solid fa-gauge-simple-low"></i>&nbsp; Who determines the throughput?
+          </p>
+           <p style="font-size: 15pt;">Each worker has different capacity, each pipeline has different requirements. Result: low GPU utilization.</p>
         </div>
       </section>
 
       <!-- ══════════════════════════════════════════════════════════
            SLIDE 5 · Pull model redesign
            ══════════════════════════════════════════════════════════ -->
-      <section id="pull-model">
+      <section id="pull-model" data-visibility="hidden">
         <h2>Architecture: Redesigned Pull Model</h2>
         <div class="content">
           <p class="slide-intro">Inverting the direction: PS workers <strong>poll</strong> Antenna's job queue — no public endpoint needed, and each additional worker adds capacity automatically.</p>
           <img src="assets/diagrams/after-simple.png"
                alt="Diagram B — Pull model: PS workers poll the Antenna job queue, pull batches, and post results back — no public endpoint required"
                class="diagram-full" style="flex: 1;">
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════
+           SLIDE 5b · Multi-institution federation
+           ══════════════════════════════════════════════════════════ -->
+      <section id="federation">
+        <h2>Architecture: Invert the dependency</h2>
+        <div class="content">
+          <p class="slide-intro">Workers from different institutions register their available pipelines at startup. Antenna publishes tasks to a job queue. Heterogeneous hardware coexists without central configuration.</p>
+          <iframe src="assets/diagrams/federation-diagram.html"
+                  class="diagram-full" style="flex: 1; border: none; overflow: hidden;"
+                  scrolling="no"
+                  title="Multi-institution federation: workers from different institutions polling one Antenna instance"></iframe>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="card-green fragment">
+              <p style="font-size: 13pt; color: var(--secondary-color); font-weight: 700; margin-bottom: 6px;">
+                <i class="fa-solid fa-plug"></i>&nbsp; No central configuration
+              </p>
+              <p style="font-size: 14pt;">Workers self-describe their capabilities. Add a new institution by running a worker, not by editing server config.</p>
+            </div>
+            <div class="card-green fragment">
+              <p style="font-size: 13pt; color: var(--secondary-color); font-weight: 700; margin-bottom: 6px;">
+                <i class="fa-solid fa-layer-group"></i>&nbsp; Heterogeneous hardware
+              </p>
+              <p style="font-size: 14pt;">HPC clusters, university servers, cloud instances: each runs the pipelines it has.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════
+           SLIDE · Pull architecture — transition
+           ══════════════════════════════════════════════════════════ -->
+      <section id="pull-arch-transition">
+        <h2>Pull Architecture: What Changed</h2>
+        <div class="content">
+          <p class="slide-intro">Inverting the model shifts control to the workers.</p>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 8px;">
+            <div class="card-green">
+              <p style="font-size: 13pt; color: var(--secondary-color); font-weight: 700; margin-bottom: 8px;">
+                <i class="fa-solid fa-sliders"></i>&nbsp; Workers control their own pace
+              </p>
+              <p style="font-size: 15pt;">Each worker polls for exactly as many jobs as it can handle.</p>
+            </div>
+            <div class="card-green">
+              <p style="font-size: 13pt; color: var(--secondary-color); font-weight: 700; margin-bottom: 8px;">
+                <i class="fa-solid fa-sliders"></i>&nbsp; Througput scales with capacity
+              </p>
+              <p style="font-size: 15pt;">Add more workers to scale out.</p>
+            </div>
+            <div class="card-blue fragment" style="grid-column: 1 / -1;">
+              <p style="font-size: 13pt; color: var(--accent-color, var(--primary-color)); font-weight: 700; margin-bottom: 8px;">
+                <i class="fa-solid fa-arrow-right"></i>&nbsp; GPUs are no longer starved
+              </p>
+              <p style="font-size: 15pt;">Workers stay busy as long as there is work in the queue. With starvation eliminated, the bottleneck shifts to the pipeline itself.</p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -211,7 +361,7 @@ ami worker</code></pre>
       <!-- ══════════════════════════════════════════════════════════
            SLIDE 9 · Performance baseline
            ══════════════════════════════════════════════════════════ -->
-      <section id="baseline">
+      <section id="baseline" data-visibility="hidden">
         <h2>Optimization: Baseline</h2>
         <div class="content">
           <div class="stat-banner">
@@ -224,42 +374,130 @@ ami worker</code></pre>
         </div>
       </section>
       <section id="fix1-batches">
-        <h2>Optimization: Fixes</h2>
-        <div class="content">
+        <h2>Optimization: Before</h2>
+        <div class="content" style="position: relative;">
+          <div class="stat-banner">
+            <div class="stat-number">1,674s</div>
+            <div class="stat-banner-desc">for 1,000 images &middot; RTX A6000 &middot; GPU idle from CPU transfers, sync posting, and suboptimal data loading</div>
+          </div>
           <iframe src="assets/timeline-before.html"
                   class="diagram-full" style="flex: 1; border: none; overflow: hidden;"
                   scrolling="no"
                   title="Before — sequential pipeline, GPU starved"></iframe>
+          <div class="fragment" data-fragment-index="3" id="pil-strike"
+               style="position: absolute; top: 67px; left: 0; width: 100%; height: calc(100% - 24px); pointer-events: none; z-index: 10;">
+            <svg viewBox="0 0 780 228" preserveAspectRatio="xMidYMid meet"
+                 style="width: 100%; height: 100%;">
+              <g transform="translate(0,8) scale(1,1.05)">
+                <!-- dim + strike: Main thread PIL round-trip -->
+                <rect x="488" y="90" width="90" height="24" rx="4" fill="rgba(255,255,255,0.7)"/>
+                <line x1="490" y1="102" x2="576" y2="102" stroke="#7a1f1f" stroke-width="2.5" stroke-linecap="round"/>
+                <!-- dim + strike: GPU PIL copy -->
+                <rect x="488" y="140" width="90" height="24" rx="4" fill="rgba(255,255,255,0.7)"/>
+                <line x1="490" y1="152" x2="576" y2="152" stroke="#7a1f1f" stroke-width="2.5" stroke-linecap="round"/>
+              </g>
+            </svg>
+          </div>
+          <div class="fragment" data-fragment-index="4" id="post-strike"
+               style="position: absolute; top: 67px; left: 0; width: 100%; height: calc(100% - 24px); pointer-events: none; z-index: 10;">
+            <svg viewBox="0 0 780 228" preserveAspectRatio="xMidYMid meet"
+                 style="width: 100%; height: 100%;">
+              <g transform="translate(150,8) scale(1,1.05)">
+                <!-- dim + strike: Post -->
+                <rect x="488" y="90" width="60" height="24" rx="4" fill="rgba(255,255,255,0.7)"/>
+                <line x1="490" y1="102" x2="556" y2="102" stroke="#7a1f1f" stroke-width="2.5" stroke-linecap="round"/>                
+              </g>
+            </svg>
+          </div>
         </div>
         <div id="code-fixes" class="r-stack" style="max-width: 90%;">
-          <pre class="code-block fragment current-visible" data-fragment-index="0" style="width: 100%;"><code class="language-python" data-trim data-noescape>class RESTDataset(torch.utils.data.IterableDataset):
-# pulls rows from /jobs/{job_id} until exhausted
-# downloads images from S3
-# assembles batches of stacked tensors</code></pre>
-</code></pre>            
-</code>
-</pre>
-<pre class="code-block fragment current-visible" data-fragment-index="1" style="width: 100%;"><code class="language-python" data-trim data-noescape>return torch.utils.data.DataLoader(
-  dataset,
-  batch_size=1, # batches built in the dataset workers, not by DataLoader
-  pin_memory=True, # DMA transfer to GPU
-  collate_fn=_no_op_collate_fn # nothing to collate since each dataset item is already a batch
-  ...)
-</code></pre>
-<pre class="code-block fragment current-visible" data-fragment-index="2" style="width: 100%;"><code class="language-python" data-trim data-noescape>torch.cuda.Stream()
-  ...
-  with torch.cuda.stream(self.stream):
-    self.next_batch = v.to(self.device, non_blocking=True)                    
-</code></pre>
-<pre class="code-block fragment current-visible" data-fragment-index="3" style="width: 100%;"><code class="language-python" data-trim data-noescape>torchvision.transforms.ToPILImage()
+<pre class="code-block fragment current-visible" data-fragment-index="3" style="width: 100%;"><code class="language-python" data-trim data-noescape><s style="opacity: 0.55;">// torchvision.transforms.ToPILImage()</s>
 </code></pre>
 <pre class="code-block fragment current-visible" data-fragment-index="4" style="width: 100%;"><code class="language-python" data-trim data-noescape>ThreadPoolExecutor.submit(...)
 </code></pre>
 </div>        
       </section>
 
+      <!-- ══════════════════════════════════════════════════════════
+           SLIDE 8 · Why batch data loading matters
+           ══════════════════════════════════════════════════════════ -->
+      <section id="batch-data-loader">
+        <h2>Optimization: PyTorch Data Loading</h2>
+        <div class="content">
+          <!-- <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-bottom: 16px;">
+            <div class="card-red">
+              <p style="font-size: 12pt; color: var(--primary-color); font-weight: 700; margin-bottom: 8px;">
+                <i class="fa-solid fa-arrow-up-from-bracket"></i>&nbsp; Request / response or push
+              </p>
+              <ul>
+                <li>Caller sends images and waits — can't see GPU throughput or safe concurrency</li>
+                <li>Network and image I/O stay on the critical path</li>
+              </ul>
+            </div>
+            <div class="card-blue">
+              <p style="font-size: 12pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 8px;">
+                <i class="fa-solid fa-boxes-stacked"></i>&nbsp; Batch data loader
+              </p>
+              <ul>
+                <li>Worker chooses batch size and pulls when ready</li>
+                <li>Prefetched batches keep data ready while the GPU processes the current one</li>
+              </ul>
+            </div>
+          </div> -->
+          <iframe src="assets/diagrams/dataloader-diagram.html"
+          class="diagram-full" style="flex: 1; border: none;"          
+          title="PyTorch Data loading"></iframe>
+          <!-- <div class="card-green">
+            <p style="font-size: 15pt; text-align: center;">
+              Image loading becomes a queue the worker keeps full — not a blocking request.
+            </p> -->
+          <!-- </div> -->
+        </div>
+      </section>
+      <section id="fix2-batches">
+        <h2>Optimization ...</h2>
+          <iframe src="assets/timeline-before.html"
+                  class="diagram-full" style="flex: 1; border: none; overflow: hidden;"
+                  scrolling="no"
+                  title="Before — sequential pipeline, GPU starved"></iframe>
+          <div style="position: absolute; top: 40px; left: 0; width: 100%; height: calc(100% - 24px); pointer-events: none; z-index: 10;">
+            <svg viewBox="0 0 780 228" preserveAspectRatio="xMidYMid meet"
+                 style="width: 100%; height: 100%;">
+              <g transform="translate(0,8) scale(1,1.05)">
+                <rect x="488" y="90" width="90" height="24" rx="4" fill="rgba(255,255,255,0.7)"/>
+                <line x1="490" y1="102" x2="576" y2="102" stroke="#7a1f1f" stroke-width="2.5" stroke-linecap="round"/>
+                <rect x="488" y="140" width="90" height="24" rx="4" fill="rgba(255,255,255,0.7)"/>
+                <line x1="490" y1="152" x2="576" y2="152" stroke="#7a1f1f" stroke-width="2.5" stroke-linecap="round"/>
+              </g>
+            </svg>
+          </div>
+          <div style="position: absolute; top: 40px; left: 0; width: 100%; height: calc(100% - 24px); pointer-events: none; z-index: 10;">
+            <svg viewBox="0 0 780 228" preserveAspectRatio="xMidYMid meet"
+                 style="width: 100%; height: 100%;">
+              <g transform="translate(150,8) scale(1,1.05)">
+                <rect x="488" y="90" width="60" height="24" rx="4" fill="rgba(255,255,255,0.7)"/>
+                <line x1="490" y1="102" x2="556" y2="102" stroke="#7a1f1f" stroke-width="2.5" stroke-linecap="round"/>                
+              </g>
+            </svg>
+          </div>
+      </section>
+      <!-- ══════════════════════════════════════════════════════════
+           SLIDE · CUDA streams deep dive
+           ══════════════════════════════════════════════════════════ -->
+      <section id="cuda-streams-deep-dive">
+        <h2>Optimization: CUDA Stream Prefetch</h2>
+        <div class="content">
+          <p class="slide-intro">A second CUDA stream transfers batch N+1 to GPU memory while stream 0 is computing batch N. Transfer and compute run concurrently, so the GPU never sits idle waiting for data.</p>
+          <iframe src="assets/diagrams/cuda-streams-diagram.html"
+                  class="diagram-full" style="flex: 1; border: none; overflow: hidden;"
+                  scrolling="no"
+                  title="CUDA streams before and after"></iframe>
+          <pre class="code-block" style="font-size: 13pt;"><code class="language-python" data-trim>stream = torch.cuda.Stream()
+with torch.cuda.stream(stream):
+    self.next_batch = batch.to(device, non_blocking=True)</code></pre>
+        </div>
+      </section>
 
-      
       <!-- <section id="fix1-gpu-tensors">
         <h2>Fix 1 &mdash; Keep Data on the GPU Between Stages</h2>
         <div class="content">
@@ -375,6 +613,78 @@ ami worker</code></pre>
       </section>
 
       <!-- ══════════════════════════════════════════════════════════
+           SLIDE · Reliability layer
+           ══════════════════════════════════════════════════════════ -->
+      <section id="reliability-layer" data-visibility="hidden">
+        <h2>Architecture: Production Reliability</h2>
+        <div class="content">
+          <p class="slide-intro">Getting to 108s is one problem. Keeping a 42K-image job from silently failing at image 38K is another. Four pieces of work address the failure modes.</p>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+            <div class="card fragment">
+              <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;">
+                <i class="fa-solid fa-inbox"></i>&nbsp; NATS dead letter queue
+              </p>
+              <p style="font-size: 14pt;">Failed or unprocessable messages are captured and inspectable rather than silently dropped. Failed jobs surface immediately.</p>
+            </div>
+            <div class="card fragment">
+              <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;">
+                <i class="fa-solid fa-bolt"></i>&nbsp; Atomic Redis operations
+              </p>
+              <p style="font-size: 14pt;">Distributed locks replaced with SET NX and atomic transactions. No deadlocks under concurrent workers competing for the same task.</p>
+            </div>
+            <div class="card fragment">
+              <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;">
+                <i class="fa-solid fa-circle-stop"></i>&nbsp; Job cancellation
+              </p>
+              <p style="font-size: 14pt;">Workers can abort in-flight jobs cleanly. Redis errors propagate as explicit job failures rather than silent hangs in the UI.</p>
+            </div>
+            <div class="card fragment">
+              <p style="font-size: 13pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px;">
+                <i class="fa-solid fa-diagram-project"></i>&nbsp; Celery state alignment
+              </p>
+              <p style="font-size: 14pt;">Async job state tracks the Celery task lifecycle correctly, so job status in the UI reflects what workers are actually doing.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════
+           SLIDE · Software sustainability
+           ══════════════════════════════════════════════════════════ -->
+      <section id="sustainability" data-visibility="hidden">
+        <h2>Open Science and Sustainability</h2>
+        <div class="content">
+          <p class="slide-intro">Biodiversity research generates data faster than most groups can build pipelines to process it. That gap is an RSE problem, not a science problem.</p>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
+            <div class="card-green fragment">
+              <p style="font-size: 13pt; color: var(--secondary-color); font-weight: 700; margin-bottom: 6px;">
+                <i class="fa-brands fa-github"></i>&nbsp; Fully open source
+              </p>
+              <p style="font-size: 14pt;">Both Antenna and ami-data-companion are public. Any institution can run a worker or fork the platform.</p>
+            </div>
+            <div class="card-green fragment">
+              <p style="font-size: 13pt; color: var(--secondary-color); font-weight: 700; margin-bottom: 6px;">
+                <i class="fa-solid fa-tag"></i>&nbsp; Versioned pipelines
+              </p>
+              <p style="font-size: 14pt;">ML pipelines are registered by name and version. Workers self-describe their capabilities; Antenna routes accordingly.</p>
+            </div>
+            <div class="card-green fragment">
+              <p style="font-size: 13pt; color: var(--secondary-color); font-weight: 700; margin-bottom: 6px;">
+                <i class="fa-solid fa-flask"></i>&nbsp; End-to-end test infrastructure
+              </p>
+              <p style="font-size: 14pt;">Management commands drive full ML job runs in CI. Async result paths and job state machines are covered by integration tests.</p>
+            </div>
+            <div class="card-blue fragment">
+              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 6px;">
+                <i class="fa-solid fa-people-group"></i>&nbsp; The RSE capacity gap
+              </p>
+              <p style="font-size: 14pt;">Most ecology groups collect more data than they can process. Shared infrastructure like this scales RSE effort across institutions.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════
            SECTION DIVIDER · Conclusion
            ══════════════════════════════════════════════════════════ -->
       <!-- <section id="divider-conclusion" class="section-divider" data-state="is-section-divider">
@@ -445,41 +755,24 @@ ami worker</code></pre>
         <div class="footnote">Carlos Garcia Jurado Suarez &middot; UW eScience Institute / Mila Institute &middot; SciPy 2026</div>
       </section>
       <!-- ══════════════════════════════════════════════════════════
-           SLIDE 8 · Why batch data loading matters
+           SLIDE · DataLoader deep dive — before
            ══════════════════════════════════════════════════════════ -->
-      <section id="batch-data-loader">
+      <section id="dataloader-sequential" data-visibility="hidden">
         <h2>Optimization: Data Loading</h2>
         <div class="content">
-          <!-- <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-bottom: 16px;">
-            <div class="card-red">
-              <p style="font-size: 12pt; color: var(--primary-color); font-weight: 700; margin-bottom: 8px;">
-                <i class="fa-solid fa-arrow-up-from-bracket"></i>&nbsp; Request / response or push
-              </p>
-              <ul>
-                <li>Caller sends images and waits — can't see GPU throughput or safe concurrency</li>
-                <li>Network and image I/O stay on the critical path</li>
-              </ul>
-            </div>
-            <div class="card-blue">
-              <p style="font-size: 12pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 8px;">
-                <i class="fa-solid fa-boxes-stacked"></i>&nbsp; Batch data loader
-              </p>
-              <ul>
-                <li>Worker chooses batch size and pulls when ready</li>
-                <li>Prefetched batches keep data ready while the GPU processes the current one</li>
-              </ul>
-            </div>
-          </div> -->
-          <iframe src="assets/diagrams/dataloader-diagram.html"
-          class="diagram-full" style="flex: 1; border: none;"          
-          title="PyTorch Data loading"></iframe>
-          <!-- <div class="card-green">
-            <p style="font-size: 15pt; text-align: center;">
-              Image loading becomes a queue the worker keeps full — not a blocking request.
-            </p> -->
-          <!-- </div> -->
+          <p class="slide-intro">With <code>num_workers=0</code>, the main thread fetches each image from S3, decodes it, and runs transforms before the GPU can start. Network I/O and decoding dominate, so the GPU spends most of its time waiting.</p>
+          <iframe src="assets/diagrams/dataloader-sequential-diagram.html"
+                  class="diagram-full" style="flex: 1; border: none; overflow: hidden;"
+                  scrolling="no"
+                  title="DataLoader sequential vs parallel workers"></iframe>
+          <div class="card-blue fragment">
+            <p style="font-size: 14pt; text-align: center;">
+              Fix: <code>num_workers=N</code> runs N worker processes that prefetch and preprocess in parallel, keeping the queue full. <code>pin_memory=True</code> enables DMA transfer directly into GPU-accessible memory.
+            </p>
+          </div>
         </div>
       </section>
+
 
     </div>
   </div>

@@ -988,6 +988,16 @@ pre.code-block code {
   max-block-size: none;
 }
 
+#push-model > .content {
+  align-items: center;
+  overflow: hidden;
+}
+
+#push-model #push-model-seq {
+  max-block-size: 360px;
+  inline-size: auto;
+}
+
 /* Intro sentence above full-width visual (pattern A / C slides) */
 .slide-intro {
   color: var(--color-neutral-700);
