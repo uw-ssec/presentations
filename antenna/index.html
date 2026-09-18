@@ -347,7 +347,7 @@ ami worker</code></pre>
             </p>
           </div>
         </div>
-      </section> -->
+      </section>
 
       <!-- ══════════════════════════════════════════════════════════
            SECTION DIVIDER · Part 2
@@ -373,7 +373,7 @@ ami worker</code></pre>
                   title="Before — sequential pipeline, GPU starved"></iframe>
         </div>
       </section>
-      <section id="fix1-batches">
+      <section id="fix1-batches" class="fix-batches">
         <h2>Optimization: Before</h2>
         <div class="content" style="position: relative;">
           <div class="stat-banner">
@@ -385,7 +385,7 @@ ami worker</code></pre>
                   scrolling="no"
                   title="Before — sequential pipeline, GPU starved"></iframe>
           <div class="fragment" data-fragment-index="3" id="pil-strike"
-               style="position: absolute; top: 67px; left: 0; width: 100%; height: calc(100% - 24px); pointer-events: none; z-index: 10;">
+               style="position: absolute; top: 55px; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10;">
             <svg viewBox="0 0 780 228" preserveAspectRatio="xMidYMid meet"
                  style="width: 100%; height: 100%;">
               <g transform="translate(0,8) scale(1,1.05)">
@@ -399,7 +399,7 @@ ami worker</code></pre>
             </svg>
           </div>
           <div class="fragment" data-fragment-index="4" id="post-strike"
-               style="position: absolute; top: 67px; left: 0; width: 100%; height: calc(100% - 24px); pointer-events: none; z-index: 10;">
+               style="position: absolute; top: 55px; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10;">
             <svg viewBox="0 0 780 228" preserveAspectRatio="xMidYMid meet"
                  style="width: 100%; height: 100%;">
               <g transform="translate(150,8) scale(1,1.05)">
@@ -454,33 +454,62 @@ ami worker</code></pre>
           <!-- </div> -->
         </div>
       </section>
-      <section id="fix2-batches">
+      <section id="fix2-batches" class="fix-batches">
         <h2>Optimization ...</h2>
+        <div class="content" style="position: relative;">
+          <div class="stat-banner" style="visibility: hidden;">
+            <div class="stat-number">1,674s</div>
+            <div class="stat-banner-desc">for 1,000 images &middot; RTX A6000 &middot; GPU idle from CPU transfers, sync posting, and suboptimal data loading</div>
+          </div>
           <iframe src="assets/timeline-before.html"
                   class="diagram-full" style="flex: 1; border: none; overflow: hidden;"
                   scrolling="no"
                   title="Before — sequential pipeline, GPU starved"></iframe>
-          <div style="position: absolute; top: 40px; left: 0; width: 100%; height: calc(100% - 24px); pointer-events: none; z-index: 10;">
+          <div 
+               style="position: absolute; top: 55px; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10;">
             <svg viewBox="0 0 780 228" preserveAspectRatio="xMidYMid meet"
                  style="width: 100%; height: 100%;">
               <g transform="translate(0,8) scale(1,1.05)">
+                <!-- dim + strike: Main thread PIL round-trip -->
                 <rect x="488" y="90" width="90" height="24" rx="4" fill="rgba(255,255,255,0.7)"/>
                 <line x1="490" y1="102" x2="576" y2="102" stroke="#7a1f1f" stroke-width="2.5" stroke-linecap="round"/>
+                <!-- dim + strike: GPU PIL copy -->
                 <rect x="488" y="140" width="90" height="24" rx="4" fill="rgba(255,255,255,0.7)"/>
                 <line x1="490" y1="152" x2="576" y2="152" stroke="#7a1f1f" stroke-width="2.5" stroke-linecap="round"/>
               </g>
             </svg>
           </div>
-          <div style="position: absolute; top: 40px; left: 0; width: 100%; height: calc(100% - 24px); pointer-events: none; z-index: 10;">
+          <div 
+               style="position: absolute; top: 55px; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10;">
             <svg viewBox="0 0 780 228" preserveAspectRatio="xMidYMid meet"
                  style="width: 100%; height: 100%;">
               <g transform="translate(150,8) scale(1,1.05)">
+                <!-- dim + strike: Post -->
                 <rect x="488" y="90" width="60" height="24" rx="4" fill="rgba(255,255,255,0.7)"/>
                 <line x1="490" y1="102" x2="556" y2="102" stroke="#7a1f1f" stroke-width="2.5" stroke-linecap="round"/>                
               </g>
             </svg>
           </div>
+          <div 
+               style="position: absolute; top: 0px; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10;">
+            <svg viewBox="0 0 480 228" preserveAspectRatio="xMidYMid meet"
+                 style="width: 100%; height: 100%;">
+              <g transform="translate(0,0) scale(1,1.05)">
+                <!-- dim + strike: Post -->
+                <rect x="81" y="89" width="85" height="20" rx="4" fill="rgba(255,255,255,0.7)"/>
+                <line x1="80" y1="98" x2="165" y2="98" stroke="#7a1f1f" stroke-width="2.5" stroke-linecap="round"/>                
+              </g>
+            </svg>
+          </div>
+        </div>
+        <div id="code-fixes" class="r-stack" style="max-width: 90%; visibility: hidden;">
+<pre class="code-block current-visible" data-fragment-index="3" style="width: 100%;"><code class="language-python" data-trim data-noescape><s style="opacity: 0.55;">// torchvision.transforms.ToPILImage()</s>
+</code></pre>
+<pre class="code-block current-visible" data-fragment-index="4" style="width: 100%;"><code class="language-python" data-trim data-noescape>ThreadPoolExecutor.submit(...)
+</code></pre>
+</div>        
       </section>
+
       <!-- ══════════════════════════════════════════════════════════
            SLIDE · CUDA streams deep dive
            ══════════════════════════════════════════════════════════ -->
@@ -752,7 +781,7 @@ with torch.cuda.stream(stream):
             </div>
           </div>
         </div>
-        <div class="footnote">Carlos Garcia Jurado Suarez &middot; UW eScience Institute / Mila Institute &middot; SciPy 2026</div>
+        <div class="footnote">Carlos Garcia Jurado Suarez &middot; UW eScience Institute / Mila Institute &middot; Cross-VISS 2026</div>
       </section>
       <!-- ══════════════════════════════════════════════════════════
            SLIDE · DataLoader deep dive — before

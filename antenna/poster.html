@@ -590,7 +590,7 @@
       <div class="diagram-label label-before">Before: Request/Response</div>
         <p class="problem-text">
           Original design required a <strong>public HTTP endpoint</strong>, hard to deploy on HPC clusters and firewalled networks.
-          Synchronous requests limited throughput.
+          Throughput was limited by synchronous requests.
         </p>
         <iframe
         src="assets/diagrams/antenna-orchestration.html"
@@ -718,7 +718,7 @@
           <div class="fix-desc">Pulls batches from <code>/jobs</code> API continuously; GPU never starves waiting for data</div>
         </div>
         <div class="card-fix">
-          <div class="fix-name"><code>pin_memory=True</code></div>
+          <div class="fix-name"><code>DataLoader(..., <br>pin_memory=True)</code></div>
           <div class="fix-desc">DMA transfers from pinned host memory; eliminates extra CPU copy on every batch</div>
         </div>
         <div class="card-fix">
@@ -746,7 +746,7 @@
           <span class="result-arrow">&rarr;</span>
           <span class="result-after">108s</span>
         </div>
-        <div class="result-desc">per 1,000 images &middot; RTX A6000 &middot; 42K-image job in 77 min</div>
+        <div class="result-desc">per 1,000 images &middot; 42K-image job in 77 min <br/> RTX A6000 </div>
       </div>
     </div>
 
