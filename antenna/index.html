@@ -262,6 +262,38 @@
       </section>
 
       <!-- ══════════════════════════════════════════════════════════
+           SLIDE · System architecture
+           ══════════════════════════════════════════════════════════ -->
+      <section id="system-architecture">
+        <h2>Architecture: System Components</h2>
+        <div class="content">
+          <p class="slide-intro">Antenna is a distributed system: a Django API orchestrates jobs through a queue, while ML workers run externally on heterogeneous hardware.</p>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 16px;">
+            <div class="card">
+              <p style="font-size: 11pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px; font-family: var(--mono-font);">Django + Postgres</p>
+              <p style="font-size: 13pt; color: var(--muted-color);">REST API + persistent storage. Job lifecycle, results, user accounts.</p>
+            </div>
+            <div class="card">
+              <p style="font-size: 11pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px; font-family: var(--mono-font);">Celery</p>
+              <p style="font-size: 13pt; color: var(--muted-color);">Background task runner. Collects images, publishes tasks, saves results.</p>
+            </div>
+            <div class="card">
+              <p style="font-size: 11pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px; font-family: var(--mono-font);">NATS JetStream</p>
+              <p style="font-size: 13pt; color: var(--muted-color);">Distributed task queue. Per-job streams, visibility timeout, dead-letter capture.</p>
+            </div>
+            <div class="card">
+              <p style="font-size: 11pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px; font-family: var(--mono-font);">Redis</p>
+              <p style="font-size: 13pt; color: var(--muted-color);">Progress state across distributed workers (atomic set operations).</p>
+            </div>
+            <div class="card" style="grid-column: span 2;">
+              <p style="font-size: 11pt; color: var(--primary-color); font-weight: 700; margin-bottom: 6px; font-family: var(--mono-font);">ML Worker (ami-data-companion)</p>
+              <p style="font-size: 13pt; color: var(--muted-color);">Runs anywhere with outbound HTTP. Polls <code>/jobs/{id}/tasks</code>, downloads images from S3, runs models, POSTs results back.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════
            SLIDE · Pull architecture — transition
            ══════════════════════════════════════════════════════════ -->
       <section id="pull-arch-transition">
@@ -359,6 +391,32 @@ ami worker</code></pre>
 
 
       <!-- ══════════════════════════════════════════════════════════
+           SLIDE · Detection and classification pipeline
+           ══════════════════════════════════════════════════════════ -->
+      <section id="pipeline-stages">
+        <h2>The ML Pipeline: Two Stages</h2>
+        <div class="content" style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start;">
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div class="card-blue">
+              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 8px;">
+                <i class="fa-solid fa-magnifying-glass"></i>&nbsp; Stage 1: Detection
+              </p>
+              <p style="font-size: 14pt;">Object detector scans the full camera-trap frame and outputs <strong>bounding boxes</strong> around candidate insects. One image can yield many crops.</p>
+            </div>
+            <div class="card-blue">
+              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 8px;">
+                <i class="fa-solid fa-tag"></i>&nbsp; Stage 2: Classification
+              </p>
+              <p style="font-size: 14pt;">Each cropped bounding box is fed to a classifier that assigns a <strong>taxon label</strong> (order, family, genus, species) and a confidence score.</p>
+            </div>
+          </div>
+          <img src="assets/intro.webp"
+               alt="Camera-trap image with detected insect bounding boxes and species classification"
+               style="max-width: 100%; height: auto; border-radius: var(--radius-md);">
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════
            SLIDE 9 · Performance baseline
            ══════════════════════════════════════════════════════════ -->
       <section id="baseline" data-visibility="hidden">
@@ -424,34 +482,13 @@ ami worker</code></pre>
       <section id="batch-data-loader">
         <h2>Optimization: PyTorch Data Loading</h2>
         <div class="content">
-          <!-- <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-bottom: 16px;">
-            <div class="card-red">
-              <p style="font-size: 12pt; color: var(--primary-color); font-weight: 700; margin-bottom: 8px;">
-                <i class="fa-solid fa-arrow-up-from-bracket"></i>&nbsp; Request / response or push
-              </p>
-              <ul>
-                <li>Caller sends images and waits — can't see GPU throughput or safe concurrency</li>
-                <li>Network and image I/O stay on the critical path</li>
-              </ul>
-            </div>
-            <div class="card-blue">
-              <p style="font-size: 12pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 8px;">
-                <i class="fa-solid fa-boxes-stacked"></i>&nbsp; Batch data loader
-              </p>
-              <ul>
-                <li>Worker chooses batch size and pulls when ready</li>
-                <li>Prefetched batches keep data ready while the GPU processes the current one</li>
-              </ul>
-            </div>
-          </div> -->
           <iframe src="assets/diagrams/dataloader-diagram.html"
-          class="diagram-full" style="flex: 1; border: none;"          
+          class="diagram-full" style="flex: 1; border: none;"
           title="PyTorch Data loading"></iframe>
-          <!-- <div class="card-green">
-            <p style="font-size: 15pt; text-align: center;">
-              Image loading becomes a queue the worker keeps full — not a blocking request.
-            </p> -->
-          <!-- </div> -->
+          <pre class="code-block fragment" style="font-size: 12pt;"><code class="language-python" data-trim data-noescape>class RESTDataset(torch.utils.data.IterableDataset):
+    # pulls rows from /jobs/{job_id} until exhausted
+    # downloads images from S3
+    # assembles batches of stacked tensors</code></pre>
         </div>
       </section>
       <section id="fix2-batches" class="fix-batches">
@@ -757,6 +794,41 @@ with torch.cuda.stream(stream):
       </section> -->
 
       <!-- ══════════════════════════════════════════════════════════
+           SLIDE · Summary / key lessons
+           ══════════════════════════════════════════════════════════ -->
+      <section id="summary">
+        <h2>Key Lessons</h2>
+        <div class="content">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="card-blue fragment">
+              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 8px;">
+                <i class="fa-solid fa-lock-open"></i>&nbsp; Unblock, don't speed up
+              </p>
+              <p style="font-size: 14pt;">No component got faster. Each fix stopped one resource from blocking another: CPU, GPU, memory bus, network. Throughput is a system property, not a component property.</p>
+            </div>
+            <div class="card-blue fragment">
+              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 8px;">
+                <i class="fa-solid fa-arrow-right-arrow-left"></i>&nbsp; Removing one bottleneck reveals another
+              </p>
+              <p style="font-size: 14pt;">After async posting eliminated network wait, low GPU utilization became the new bottleneck.</p>
+            </div>
+            <div class="card-blue fragment">
+              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 8px;">
+                <i class="fa-solid fa-terminal"></i>&nbsp; Simple tools go a long way
+              </p>
+              <p style="font-size: 14pt;"><code>nvidia-smi</code>, <code>top</code>, and wall-clock timing around each stage were enough to locate every bottleneck.</p>
+            </div>
+            <div class="card-blue fragment">
+              <p style="font-size: 13pt; color: var(--accent-blue); font-weight: 700; margin-bottom: 8px;">
+                <i class="fa-solid fa-magnifying-glass-chart"></i>&nbsp; Distributed systems need good logging
+              </p>
+              <p style="font-size: 14pt;">When work spans workers, queues, and async tasks, failures can be hard to trace. Structured logs and observable job state are essential for debugging</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════
            SLIDE 16 · Links and Q&A
            ══════════════════════════════════════════════════════════ -->
       <section id="links-qa">
@@ -802,8 +874,6 @@ with torch.cuda.stream(stream):
           </div>
         </div>
       </section>
-
-
     </div>
   </div>
 
