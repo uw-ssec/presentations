@@ -1,0 +1,314 @@
+/*
+ * SSEC — Design System (slide adaptation)
+ * colors_and_type.css
+ *
+ * Source: uw-ssec/uw-ssec.github.io `design-system/01-tokens.css`, vendored
+ * verbatim in ./source/. Tier-1 global tokens and tier-2 alias tokens are
+ * copied unchanged so slide CSS and the SSEC website share one vocabulary.
+ *
+ * Slide-specific changes, and the only ones:
+ *   - The web fluid text scale (--text-xs … --text-5xl, 12–60px) is replaced
+ *     by a presentation scale (--slide-*) with a 1.5rem / 24px floor, per the
+ *     uw-slides font-size rules. Do not reintroduce sub-24px tokens.
+ *   - --font-black (900) is added for hero titles; --font-display-compressed
+ *     and --font-ui alias --font-compressed so the uw-slides skills' token
+ *     names resolve.
+ *
+ * Fonts (Google Fonts, per source/03-typography.md):
+ *   Encode Sans            — display: titles, key messages, stat numbers
+ *   Encode Sans Compressed — UI: eyebrows, labels, tags, section numbers
+ *   Open Sans              — reading: body, bullets, captions
+ *   JetBrains Mono         — code: inline code, code blocks, terminal text
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Encode+Sans:wght@300;400;500;600;700;800;900&family=Encode+Sans+Compressed:wght@400;600;700&family=Open+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+:root {
+  /* ═══════════════════════════════════════════════════════════════════════
+     TIER 1: GLOBAL TOKENS — raw values (verbatim from source/01-tokens.css)
+     ═══════════════════════════════════════════════════════════════════════ */
+
+  /* ── Colors — UW Purple (primary) ── */
+  --color-purple-950: #1a0038;   /* Hero / terminal surfaces */
+  --color-purple-900: #32006e;   /* Husky Purple (PMS 2685) */
+  --color-purple-800: #3d1a7a;
+  --color-purple-700: #4b2e83;   /* Spirit Purple (PMS 266) — PRIMARY */
+  --color-purple-600: #5a3d94;
+  --color-purple-500: #6b4fa6;   /* Focus rings */
+  --color-purple-400: #8b74be;
+  --color-purple-300: #a899d0;
+  --color-purple-200: #c5b4e3;   /* UW Accent Lavender (PMS 2635) */
+  --color-purple-100: #e0d7f0;
+  --color-purple-50:  #f0ecf7;
+
+  /* ── Colors — UW Gold (secondary) ── */
+  --color-gold-900: #5a4a2e;
+  --color-gold-800: #6e5d3a;
+  --color-gold-700: #85754d;     /* Heritage Gold (PMS 871) — gold text on light */
+  --color-gold-600: #9e8d63;
+  --color-gold-500: #b7a57a;     /* Husky Gold (PMS 7502) — bars, borders, badges */
+  --color-gold-400: #c9bb96;
+  --color-gold-300: #dbd1b4;
+  --color-gold-200: #e8e3d3;     /* Husky Light Gold — body text on dark */
+  --color-gold-100: #f2efe6;
+  --color-gold-50:  #f9f7f2;     /* Warm surface */
+
+  /* ── Colors — Accent (max 15% coverage per UW brand) ── */
+  --color-teal-600: #1fb8b0;
+  --color-teal-500: #2ad2c9;     /* UW Accent Teal (PMS 3252) — SSEC signature */
+  --color-teal-400: #5cddd6;
+  --color-teal-300: #8fe9e4;
+  --color-teal-200: #c2f3f0;
+  --color-teal-100: #e6faf9;
+
+  --color-green-600: #8ab818;
+  --color-green-500: #aadb1e;    /* UW Accent Green (PMS 2290) */
+  --color-green-400: #bce44e;
+  --color-green-300: #d1ed85;
+
+  --color-pink-600: #d4289a;
+  --color-pink-500: #e93cac;     /* UW Accent Pink (PMS 232) */
+  --color-pink-400: #ee66bf;
+
+  --color-spirit-gold: #ffc700;  /* UW Spirit Gold (PMS 7408) — decorative only */
+
+  /* ── Colors — Neutrals ── */
+  --color-neutral-950: #0d0f10;
+  --color-neutral-900: #1a1d1f;  /* Primary text on light */
+  --color-neutral-800: #2a2e31;
+  --color-neutral-700: #373a3c;  /* UW Nearly Black */
+  --color-neutral-600: #555a5e;  /* Secondary text */
+  --color-neutral-500: #72777c;
+  --color-neutral-400: #9a9fa4;
+  --color-neutral-300: #c2c6ca;
+  --color-neutral-200: #d5d8de;  /* UW Gray — light borders */
+  --color-neutral-100: #eceef0;
+  --color-neutral-50:  #f6f7f8;
+
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  /* ── Typography — families ── */
+  --font-display:    "Encode Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-compressed: "Encode Sans Compressed", "Encode Sans", -apple-system, sans-serif;
+  --font-body:       "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono:       "JetBrains Mono", "Fira Code", "Source Code Pro", "Consolas", monospace;
+
+  /* uw-slides compatibility aliases (other brands expose these names) */
+  --font-display-compressed: var(--font-compressed);
+  --font-ui:                 var(--font-compressed);
+
+  /* ── Typography — weights ── */
+  --font-light: 300;
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  --font-extrabold: 800;
+  --font-black: 900;             /* slide addition — hero titles */
+
+  /* ── Typography — line heights ── */
+  --leading-none: 1;
+  --leading-tight: 1.15;
+  --leading-snug: 1.3;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose: 1.8;
+
+  /* ── Typography — letter spacing ── */
+  --tracking-tighter: -0.03em;
+  --tracking-tight: -0.015em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.025em;
+  --tracking-wider: 0.05em;
+  --tracking-widest: 0.1em;
+
+  /* ── Spacing — 4px base ── */
+  --space-px: 1px;
+  --space-0: 0;
+  --space-0-5: 0.125rem;   /* 2px */
+  --space-1:  0.25rem;     /* 4px */
+  --space-1-5: 0.375rem;   /* 6px */
+  --space-2:  0.5rem;      /* 8px */
+  --space-2-5: 0.625rem;   /* 10px */
+  --space-3:  0.75rem;     /* 12px */
+  --space-4:  1rem;        /* 16px */
+  --space-5:  1.25rem;     /* 20px */
+  --space-6:  1.5rem;      /* 24px — UW block gap */
+  --space-8:  2rem;        /* 32px */
+  --space-10: 2.5rem;      /* 40px */
+  --space-12: 3rem;        /* 48px */
+  --space-16: 4rem;        /* 64px — slide padding (dense) */
+  --space-20: 5rem;        /* 80px — slide padding (default) */
+  --space-24: 6rem;        /* 96px */
+  --space-32: 8rem;        /* 128px */
+
+  /* ── Border radius ── */
+  --radius-none: 0;        /* UW buttons: sharp corners */
+  --radius-sm: 0.25rem;    /* 4px */
+  --radius-md: 0.5rem;     /* 8px — cards, code blocks */
+  --radius-lg: 0.75rem;    /* 12px */
+  --radius-xl: 1rem;       /* 16px */
+  --radius-2xl: 1.5rem;    /* 24px — hero media only */
+  --radius-full: 9999px;
+
+  /* ── Shadows ── */
+  --shadow-xs:  0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-sm:  0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md:  0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+  --shadow-lg:  0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+  --shadow-xl:  0 20px 25px rgba(0, 0, 0, 0.1), 0 8px 10px rgba(0, 0, 0, 0.04);
+  --shadow-2xl: 0 25px 50px rgba(0, 0, 0, 0.2);
+
+  --shadow-glow-sm: 0 0 10px rgba(75, 46, 131, 0.15);
+  --shadow-glow-md: 0 0 20px rgba(75, 46, 131, 0.2);
+  --shadow-glow-lg: 0 0 40px rgba(75, 46, 131, 0.25);
+  --shadow-glow-teal-sm: 0 0 10px rgba(42, 210, 201, 0.15);
+  --shadow-glow-teal-md: 0 0 20px rgba(42, 210, 201, 0.2);
+
+  /* ── Z-index ── */
+  --z-base: 0;
+  --z-raised: 1;
+  --z-dropdown: 10;
+  --z-sticky: 20;
+  --z-overlay: 30;
+  --z-modal: 40;
+  --z-toast: 50;
+
+  /* ── Motion ── */
+  --duration-fast: 100ms;
+  --duration-normal: 200ms;
+  --duration-slow: 300ms;
+  --duration-slower: 500ms;
+
+  --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ── Layout ── */
+  --width-content: 960px;
+  --width-wide: 1140px;
+  --width-full: 1400px;
+
+  --angle-brand: 15deg;    /* UW Boundless angle — dividers, rain texture, skews */
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     TIER 2: ALIAS TOKENS — semantic meaning (verbatim from source)
+     ═══════════════════════════════════════════════════════════════════════ */
+
+  /* ── Surfaces ── */
+  --surface-primary: var(--color-white);
+  --surface-secondary: var(--color-gold-50);
+  --surface-tertiary: var(--color-neutral-50);
+  --surface-inverse: var(--color-purple-900);
+  --surface-brand: var(--color-purple-700);
+  --surface-dark: var(--color-purple-950);
+  --surface-code: var(--color-neutral-900);
+  --surface-terminal: var(--color-purple-950);
+  --surface-data: var(--color-gold-100);
+
+  /* ── Text ── */
+  --text-primary: var(--color-neutral-900);
+  --text-secondary: var(--color-neutral-600);
+  --text-tertiary: #767676;
+  --text-disabled: #767676;
+  --text-inverse: var(--color-white);
+  --text-brand: var(--color-purple-700);
+  --text-link: var(--color-purple-700);
+  --text-link-hover: var(--color-purple-900);
+  --text-code: #0f8a83;              /* Darker teal — passes AA on light surfaces */
+
+  /* ── Borders ── */
+  --border-default: var(--color-neutral-200);
+  --border-strong: var(--color-neutral-300);
+  --border-brand: var(--color-purple-700);
+  --border-focus: var(--color-purple-500);
+  --border-accent: var(--color-teal-500);
+
+  /* ── Interactive ── */
+  --interactive-primary: var(--color-purple-700);
+  --interactive-primary-hover: var(--color-purple-900);
+  --interactive-primary-active: var(--color-purple-800);
+  --interactive-secondary: var(--color-gold-500);
+  --interactive-secondary-hover: var(--color-gold-700);
+  --interactive-ghost-hover: var(--color-purple-50);
+  --interactive-ghost-active: var(--color-purple-100);
+
+  /* ── Status ── */
+  --color-success: #2e7d32;
+  --color-success-light: #e8f5e9;
+  --color-warning: #f57c00;
+  --color-warning-light: #fff3e0;
+  --color-error: #c62828;
+  --color-error-light: #ffebee;
+  --color-info: var(--color-purple-600);
+  --color-info-light: var(--color-purple-50);
+
+  /* ── Focus ring (UW: 0.2rem, purple at 50%) ── */
+  --focus-ring: 0 0 0 0.2rem rgba(75, 46, 131, 0.5);
+  --focus-ring-offset: 2px;
+
+  /* ── Semantic spacing ── */
+  --space-inline-xs: var(--space-1);
+  --space-inline-sm: var(--space-2);
+  --space-inline-md: var(--space-4);
+  --space-inline-lg: var(--space-6);
+  --space-stack-xs: var(--space-1);
+  --space-stack-sm: var(--space-2);
+  --space-stack-md: var(--space-4);
+  --space-stack-lg: var(--space-8);
+  --space-stack-xl: var(--space-12);
+  --space-section-sm: var(--space-12);
+  --space-section-md: var(--space-16);
+  --space-section-lg: var(--space-24);
+
+  /* ── Semantic typography ── */
+  --font-heading: var(--font-display);
+  --font-reading: var(--font-body);
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     SLIDE TYPE SCALE — presentation sizes (slide addition)
+     Projected decks: every visible text value has a 1.5rem (24px) floor.
+     Exceptions: --slide-label (decorative eyebrows/tags) and --slide-source
+     (citations) may floor at 1rem.
+     ═══════════════════════════════════════════════════════════════════════ */
+  --slide-hero:     clamp(3.5rem, 5.5vw, 5.375rem);    /* 56–86px  title & section slides */
+  --slide-title:    clamp(2.5rem, 3.5vw, 3.5rem);      /* 40–56px  slide h1 */
+  --slide-subtitle: clamp(1.75rem, 2.4vw, 2.5rem);     /* 28–40px  h2, column heads */
+  --slide-lead:     clamp(1.625rem, 2.2vw, 2.125rem);  /* 26–34px  key message, lead */
+  --slide-body:     clamp(1.5rem, 1.9vw, 1.75rem);     /* 24–28px  body, bullets */
+  --slide-code:     clamp(1.5rem, 1.7vw, 1.625rem);    /* 24–26px  code blocks */
+  --slide-stat:     clamp(4rem, 7vw, 7.5rem);          /* 64–120px stat numbers */
+  --slide-label:    clamp(1rem, 1.2vw, 1.25rem);       /* 16–20px  eyebrows, tags (decorative) */
+  --slide-source:   clamp(1rem, 1.1vw, 1.25rem);       /* 16–20px  citations only */
+}
+
+/* ═════════════════════════════════════════════════════════════════════════
+   DARK CONTEXT — add class="dark" to a slide <section> with a purple-950 or
+   purple-900 background. Aliases flip so the same semantic names stay valid.
+   ═════════════════════════════════════════════════════════════════════════ */
+.dark,
+[data-theme="dark"] {
+  --surface-primary: var(--color-purple-950);
+  --surface-secondary: var(--color-purple-900);
+  --surface-tertiary: var(--color-neutral-800);
+
+  --text-primary: var(--color-white);
+  --text-secondary: var(--color-gold-200);
+  --text-tertiary: var(--color-neutral-400);
+  --text-brand: var(--color-gold-500);
+  --text-link: var(--color-teal-400);
+  --text-link-hover: var(--color-teal-300);
+  --text-code: var(--color-teal-500);
+
+  --border-default: rgba(255, 255, 255, 0.12);
+  --border-strong: rgba(255, 255, 255, 0.2);
+  --border-accent: var(--color-teal-500);
+  --border-focus: var(--color-teal-500);
+
+  --interactive-primary: var(--color-teal-500);
+  --interactive-primary-hover: var(--color-teal-400);
+  --interactive-ghost-hover: rgba(255, 255, 255, 0.08);
+  --interactive-ghost-active: rgba(255, 255, 255, 0.12);
+}
