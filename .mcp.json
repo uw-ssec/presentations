@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "presentations": {
+      "type": "stdio",
+      "command": "pixi",
+      "args": ["run", "okf", "mcp", "knowledge"],
+      "env": {}
+    }
+  }
+}

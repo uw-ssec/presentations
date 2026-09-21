@@ -216,3 +216,17 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+# pixi environments
+.pixi/*
+!.pixi/config.toml
+
+# Obsidian vault settings, created when knowledge/ is opened as a vault
+knowledge/.obsidian/
+
+# Skill evals: run logs and the skills/repo copies synced into harbor build contexts
+evals/logs/
+evals/harbor/base/skills/
+evals/harbor/base/repo/
+
+# The Python template above ignores every lib/; the skill-eval shim libraries must be tracked
+!evals/harbor/base/lib/

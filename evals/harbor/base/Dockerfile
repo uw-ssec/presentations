@@ -1,0 +1,37 @@
+FROM ubuntu:24.04
+
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends git ca-certificates curl python3 \
+ && rm -rf /var/lib/apt/lists/*
+
+# Shared bash libraries: shim logging, fixture builders, verifier helpers.
+COPY lib/ /usr/local/lib/skill-evals/
+
+# Fake CLIs, plus a git wrapper that logs before delegating to /usr/bin/git.
+COPY shims/pixi shims/okf shims/git /usr/local/bin/
+COPY shims/forbidden /usr/local/bin/pip
+COPY shims/forbidden /usr/local/bin/pip3
+COPY shims/forbidden /usr/local/bin/conda
+COPY shims/forbidden /usr/local/bin/uv
+RUN chmod 755 /usr/local/bin/pixi /usr/local/bin/okf /usr/local/bin/git \
+      /usr/local/bin/pip /usr/local/bin/pip3 /usr/local/bin/conda /usr/local/bin/uv \
+ && mkdir -p /var/log/skill-shims /fixture /app \
+ && chmod 777 /var/log/skill-shims \
+ && /usr/bin/git config --system user.name "Skill Evals" \
+ && /usr/bin/git config --system user.email "evals@example.invalid" \
+ && /usr/bin/git config --system init.defaultBranch main
+
+# Every skill under test, synced from .agents/skills and evals/skills by
+# `pixi run -e evals harbor-sync`. task.toml points skills_dir at /skills.
+COPY skills/ /skills/
+# The repository files a fixture needs beside the skills: AGENTS.md, the
+# on-demand rules, and the uw-slides brand systems and templates that
+# /new-deck copies from by repo-relative path.
+COPY repo/ /opt/repo/
+RUN test -f /skills/new-deck/SKILL.md && test -f /skills/okf-memory/SKILL.md \
+ && test -f /skills/greeting-file/SKILL.md \
+ && test -f /opt/repo/AGENTS.md \
+ && test -f /opt/repo/.agents/uw-slides/templates/build.sh \
+ && test -f /opt/repo/.agents/uw-slides/design-systems/ssec-brand/shared/header.html
+
+WORKDIR /app

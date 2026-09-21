@@ -1,0 +1,43 @@
+- input: |
+    Extract a SLIDES.md outline from this deck:
+    <section id="title"><h1>Security in the Age of AI</h1></section>
+    <section id="attack-classes"><h2>GitHub Actions attack classes</h2><ul><li>Mutable tags</li><li>Script injection</li></ul><img src="diagram.png" alt="Attack surface"></section>
+    <section id="hardened"><h2>Hardened workflows</h2><p>SHA-pin every action.</p></section>
+  must:
+    - "SLIDES.md"
+    - "regex:^## 01-"
+    - "regex:^## 02-"
+    - "regex:^## 03-"
+    - "diagram.png"
+    - "attack classes"
+  must_not: ["regex:<section"]
+  smoke_answer: |
+    Writing SLIDES.md:
+
+    # Extracted Presentation
+
+    ## 01-title
+    Title: Security in the Age of AI
+
+    ## 02-attack-classes
+    Title: GitHub Actions attack classes
+    Main points:
+    - Mutable tags
+    - Script injection
+
+    Images: diagram.png
+
+    ## 03-hardened-workflows
+    Title: Hardened workflows
+    Content: SHA-pin every action.
+
+    Extraction report: 3 slides, 1 image reference.
+- input: |
+    Great. Now also generate the HTML fragments for each slide from that
+    outline as part of the extraction.
+  must: ["outline"]
+  must_not: ["regex:data-slide="]
+  smoke_answer: |
+    This skill extracts the content outline only. SLIDES.md is the planning
+    document; ask for the fragments separately (for example "create slide
+    01-title from SLIDES.md") and they will be generated from the plan.

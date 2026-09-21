@@ -1,0 +1,4 @@
+# Project
+* [The uw-slides plugin is vendored under .agents, not installed from a marketplace](uw-slides-plugin-vendored.md) - Slide-building skills live in .agents/skills with .claude/skills symlinked to them, and plugin assets live in .agents/uw-slides, so the repository carries its own copy with repo-relative paths instead of a marketplace install.
+* [New Decks Default to uw-slides HTML, Not Reveal.js](deck-format-default.md) - New presentations are uw-slides fragment decks scaffolded with /new-deck and built to build/index.html; Reveal.js is legacy, kept only for security-in-age-of-ai.
+* [Skill Evals with Inspect and Harbor](skill-evals.md) - Every skill under .agents/skills has an Inspect sample file scored by must/must-not rules and a Harbor sandbox task with logging fake pixi/okf; three guard tasks cover the Reveal.js temptation, apply-visuals idempotency, and PII in memory; a Docker-free dry run stands in for Harbor on this machine.

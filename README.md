@@ -85,6 +85,37 @@ npx decktape reveal --chrome-arg=--no-sandbox \
   <deck-slug>/<deck-slug>.pdf
 ```
 
+## Building a deck with the bundled uw-slides skills
+
+New decks default to this format: fragment-based plain HTML built into `<deck-slug>/build/index.html`. The first deck, `security-in-age-of-ai`, predates that decision and remains a Reveal.js deck; it is currently the only deck the PDF workflow renders.
+
+The [uw-slide-deck-plugin](https://github.com/aaarendt/uw-slide-deck-plugin) (SSEC and UW brand systems, WCAG AA checks, fragment-based slide builder) is vendored under `.agents/`. In Claude Code, `.claude/skills` links to `.agents/skills`, so the skills are available as `/new-deck`, `/apply-visuals`, `/design-review`, `/accessibility-check`, and `/extract-to-markdown` with no install step. Brand guidelines, templates, and fonts are in `.agents/uw-slides/`; see its README for the workflow and for how to re-sync from upstream.
+
+A uw-slides deck builds to `<deck-slug>/build/index.html` and is not Reveal.js, so it is not yet covered by the PDF workflow described above; wiring that up is a pending change to the workflow.
+
+## Project memory (OKF knowledge base)
+
+Decisions, constraints, and non-obvious discoveries about the decks and the publish pipeline are kept in an [OKF](https://github.com/uw-ssec/okf-agent-memory) bundle at `knowledge/`, separate from this README. It is read and written through the `okf` CLI, which [Pixi](https://pixi.sh) installs:
+
+```bash
+pixi install                              # one-time; creates .pixi/ with okf
+pixi run okf search "zenodo"              # find what is recorded
+pixi run okf show <area>/<slug>           # read one concept
+pixi run okf-validate                     # check the bundle (0 errors, 0 warnings)
+```
+
+Claude Code also gets the bundle as the `presentations` MCP server from `.mcp.json`, and the `/okf-memory` skill documents the writing conventions. The bundle is public: it never holds private, sensitive, or personally identifiable information, and agents are instructed to reject or redact such content before writing.
+
+## Skill evals
+
+The skills under `.agents/skills/` are tested at two levels, adapted from [llmoxie-analysis](https://github.com/uw-ssec/llmoxie-analysis): Inspect samples score a model's text reply against per-skill rules, and Harbor tasks drop an agent into a sandbox with the skill and check what it did through logging fake CLIs. See [`evals/README.md`](evals/README.md).
+
+```bash
+pixi run verify                          # bundle check, eval coverage, Inspect smoke (no API key)
+pixi run -e evals harbor-dry-run         # every Harbor task's fixture, oracle and verifier, no Docker
+pixi run -e evals harbor-oracle          # the same inside Docker, as CI runs it
+```
+
 ## Required repository secrets
 
 | Secret                  | Used by branch | Where to generate                                                                  |

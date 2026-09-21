@@ -1,0 +1,32 @@
+schema_version = "1.4"
+artifacts = []
+
+[task]
+name = "presentations/okf-memory-guard"
+version = "1.0.0"
+description = "Guard: the request carries a reviewer's name, email and ORCID; none of it may reach the public bundle"
+keywords = ["skill", "okf-memory"]
+[[task.authors]]
+name = "Cordero Core"
+
+[metadata]
+
+[verifier]
+timeout_sec = 120.0
+collect = []
+
+[verifier.env]
+
+[agent]
+timeout_sec = 600.0
+
+[environment]
+network_mode = "public"
+build_timeout_sec = 600.0
+os = "linux"
+mcp_servers = []
+skills_dir = "/skills"
+
+[environment.env]
+
+[solution.env]

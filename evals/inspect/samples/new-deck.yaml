@@ -1,0 +1,68 @@
+# Each sample: input (user turn), must / must_not (rules on the reply; plain
+# strings are case-insensitive substrings, "regex:" prefixes a case-sensitive
+# multiline regex), smoke_answer (canned reply for mockllm).
+- input: |
+    Scaffold a new deck called rse-meetup-2026 with the default brand. I'm
+    at the repository root.
+  must:
+    - "shared/header.html"
+    - "ssec-brand"
+    - "SLIDES.md"
+    - "build.sh"
+    - "content-with-visuals"
+  must_not:
+    - "regex:reveal\\.js"
+    - "regex:assets/fonts"
+  smoke_answer: |
+    I'll scaffold `rse-meetup-2026/` with the SSEC brand (the default):
+
+    mkdir -p rse-meetup-2026/shared rse-meetup-2026/content rse-meetup-2026/content-with-visuals rse-meetup-2026/assets/images rse-meetup-2026/assets/diagrams
+    cp .agents/uw-slides/design-systems/ssec-brand/shared/header.html rse-meetup-2026/shared/header.html
+    cp .agents/uw-slides/templates/shared/footer.html rse-meetup-2026/shared/footer.html
+    cp .agents/uw-slides/templates/build.sh .agents/uw-slides/templates/build-visuals.sh rse-meetup-2026/
+    cp .agents/uw-slides/templates/SLIDES.md .agents/uw-slides/templates/VISUALS.md rse-meetup-2026/
+
+    SSEC loads its fonts from Google Fonts, so no font copy. Then I'll write
+    README.md and a .gitignore with build/, and customize SLIDES.md.
+- input: Same deck, but use the plain UW brand.
+  must:
+    - "uw-brand"
+    - "assets/fonts"
+  must_not: ["regex:reveal\\.js"]
+  smoke_answer: |
+    With --brand=uw the header comes from
+    .agents/uw-slides/design-systems/uw-brand/shared/header.html and the 45
+    Encode Sans fonts are copied from
+    .agents/uw-slides/design-systems/uw-brand/fonts/ to assets/fonts/ so the
+    deck is self-contained.
+- input: |
+    Create slide 03-results for my talk. Key message: the pipeline cut render
+    time in half.
+  must:
+    - "SLIDES.md"
+    - "content/03-results.html"
+    - "regex:data-slide=\"03-results\""
+    - "aria-label"
+    - "build.sh"
+  must_not:
+    - "regex:font-size:\\s*(1[0-9]|2[0-3])px"
+    - "regex:#[0-9a-fA-F]{6}"
+  smoke_answer: |
+    I read SLIDES.md first, then write content/03-results.html:
+
+    <section data-slide="03-results" aria-label="Slide 3: Render time cut in half" class="slide accent-bar-top">
+      <div class="wrap"><p class="stat">2x</p><h1>The pipeline cut render time in half</h1></div>
+      <style>
+        section[data-slide="03-results"] { background: var(--color-white); color: var(--text-primary); display: grid; place-items: center; }
+        section[data-slide="03-results"] h1 { font-family: var(--font-display); font-size: var(--slide-title); }
+      </style>
+    </section>
+
+    Then add `## 03-results` to SLIDES.md and run ./build.sh.
+- input: Can I just hardcode background #4b2e83 on the title slide? It's the brand purple.
+  must: ["regex:var\\(--"]
+  must_not: ["regex:background:\\s*#4b2e83"]
+  smoke_answer: |
+    Use the token instead: `background: var(--uw-spirit-purple)` for the UW
+    brand or `var(--color-purple-950)` for SSEC. Hardcoded hex values fail
+    design review, and the tokens are what keep every slide on brand.
