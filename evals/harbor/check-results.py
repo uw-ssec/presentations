@@ -29,9 +29,17 @@ def main(argv: list[str]) -> int:
     if path.is_dir():
         path = path / "result.json"
     job = json.loads(path.read_text())
-    trials = job.get("trial_results", [])
+    trials = job.get("trial_results") or []
     if not trials:
-        print(f"no trials in {path}")
+        # harbor run writes stats only to the job-level file; each trial has
+        # its own <job-dir>/<trial>/result.json with verifier_result.rewards.
+        trials = [
+            json.loads(child.read_text())
+            for child in sorted(path.parent.glob("*/result.json"))
+            if child.read_text().strip()
+        ]
+    if not trials:
+        print(f"no trials in {path} or its trial directories")
         return 1
     bad = 0
     for t in sorted(trials, key=lambda t: t.get("task_name", "")):
