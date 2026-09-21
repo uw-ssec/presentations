@@ -227,3 +227,6 @@ knowledge/.obsidian/
 evals/logs/
 evals/harbor/base/skills/
 evals/harbor/base/repo/
+
+# The Python template above ignores every lib/; the skill-eval shim libraries must be tracked
+!evals/harbor/base/lib/
