@@ -61,6 +61,7 @@ pixi run -e evals inspect-skill -T name=design-review --model anthropic/claude-h
 pixi run -e evals harbor-dry-run                                 # every task: fixture, oracle (must be 1), nop (must be 0); no Docker
 bash evals/harbor/dry-run.sh okf-memory-guard path/to/solve.sh   # one task with your own solution script
 pixi run -e evals harbor-oracle                                  # build base, run every task with the oracle (Docker)
+pixi run -e evals harbor-check                                   # fail unless every trial of the latest job scored 1.0; harbor run exits 0 regardless
 pixi run -e evals harbor run -p evals/harbor/tasks/new-deck -a nop -o evals/logs/harbor   # a do-nothing agent: happy-path tasks must score 0
 pixi run -e evals harbor-agent -m anthropic/claude-haiku-4-5     # every task with claude-code
 pixi run -e evals inspect-view                                   # browse Inspect logs

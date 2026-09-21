@@ -60,7 +60,8 @@ harbor-sync = { cmd = "rm -rf evals/harbor/base/skills evals/harbor/base/repo &&
 harbor-base = { cmd = "docker build -t presentations-skill-evals-base:local evals/harbor/base", depends-on = ["harbor-sync"], description = "Build the shared harbor base image: git, fake pixi/okf, all skills, the repo's rules and slide assets" }
 harbor-oracle = { cmd = "harbor run -p evals/harbor/tasks -a oracle -o evals/logs/harbor --force-build -q", depends-on = ["harbor-base"], description = "Run every harbor task with the oracle agent (needs Docker)" }
 harbor-agent = { cmd = "harbor run -p evals/harbor/tasks -a claude-code -o evals/logs/harbor --force-build", depends-on = ["harbor-base"], description = "Run every harbor task with a real agent, e.g. pixi run -e evals harbor-agent -m anthropic/claude-haiku-4-5" }
+harbor-check = { cmd = "python evals/harbor/check-results.py", description = "Fail unless every trial in the latest Harbor job scored 1.0 with no exception (harbor run itself exits 0 regardless)" }
 harbor-dry-run = { cmd = "bash evals/harbor/dry-run.sh", description = "Docker-free check: every task's fixture, oracle solution and verifier, with container paths rewritten to a temp root; oracle must score 1, nop 0" }
 harbor-view = { cmd = "harbor view evals/logs/harbor", description = "Open the Harbor trajectory viewer for local job logs" }
 # --- Combined --------------------------------------------------------------
-evals-smoke = { depends-on = ["evals-check", "inspect-smoke", "harbor-oracle"], description = "Coverage test, Inspect smoke, then every harbor task with the oracle agent (needs Docker)" }
+evals-smoke = { depends-on = ["evals-check", "inspect-smoke", "harbor-oracle", "harbor-check"], description = "Coverage test, Inspect smoke, every harbor task with the oracle agent, then fail on any reward below 1 or any exception (needs Docker)" }

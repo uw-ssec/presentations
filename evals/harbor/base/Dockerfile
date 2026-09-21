@@ -1,7 +1,7 @@
 FROM ubuntu:24.04
 
 RUN apt-get update \
- && apt-get install -y --no-install-recommends git ca-certificates curl \
+ && apt-get install -y --no-install-recommends git ca-certificates curl python3 \
  && rm -rf /var/lib/apt/lists/*
 
 # Shared bash libraries: shim logging, fixture builders, verifier helpers.
