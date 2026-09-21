@@ -1,4 +1,7 @@
 ## 2026-09-21
+* **Update**: Linked `project/skill-evals.md` to `project/deck-format-default.md` (The decision the new-deck guard task enforces.).
+* **Update**: Linked `project/skill-evals.md` to `project/uw-slides-plugin-vendored.md` (The skills under test and the assets the base image carries for them.).
+* **Update**: Updated concept `project/skill-evals.md`.
 * **Update**: Linked `project/deck-format-default.md` to `project/skill-evals.md` (The guard task that checks a new deck is a fragment deck even when asked to copy the Reveal.js one.).
 * **Update**: Linked `project/uw-slides-plugin-vendored.md` to `project/skill-evals.md` (How the vendored skills are tested.).
 * **Update**: Linked `project/skill-evals.md` to `project/deck-format-default.md` (The decision the new-deck guard task enforces.).

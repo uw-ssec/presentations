@@ -3,7 +3,7 @@ type: Architecture
 title: Skill Evals with Inspect and Harbor
 description: "Every skill under .agents/skills has an Inspect sample file scored by must/must-not rules and a Harbor sandbox task with logging fake pixi/okf; three guard tasks cover the Reveal.js temptation, apply-visuals idempotency, and PII in memory; a Docker-free dry run stands in for Harbor on this machine."
 tags: [evals, inspect, harbor, skills, testing]
-generated: { by: "claude-code:claude-fable-5-1", at: "2026-09-21T22:15:09Z" }
+generated: { by: "claude-code:claude-fable-5-1", at: "2026-09-21T22:19:56Z" }
 ---
 
 The `evals/` tree is a port of the llmoxie-analysis skill evals
@@ -71,6 +71,12 @@ targets `staging` and `main`; it has not yet run.
 - `sed` rewriting of `/skills` must be anchored on the preceding character,
   or `.agents/skills` is rewritten too.
 - macOS has `/sbin/sha256sum` but no `date -d`; Linux needs neither shim.
+- The repository .gitignore is the GitHub Python template, which ignores every
+  `lib/` directory. `evals/harbor/base/lib/` therefore never reached the
+  remote: the shim self-test passed locally and failed in CI with
+  `shimlib.sh: No such file or directory`. The fix is a `!evals/harbor/base/lib/`
+  negation placed after the template rule. Check `git ls-files` for any new
+  directory named lib, build, dist, or similar before trusting a local pass.
 
 ## Related Concepts
 
