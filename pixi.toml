@@ -1,0 +1,15 @@
+[workspace]
+authors = ["Cordero Core <cdcore09@gmail.com>"]
+channels = ["https://prefix.dev/conda-forge", "https://prefix.dev/lsetiawan/uw-ssec"]
+name = "presentations"
+platforms = ["osx-arm64", "linux-64"]
+version = "0.1.0"
+
+# okf-agent-memory provides the `okf` CLI that reads and writes the project
+# memory bundle at knowledge/. Run it as `pixi run okf ...`; the same binary
+# backs the MCP server declared in .mcp.json.
+[dependencies]
+okf-agent-memory = ">=0.4.0,<0.5"
+
+[tasks]
+okf-validate = { cmd = "okf validate --strict --drift", description = "Check the knowledge/ bundle; fails on errors and producer-gate findings, not on warnings" }

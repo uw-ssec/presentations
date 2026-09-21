@@ -1,0 +1,3 @@
+# Branding
+* [SSEC is the default slide brand, adapted from the website design system](ssec-slide-brand.md) - The uw-slides ssec brand vendors the uw-ssec.github.io design system with token names unchanged, a 24px-floor slide type scale, sentence-case titles, and Google Fonts; it replaced the upstream CloudBank brand and is the default for new decks.
+* [Measured WCAG contrast for SSEC slide colors differs from the website tables](ssec-contrast-measurements.md) - Computed contrast for the SSEC hex values shows the darker code teal and Heritage Gold on warm surfaces pass AA only as large text, and teal, gold-500, green, pink, and spirit gold fail as text on any light surface.

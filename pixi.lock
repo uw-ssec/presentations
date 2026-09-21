@@ -1,0 +1,27 @@
+version: 6
+environments:
+  default:
+    channels:
+    - url: https://prefix.dev/conda-forge/
+    - url: https://prefix.dev/lsetiawan/uw-ssec/
+    options:
+      pypi-prerelease-mode: if-necessary-or-explicit
+    packages:
+      linux-64:
+      - conda: https://prefix.dev/conda-forge/linux-64/okf-agent-memory-0.4.0-hfc2019e_0.conda
+      osx-arm64:
+      - conda: https://prefix.dev/lsetiawan/uw-ssec/osx-arm64/okf-agent-memory-0.4.0-h60d57d3_0.conda
+packages:
+- conda: https://prefix.dev/conda-forge/linux-64/okf-agent-memory-0.4.0-hfc2019e_0.conda
+  sha256: 58214a177291923d39c1492900b26ca5cff6f365fbaedadad6fd0db360695024
+  md5: d82b5267bd13f6c7a36df4c976e9b2ce
+  license: MIT
+  license_family: MIT
+  size: 3244145
+  timestamp: 1789705856834
+- conda: https://prefix.dev/lsetiawan/uw-ssec/osx-arm64/okf-agent-memory-0.4.0-h60d57d3_0.conda
+  sha256: 5a4f82efbdd0f84b042f0a9b07796caabb8f2df25a8eb85c9840ebe35cbd7b9a
+  md5: 1b3a17517e3fac2534d66fddb1078fef
+  license: MIT
+  size: 2906230
+  timestamp: 1789707134895
