@@ -222,3 +222,8 @@ __marimo__/
 
 # Obsidian vault settings, created when knowledge/ is opened as a vault
 knowledge/.obsidian/
+
+# Skill evals: run logs and the skills/repo copies synced into harbor build contexts
+evals/logs/
+evals/harbor/base/skills/
+evals/harbor/base/repo/

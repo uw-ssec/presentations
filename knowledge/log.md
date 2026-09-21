@@ -1,4 +1,9 @@
 ## 2026-09-21
+* **Update**: Linked `project/deck-format-default.md` to `project/skill-evals.md` (The guard task that checks a new deck is a fragment deck even when asked to copy the Reveal.js one.).
+* **Update**: Linked `project/uw-slides-plugin-vendored.md` to `project/skill-evals.md` (How the vendored skills are tested.).
+* **Update**: Linked `project/skill-evals.md` to `project/deck-format-default.md` (The decision the new-deck guard task enforces.).
+* **Update**: Linked `project/skill-evals.md` to `project/uw-slides-plugin-vendored.md` (The skills under test and the assets the base image carries for them.).
+* **Creation**: Documented concept `project/skill-evals.md` (Skill Evals with Inspect and Harbor).
 * **Update**: Linked `project/deck-format-default.md` to `project/uw-slides-plugin-vendored.md` (The vendored skills and assets that produce the default deck format.).
 * **Update**: Linked `pipeline/fragment-decks-outside-pdf-workflow.md` to `project/deck-format-default.md` (The decision that makes fragment decks the default, which turns this gap from an edge case into the normal path.).
 * **Update**: Linked `project/deck-format-default.md` to `pipeline/fragment-decks-outside-pdf-workflow.md` (The workflow gap that keeps a default-format deck from publishing until CI gains a fragment build step.).

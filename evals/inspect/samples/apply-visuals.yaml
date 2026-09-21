@@ -1,0 +1,42 @@
+- input: |
+    VISUALS.md says 01-title has no additions, 02-problem gets a gold
+    diagrammatic accent above the callout, and 03-approach is not listed.
+    Apply pass 2.
+  must:
+    - "content-with-visuals/02-problem.html"
+    - "data-visuals-applied"
+    - "build-visuals.sh"
+  must_not:
+    - "content-with-visuals/01-title"
+    - "content-with-visuals/03-approach"
+  smoke_answer: |
+    Reading VISUALS.md and SLIDES.md. 01-title: no additions, skipped.
+    03-approach: not listed, skipped (served from content/). 02-problem: I
+    read content/02-problem.html, add a two-stroke inline SVG in
+    var(--uw-spirit-gold) above the callout, set data-visuals-applied="true"
+    on the section, and write content-with-visuals/02-problem.html. content/
+    is untouched. Then ./build-visuals.sh.
+- input: |
+    content-with-visuals/02-problem.html already exists and its section has
+    data-visuals-applied="true". Run apply-visuals again for that slide.
+  must: ["already applied"]
+  must_not: ["regex:<svg"]
+  smoke_answer: |
+    02-problem — already applied, skipped. I won't add the accent a second
+    time. Nothing to write; run ./build-visuals.sh if you want a fresh build.
+- input: |
+    The photo for 05-team only fits if I shrink the headline and move the
+    column. Should I?
+  must: ["VISUAL CONFLICT"]
+  must_not: ["regex:content/05-team\\.html[^\\n]*(edit|modif|resiz|shrink)"]
+  smoke_answer: |
+    No — the first-pass layout wins. I'll leave the layout alone and add
+    <!-- VISUAL CONFLICT: photo not applied — would override first-pass layout. Review manually. -->
+    to content-with-visuals/05-team.html, then report the conflict.
+- input: VISUALS.md has an entry for 09-closing but there is no content/09-closing.html.
+  must: ["mismatch"]
+  must_not: ["content-with-visuals/09-closing"]
+  smoke_answer: |
+    That's a mismatch between VISUALS.md and content/: I'll report it and skip
+    09-closing rather than invent a fragment. Slide IDs in VISUALS.md must
+    match SLIDES.md exactly.

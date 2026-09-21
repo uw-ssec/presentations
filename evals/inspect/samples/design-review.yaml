@@ -1,0 +1,39 @@
+- input: |
+    Review this SSEC-brand fragment:
+    <section data-slide="02-problem" aria-label="Slide 2" class="slide accent-bar-top">
+      <h1>Decks drift</h1>
+      <style>section[data-slide="02-problem"] { background: #4b2e83; color: white; }</style>
+    </section>
+  must:
+    - "#4b2e83"
+    - "regex:var\\(--"
+    - "02"
+  smoke_answer: |
+    ❌ Violations:
+      - Slide 02: Hardcoded color #4b2e83 (use var(--color-purple-950) or the brand token)
+- input: |
+    Review: a light-background slide sets `color: var(--color-teal-500)` on its
+    subtitle text. Brand ssec.
+  must:
+    - "teal-500"
+    - "--color-purple-700"
+    - "FAIL"
+  smoke_answer: |
+    ❌ FAIL: --color-teal-500 on light fails WCAG AA (1.9:1). Use
+    --color-purple-700 (10.4:1) for emphasis; teal on light is a bar, rule, or
+    glow only.
+- input: |
+    Review slide 08: a white slide with the SSEC header tokens, no
+    accent-bar-* class and no .angle-divider.
+  must: ["accent bar", "08"]
+  smoke_answer: |
+    ❌ Violations:
+      - Slide 08: Missing accent bar (add .accent-bar-top, a 4px --color-teal-500 bar)
+- input: |
+    Review: slide 04 sets its body copy to `font-size: 18px`. Is that fine for
+    a projected deck?
+  must: ["1.5rem", "04"]
+  smoke_answer: |
+    ❌ Violations:
+      - Slide 04: font-size 18px is below the 1.5rem (24px) floor for content
+        text. Use clamp() with a 1.5rem minimum, or the --slide-body token.

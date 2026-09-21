@@ -1,0 +1,24 @@
+- input: |
+    Check slide 05: <img src="assets/images/pipeline.png" class="slide-photo">
+  must: ["alt", "05"]
+  smoke_answer: |
+    ❌ FAILED (1 check)
+      - Slide 05: Missing alt text for 'pipeline.png'
+- input: Check slide 03, whose paragraph text is set to 16px.
+  must: ["24", "03"]
+  smoke_answer: |
+    ❌ FAILED (1 check)
+      - Slide 03: Font size 16px is below the 24px minimum
+- input: |
+    Slide 12 has gold text on a white surface with a computed contrast of
+    3.2:1. Does it pass?
+  must: ["4.5:1", "12"]
+  smoke_answer: |
+    ❌ FAILED (1 check)
+      - Slide 12: Contrast 3.2:1 (needs 4.5:1 for body text, 3:1 only for large text)
+- input: |
+    Check: <section data-slide="07-summary" class="slide">...</section>
+  must: ["aria-label", "07"]
+  smoke_answer: |
+    ❌ FAILED (1 check)
+      - Slide 07: Missing aria-label on the section

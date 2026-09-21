@@ -30,9 +30,10 @@ These apply to every task, in every session:
    trace directly to the request; don't refactor, reformat, or "tidy" adjacent
    content.
 2. **Verify before you claim.** Never report work as complete, fixed, or
-   passing without having run the check and read its output: render the deck
-   locally, run `pixi run okf-validate`, check the workflow — whichever matches
-   what changed (table in
+   passing without having run the check and read its output. The minimum gate
+   is `pixi run verify` (knowledge bundle, eval coverage, Inspect smoke); then
+   whatever matches what changed — render the deck, dry-run the Harbor tasks,
+   check the workflow (table in
    [`.agents/rules/pixi-and-tools.md`](.agents/rules/pixi-and-tools.md)).
 3. **Ask instead of assuming.** If the request has multiple readings, stop and
    name it — before implementing, not after.
@@ -96,6 +97,10 @@ path, so run skills from the repository root. A fragment deck builds to
 Harness-provided git skills (`/commit`, `/push`, `/create-pr`, and similar) are
 fine to use, but the rules above still bind them: no attribution trailers, PRs
 to `staging`, checks run first.
+
+Every project skill has an Inspect sample file and a Harbor task under `evals/`
+(see `evals/README.md`). Changing a skill means updating its samples and task;
+`pixi run verify` fails when a skill has neither.
 
 ## Project Memory
 

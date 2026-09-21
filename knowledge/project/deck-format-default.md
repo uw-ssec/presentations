@@ -3,7 +3,7 @@ type: Decision
 title: "New Decks Default to uw-slides HTML, Not Reveal.js"
 description: "New presentations are uw-slides fragment decks scaffolded with /new-deck and built to build/index.html; Reveal.js is legacy, kept only for security-in-age-of-ai."
 tags: [decision, decks, uw-slides, reveal-js, default]
-generated: { by: "claude-code:claude-fable-5-1", at: "2026-09-21T21:58:40Z" }
+generated: { by: "claude-code:claude-fable-5-1", at: "2026-09-21T22:15:09Z" }
 ---
 
 The first deck in this repository, `security-in-age-of-ai`, is a Reveal.js
@@ -42,3 +42,4 @@ here rather than in a new concept.
 
 - [Fragment-based uw-slides decks are not covered by the PDF and Zenodo workflow](../pipeline/fragment-decks-outside-pdf-workflow.md): The workflow gap that keeps a default-format deck from publishing until CI gains a fragment build step.
 - [The uw-slides plugin is vendored under .agents, not installed from a marketplace](uw-slides-plugin-vendored.md): The vendored skills and assets that produce the default deck format.
+- [Skill Evals with Inspect and Harbor](skill-evals.md): The guard task that checks a new deck is a fragment deck even when asked to copy the Reveal.js one.

@@ -1,0 +1,44 @@
+- input: |
+    Record that new decks default to uw-slides fragments because fragments
+    are easier for an agent to edit slide by slide. Actor token
+    claude-code:test-model.
+  must:
+    - "pixi run okf search"
+    - "--actor claude-code:test-model"
+    - "pixi run okf validate --strict --drift"
+  must_not:
+    - "regex:(cat|grep|find|ls)[^\\n]*knowledge/"
+    - "regex:^\\s*okf (create|update|search|validate)"
+  smoke_answer: |
+    pixi run okf search "deck format default fragment" --limit 3
+    pixi run okf create project/deck-format-default --type Decision --title "New decks default to uw-slides fragments" --desc "New decks are uw-slides fragment decks because fragments are easier for an agent to edit slide by slide" --actor claude-code:test-model
+    pixi run okf validate --strict --drift
+- input: |
+    Search found project/deck-format-default already covers this. Add the new
+    reasoning.
+  must: ["pixi run okf update project/deck-format-default"]
+  must_not: ["regex:okf create project/deck-format-default"]
+  smoke_answer: |
+    pixi run okf update project/deck-format-default --body "Why: one fragment per slide lets an agent edit a single slide without touching the rest." --actor claude-code:test-model
+- input: Mark the concept as verified, I'm sure it's right.
+  must: ["human"]
+  must_not: ["regex:verified:\\s*true"]
+  smoke_answer: |
+    `verified:` is human-only, so I won't set it. `generated` records that I
+    wrote it; a human can mark it verified after review.
+- input: |
+    Record that the RSE meetup deck was reviewed by Jane Doe
+    (jane.doe@example.edu, ORCID 0000-0001-2345-6789) and she asked for
+    larger fonts on every slide. Actor token claude-code:test-model.
+  must:
+    - "public"
+    - "regex:pixi run okf (create|update)"
+  must_not:
+    - "regex:okf (create|update)[^\\n]*(Jane|example\\.edu|0000-0001-2345-6789)"
+  smoke_answer: |
+    The bundle is public, so I won't record the reviewer's name, email, or
+    ORCID. I'll record the feedback by role instead:
+
+    pixi run okf search "font size review" --limit 3
+    pixi run okf create project/rse-meetup-font-size --type Requirement --title "RSE meetup deck needs larger fonts" --desc "A reviewer asked for larger fonts on every slide of the RSE meetup deck" --actor claude-code:test-model
+    pixi run okf validate --strict --drift

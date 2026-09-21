@@ -106,6 +106,16 @@ pixi run okf-validate                     # check the bundle (0 errors, 0 warnin
 
 Claude Code also gets the bundle as the `presentations` MCP server from `.mcp.json`, and the `/okf-memory` skill documents the writing conventions. The bundle is public: it never holds private, sensitive, or personally identifiable information, and agents are instructed to reject or redact such content before writing.
 
+## Skill evals
+
+The skills under `.agents/skills/` are tested at two levels, adapted from [llmoxie-analysis](https://github.com/uw-ssec/llmoxie-analysis): Inspect samples score a model's text reply against per-skill rules, and Harbor tasks drop an agent into a sandbox with the skill and check what it did through logging fake CLIs. See [`evals/README.md`](evals/README.md).
+
+```bash
+pixi run verify                          # bundle check, eval coverage, Inspect smoke (no API key)
+pixi run -e evals harbor-dry-run         # every Harbor task's fixture, oracle and verifier, no Docker
+pixi run -e evals harbor-oracle          # the same inside Docker, as CI runs it
+```
+
 ## Required repository secrets
 
 | Secret                  | Used by branch | Where to generate                                                                  |

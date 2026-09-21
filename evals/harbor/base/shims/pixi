@@ -1,0 +1,35 @@
+#!/bin/bash
+# Fake pixi for skill evals. Every task succeeds; `pixi run okf ...` reaches the fake okf.
+set -uo pipefail
+. "${SKILL_SHIM_LIB:-/usr/local/lib/skill-evals/shimlib.sh}"
+shim_record pixi "$@"
+
+sub="${1:-}"
+[ $# -gt 0 ] && shift
+case "$sub" in
+  --version)
+    echo "pixi 0.64.0" ;;
+  install)
+    echo "✔ The default environment has been installed." ;;
+  run)
+    # Drop `-e <env>` so `pixi run -e evals <task>` also works.
+    if [ "${1:-}" = "-e" ]; then shift; [ $# -gt 0 ] && shift; fi
+    task="${1:-}"
+    [ $# -gt 0 ] && shift
+    case "$task" in
+      okf-validate)
+        okf validate --strict --drift
+        exit $? ;;
+      okf)
+        okf "$@"
+        exit $? ;;
+      verify)
+        for step in okf-validate evals-check inspect-smoke; do
+          echo "✨ Pixi task ($step): ok"
+        done ;;
+      *)
+        echo "✨ Pixi task ($task in default): ok" ;;
+    esac ;;
+  *) ;;
+esac
+exit 0

@@ -40,7 +40,10 @@ Decks come in two flavours:
 │   ├── scripts/requirements.txt     # Pinned deps for the publish script
 │   └── workflows/
 │       ├── build-pdf.yml            # Render decks with decktape; publish on staging/main
+│       ├── skill-evals.yml          # Coverage test, Inspect smoke, Harbor oracle matrix (Docker)
 │       └── zizmor.yml               # Static analysis of the workflows themselves
+├── evals/                       # Skill evals: Inspect samples, Harbor base image and tasks, dry-run.sh; see evals/README.md
+├── tests/test_skill_evals.py    # Every skill has a sample file and a complete Harbor task; scripts parse
 ├── knowledge/                   # Project memory (OKF bundle); read and write via /okf-memory
 ├── <deck-slug>/                 # One directory per deck (uw-slides fragment layout)
 │   ├── SLIDES.md                # Slide order and content briefs
@@ -76,6 +79,11 @@ deck with decktape at 1280×720. The `publish` job runs only on `staging` and
 
 **`zizmor.yml`** lints the workflow files for security issues. Changes under
 `.github/workflows/` must keep it passing.
+
+**`skill-evals.yml`** runs on changes to the skills, rules, uw-slides assets,
+`evals/`, `tests/`, or the pixi files: the coverage test, the Inspect smoke on
+canned answers, and every Harbor task with the oracle agent (Docker on the
+runner). The same minus Harbor is `pixi run verify` locally.
 
 **Read the Docs** hosts the gallery and decks as static HTML using the
 `commands:` in `.readthedocs.yaml`. A new deck directory must be added there

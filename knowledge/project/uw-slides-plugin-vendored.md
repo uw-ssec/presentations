@@ -3,7 +3,7 @@ type: Architecture
 title: "The uw-slides plugin is vendored under .agents, not installed from a marketplace"
 description: "Slide-building skills live in .agents/skills with .claude/skills symlinked to them, and plugin assets live in .agents/uw-slides, so the repository carries its own copy with repo-relative paths instead of a marketplace install."
 tags: [project, uw-slides, skills, plugin, agents]
-generated: { by: "claude-code:claude-fable-5-1", at: "2026-09-21T21:58:00Z" }
+generated: { by: "claude-code:claude-fable-5-1", at: "2026-09-21T22:15:09Z" }
 status: stable
 governance: context
 code_refs: [".agents/skills/**", ".claude/skills/**", .agents/uw-slides/README.md]
@@ -37,3 +37,4 @@ The project owner asked for the plugin to be built into the project rather than 
 - [SSEC is the default slide brand, adapted from the website design system](../branding/ssec-slide-brand.md): The SSEC brand is one of the two brands shipped inside the vendored plugin and is its default
 - [Fragment-based uw-slides decks are not covered by the PDF and Zenodo workflow](../pipeline/fragment-decks-outside-pdf-workflow.md): Decks produced by the vendored plugin are the ones the PDF workflow does not yet render
 - [New Decks Default to uw-slides HTML, Not Reveal.js](deck-format-default.md): The decision that makes this plugin's fragment format the default for every new deck.
+- [Skill Evals with Inspect and Harbor](skill-evals.md): How the vendored skills are tested.

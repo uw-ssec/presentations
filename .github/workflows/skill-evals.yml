@@ -1,0 +1,61 @@
+# Runs every skill eval: the coverage test, the Inspect smoke on canned
+# answers, and every Harbor task with the oracle agent. Harbor needs Docker,
+# which ubuntu-latest has. The coverage test and Inspect smoke are also part
+# of `pixi run verify`; this job exists for the Harbor half, which is too slow
+# and Docker-bound for the local gate.
+
+name: Skill evals
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, staging]
+    paths:
+      - ".agents/skills/**"
+      - ".agents/rules/**"
+      - ".agents/uw-slides/**"
+      - "AGENTS.md"
+      - "evals/**"
+      - "tests/**"
+      - "pixi.toml"
+      - "pixi.lock"
+      - ".github/workflows/skill-evals.yml"
+  pull_request:
+    branches: [main, staging]
+    paths:
+      - ".agents/skills/**"
+      - ".agents/rules/**"
+      - ".agents/uw-slides/**"
+      - "AGENTS.md"
+      - "evals/**"
+      - "tests/**"
+      - "pixi.toml"
+      - "pixi.lock"
+      - ".github/workflows/skill-evals.yml"
+
+# Practice what the deck preaches: deny by default, opt in per job.
+permissions: {}
+
+jobs:
+  evals-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Install pixi and the evals environment
+        uses: prefix-dev/setup-pixi@d3f436a425481402e6a95a1d1fc10331c708cd9e  # v0.10.2
+        with:
+          pixi-version: v0.64.0
+          cache: true
+          locked: true
+          environments: evals
+
+      - name: Coverage test, Inspect smoke, and Harbor oracle matrix
+        run: pixi run -e evals evals-smoke
