@@ -1,0 +1,61 @@
+<link rel="stylesheet" href="../shared/slide-base.css">
+<section data-slide="15-env-solution" aria-label="Agent environment: what we added" class="slide" data-presenter="don">
+  <div class="accent-bar-top"></div>
+  <div class="content">
+    <ol class="progress" aria-label="Where we are in the session"><li class="done">Orientation</li><li class="active">Agent environment</li><li class="">Instruction entry point</li><li class="">Project memory</li><li class="">Agent skills</li><li class="">Skill evals</li></ol>
+    <p class="eyebrow">Section 1 of 5 · Agent environment · what we added</p>
+    <div class="grid">
+      <div class="text">
+        <h1><span class="check" aria-hidden="true">✓</span> pixi, plus the dev container</h1>
+        <p class="lead tagline">The 2023 repo already had pixi and a dev container. That setup helps agents too, if they use it.</p>
+        <div class="cols">
+          <div><h2>For contributors</h2><ul><li><code>pixi install</code> sets up the project environment</li><li>Named tasks run the tests and required checks</li><li>The demo Codespace gives everyone the same starting setup</li></ul></div>
+          <div><h2>For agents</h2><ul><li><code>pixi run</code> provides the commands the agent should use</li><li>The lockfile specifies the dependencies</li><li>Less time spent trying to repair the environment</li></ul></div>
+        </div>
+        
+      </div>
+      <figure class="figure"><img src="../assets/images/env-pixi.png" alt=""></figure>
+    </div>
+  </div>
+  <style>
+    
+    section[data-slide="15-env-solution"] { background: linear-gradient(105deg, rgba(183,165,122,0.18), transparent 36%), var(--surface-secondary); padding: var(--space-16) var(--space-20); }
+    section[data-slide="15-env-solution"] .content { position: relative; z-index: var(--z-raised); display: flex; flex-direction: column; width: 100%; height: 100%; }
+    section[data-slide="15-env-solution"] h1 {
+      font-family: var(--font-display); font-size: var(--slide-title); font-weight: var(--font-extrabold);
+      letter-spacing: var(--tracking-tight); line-height: var(--leading-tight); color: var(--text-brand);
+      margin: var(--space-2) 0 var(--space-6);
+    }
+    section[data-slide="15-env-solution"] p, section[data-slide="15-env-solution"] li { font-size: var(--slide-body); line-height: var(--leading-relaxed); color: var(--text-primary); }
+    section[data-slide="15-env-solution"] .lead { font-size: var(--slide-lead); }
+    section[data-slide="15-env-solution"] .muted { color: var(--text-secondary); }
+    section[data-slide="15-env-solution"] .source { margin-top: auto; padding-top: var(--space-4); }
+    
+    section[data-slide="15-env-solution"] .eyebrow, section[data-slide="15-env-solution"] h2, section[data-slide="15-env-solution"] .pairs dt { color: var(--text-brand); }
+    
+    
+    section[data-slide="15-env-solution"] .progress { list-style: none; display: flex; gap: var(--space-6); margin: 0 0 var(--space-6); padding: 0; }
+    section[data-slide="15-env-solution"] .progress li {
+      font-family: var(--font-compressed); font-size: var(--slide-label); font-weight: var(--font-semibold);
+      letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--text-secondary);
+      padding-bottom: var(--space-2); border-bottom: 3px solid var(--color-neutral-200);
+    }
+    section[data-slide="15-env-solution"] .progress li.done { color: var(--text-brand); border-color: var(--color-gold-500); }
+    section[data-slide="15-env-solution"] .progress li.active { color: var(--text-brand); border-color: var(--color-teal-500); }
+    section[data-slide="15-env-solution"].dark .progress li { color: var(--color-neutral-400); border-color: rgba(255,255,255,0.15); }
+    section[data-slide="15-env-solution"].dark .progress li.done { color: var(--color-gold-200); border-color: var(--color-gold-500); }
+    section[data-slide="15-env-solution"].dark .progress li.active { color: var(--color-white); border-color: var(--color-teal-500); }
+    
+    section[data-slide="15-env-solution"] .grid { flex: 1; display: grid; grid-template-columns: 1.5fr 1fr; gap: var(--space-10); align-items: stretch; min-height: 0; }
+    section[data-slide="15-env-solution"] h1 .check { display: inline-grid; place-items: center; width: 1.1em; height: 1.1em; margin-right: var(--space-2); border-radius: var(--radius-full); background: var(--color-teal-500); color: var(--color-purple-950); font-size: 0.7em; vertical-align: 0.1em; }
+    section[data-slide="15-env-solution"] .tagline { margin-bottom: var(--space-5); color: var(--text-secondary); font-size: var(--slide-body); }
+    section[data-slide="15-env-solution"] .cols { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-8); }
+    section[data-slide="15-env-solution"] h2 { font-family: var(--font-compressed); font-size: var(--slide-label); font-weight: var(--font-bold); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--color-gold-700); margin-bottom: var(--space-3); }
+    section[data-slide="15-env-solution"] .cols ul { list-style: none; }
+    section[data-slide="15-env-solution"] .cols li { position: relative; padding-left: var(--space-6); margin-bottom: var(--space-2); font-size: var(--slide-body); line-height: var(--leading-normal); }
+    section[data-slide="15-env-solution"] .cols li::before { content: ""; position: absolute; left: 0; top: 0.68em; width: 10px; height: 7px; background: var(--color-purple-700); transform: skewX(calc(-1 * var(--angle-brand))); }
+    section[data-slide="15-env-solution"] .figure { margin: 0; display: flex; align-items: center; justify-content: center; min-height: 0; }
+    section[data-slide="15-env-solution"] .figure img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: var(--radius-lg); box-shadow: var(--shadow-md); }
+    section[data-slide="15-env-solution"] code { font-size: 0.9em; }
+  </style>
+</section>

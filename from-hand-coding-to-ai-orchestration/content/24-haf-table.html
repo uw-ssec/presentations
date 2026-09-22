@@ -1,0 +1,37 @@
+<link rel="stylesheet" href="../shared/slide-base.css">
+<section data-slide="24-haf-table" aria-label="The framework in one table" class="slide" data-presenter="both">
+  <div class="accent-bar-top"></div>
+  <div class="content">
+    <p class="eyebrow">The repo after the demo</p>
+    <h1>What's now in the repo</h1>
+    <table>
+      <thead><tr><th>Element</th><th>In the repo</th><th>For humans</th><th>For agents</th></tr></thead>
+      <tbody><tr><td><span class="check" aria-hidden="true">✓</span>Agent environment</td><td><code>pixi, dev container</code></td><td>A repeatable setup</td><td>Named commands to run</td></tr><tr><td><span class="check" aria-hidden="true">✓</span>Instruction entry point</td><td><code>AGENTS.md, redirects</code></td><td>A short guide to expectations</td><td>A shared starting point</td></tr><tr><td><span class="check" aria-hidden="true">✓</span>On-demand rules</td><td><code>rules/*.md, Load when</code></td><td>Detailed guidance for each task</td><td>Rules to load when needed</td></tr><tr><td><span class="check" aria-hidden="true">✓</span>Project memory</td><td><code>OKF bundle</code></td><td>Past decisions you can look up</td><td>Project knowledge across tools</td></tr><tr><td><span class="check" aria-hidden="true">✓</span>Agent skills</td><td><code>SKILL.md spec</code></td><td>Steps for recurring work</td><td>A workflow to follow</td></tr><tr><td><span class="check" aria-hidden="true">✓</span>Skill evals</td><td><code>Inspect, Harbor, CI</code></td><td>Evidence that a skill still works</td><td>Feedback on missed steps</td></tr></tbody>
+    </table>
+    <p class="source">The next contributor can clone these files with the code. Let's see whether they help with the question we started with.</p>
+  </div>
+  <style>
+    
+    section[data-slide="24-haf-table"] { background: linear-gradient(105deg, rgba(183,165,122,0.18), transparent 36%), var(--surface-secondary); padding: var(--space-16) var(--space-20); }
+    section[data-slide="24-haf-table"] .content { position: relative; z-index: var(--z-raised); display: flex; flex-direction: column; width: 100%; height: 100%; }
+    section[data-slide="24-haf-table"] h1 {
+      font-family: var(--font-display); font-size: var(--slide-title); font-weight: var(--font-extrabold);
+      letter-spacing: var(--tracking-tight); line-height: var(--leading-tight); color: var(--text-brand);
+      margin: var(--space-2) 0 var(--space-6);
+    }
+    section[data-slide="24-haf-table"] p, section[data-slide="24-haf-table"] li { font-size: var(--slide-body); line-height: var(--leading-relaxed); color: var(--text-primary); }
+    section[data-slide="24-haf-table"] .lead { font-size: var(--slide-lead); }
+    section[data-slide="24-haf-table"] .muted { color: var(--text-secondary); }
+    section[data-slide="24-haf-table"] .source { margin-top: auto; padding-top: var(--space-4); }
+    
+    section[data-slide="24-haf-table"] .eyebrow, section[data-slide="24-haf-table"] h2, section[data-slide="24-haf-table"] .pairs dt { color: var(--text-brand); }
+    
+    section[data-slide="24-haf-table"] table { width: 100%; border-collapse: collapse; box-shadow: var(--shadow-sm); background: var(--color-white); }
+    section[data-slide="24-haf-table"] th { background: var(--color-purple-700); color: var(--color-white); font-family: var(--font-compressed); font-size: var(--slide-label); font-weight: var(--font-bold); letter-spacing: var(--tracking-wider); text-transform: uppercase; text-align: left; padding: var(--space-3) var(--space-4); }
+    section[data-slide="24-haf-table"] td { font-size: var(--slide-body); line-height: var(--leading-snug); padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-neutral-200); vertical-align: top; }
+    section[data-slide="24-haf-table"] tbody tr:nth-child(even) td { background: var(--color-gold-50); }
+    section[data-slide="24-haf-table"] td:first-child { font-weight: var(--font-semibold); color: var(--text-brand); white-space: nowrap; }
+    section[data-slide="24-haf-table"] .check { display: inline-grid; place-items: center; width: 1.2em; height: 1.2em; margin-right: var(--space-2); border-radius: var(--radius-full); background: var(--color-teal-500); color: var(--color-purple-950); font-size: 0.75em; }
+    section[data-slide="24-haf-table"] code { background: var(--color-purple-50); color: var(--text-code); }
+  </style>
+</section>

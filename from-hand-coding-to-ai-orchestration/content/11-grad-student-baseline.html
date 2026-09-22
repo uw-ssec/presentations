@@ -1,0 +1,57 @@
+<link rel="stylesheet" href="../shared/slide-base.css">
+<section data-slide="11-grad-student-baseline" aria-label="Baseline: the new grad student prompt on the bare repo" class="slide" data-presenter="cordero">
+  <div class="accent-bar-left"></div>
+  <div class="content">
+    <p class="eyebrow">Before we change the repo</p>
+    <div class="grid">
+      <div class="text">
+        <h1>A new grad student's first task</h1>
+        <p class="lead">Let's ask Sonnet 5 to help a new grad student on the original 2023 repo. We'll save the answer to compare later.</p>
+        <div class="prompt-card">
+      <p class="prompt-label">Live demo prompt</p>
+      <pre class="prompt">I'm a new grad student and I've been asked to work on the source-adapter issue.
+Get me up to speed: what do I need to know about this project before I start?</pre>
+    </div>
+        <p class="muted note">Watch for what you'd still need to ask a maintainer before starting the issue.</p>
+      </div>
+      <figure class="figure"><img src="../assets/images/new-grad-student.png" alt=""></figure>
+    </div>
+  </div>
+  <style>
+    
+    section[data-slide="11-grad-student-baseline"] { background: linear-gradient(90deg, rgba(75,46,131,0.06), transparent 34%), var(--surface-primary); padding: var(--space-16) var(--space-20); }
+    section[data-slide="11-grad-student-baseline"] .content { position: relative; z-index: var(--z-raised); display: flex; flex-direction: column; width: 100%; height: 100%; }
+    section[data-slide="11-grad-student-baseline"] h1 {
+      font-family: var(--font-display); font-size: var(--slide-title); font-weight: var(--font-extrabold);
+      letter-spacing: var(--tracking-tight); line-height: var(--leading-tight); color: var(--text-brand);
+      margin: var(--space-2) 0 var(--space-6);
+    }
+    section[data-slide="11-grad-student-baseline"] p, section[data-slide="11-grad-student-baseline"] li { font-size: var(--slide-body); line-height: var(--leading-relaxed); color: var(--text-primary); }
+    section[data-slide="11-grad-student-baseline"] .lead { font-size: var(--slide-lead); }
+    section[data-slide="11-grad-student-baseline"] .muted { color: var(--text-secondary); }
+    section[data-slide="11-grad-student-baseline"] .source { margin-top: auto; padding-top: var(--space-4); }
+    
+    
+    section[data-slide="11-grad-student-baseline"] .prompt-card {
+      background: var(--surface-terminal); border: 1px solid rgba(42,210,201,0.25); border-radius: var(--radius-md);
+      padding: var(--space-5) var(--space-6); box-shadow: var(--shadow-glow-teal-sm); margin-top: auto;
+    }
+    section[data-slide="11-grad-student-baseline"] .prompt-label {
+      font-family: var(--font-compressed); font-size: var(--slide-label); font-weight: var(--font-bold);
+      letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--color-gold-500); margin-bottom: var(--space-2);
+    }
+    section[data-slide="11-grad-student-baseline"] .prompt {
+      font-family: var(--font-mono); font-size: var(--slide-code); line-height: var(--leading-relaxed);
+      color: var(--color-teal-500); white-space: pre-wrap; margin: 0;
+    }
+    section[data-slide="11-grad-student-baseline"] .prompt::before { content: "> "; color: var(--color-gold-500); opacity: 0.7; }
+    
+    section[data-slide="11-grad-student-baseline"] .grid { flex: 1; display: grid; grid-template-columns: 1.2fr 1fr; gap: var(--space-12); align-items: stretch; min-height: 0; }
+    section[data-slide="11-grad-student-baseline"] .text { display: flex; flex-direction: column; }
+    section[data-slide="11-grad-student-baseline"] .lead { margin-bottom: var(--space-6); }
+    section[data-slide="11-grad-student-baseline"] .prompt-card { margin-top: 0; }
+    section[data-slide="11-grad-student-baseline"] .note { margin-top: var(--space-5); }
+    section[data-slide="11-grad-student-baseline"] .figure { margin: 0; display: flex; align-items: center; justify-content: center; min-height: 0; }
+    section[data-slide="11-grad-student-baseline"] .figure img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: var(--radius-lg); box-shadow: var(--shadow-md); }
+  </style>
+</section>

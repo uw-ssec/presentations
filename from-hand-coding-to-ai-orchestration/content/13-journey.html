@@ -1,0 +1,28 @@
+<link rel="stylesheet" href="../shared/slide-base.css">
+<section data-slide="13-journey" aria-label="Section divider: how we got here, 2023 to now" class="slide dark rain-texture" data-presenter="cordero">
+  <div class="content">
+    <p class="section-number">How we got here</p>
+    <h1>How our repo changed as agents improved</h1>
+    <p class="subtitle">We kept the setup that worked and added help where agents got stuck.</p>
+    <ol class="timeline"><li><span class="year">2023</span><strong>Environment setup</strong><span class="what">We copied code from chat. Pixi handled setup.</span></li><li><span class="year">2024</span><strong>The Copilot era</strong><span class="what">We gave agents a starting point: AGENTS.md.</span></li><li><span class="year">2024</span><strong>RAG</strong><span class="what">Document search helped, but added a system to maintain.</span></li><li><span class="year">2025</span><strong>Project memory</strong><span class="what">OKF kept linked project notes in the repo.</span></li><li><span class="year">2025</span><strong>Skills</strong><span class="what">We wrote repeatable workflows as skills.</span></li><li><span class="year">2026</span><strong>Evals</strong><span class="what">We began testing whether agents followed the skills.</span></li></ol>
+  </div>
+  <div class="angle-divider"></div>
+  <style>
+    section[data-slide="13-journey"] { background: linear-gradient(135deg, var(--color-purple-950), var(--color-purple-900)); align-items: center; padding: var(--space-20); }
+    section[data-slide="13-journey"] .content { position: relative; z-index: var(--z-raised); width: 100%; }
+    section[data-slide="13-journey"] .section-number { font-family: var(--font-compressed); font-size: calc(var(--slide-label) * 2); font-weight: var(--font-bold); letter-spacing: var(--tracking-widest); color: var(--color-gold-500); text-transform: uppercase; }
+    section[data-slide="13-journey"] h1 { font-family: var(--font-display); font-size: var(--slide-hero); font-weight: var(--font-extrabold); letter-spacing: var(--tracking-tight); line-height: var(--leading-tight); color: var(--text-primary); margin: var(--space-2) 0 var(--space-4); }
+    section[data-slide="13-journey"] .subtitle { font-size: var(--slide-lead); color: var(--text-secondary); max-width: 1100px; line-height: var(--leading-relaxed); }
+    
+    section[data-slide="13-journey"] h1 { font-size: var(--slide-title); }
+    section[data-slide="13-journey"] .subtitle { font-size: var(--slide-body); margin-bottom: var(--space-8); max-width: 1400px; }
+    section[data-slide="13-journey"] .timeline { list-style: none; display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--space-5); position: relative; }
+    section[data-slide="13-journey"] .timeline::before { content: ""; position: absolute; left: 0; right: 0; top: 14px; height: 3px; background: var(--color-gold-500); }
+    section[data-slide="13-journey"] .timeline li { position: relative; padding-top: var(--space-8); }
+    section[data-slide="13-journey"] .timeline li::before { content: ""; position: absolute; left: 0; top: 6px; width: 20px; height: 20px; border-radius: var(--radius-full); background: var(--color-teal-500); box-shadow: var(--shadow-glow-teal-md); }
+    section[data-slide="13-journey"] .year { display: block; font-family: var(--font-compressed); font-size: var(--slide-label); font-weight: var(--font-bold); letter-spacing: var(--tracking-widest); color: var(--color-gold-500); margin-bottom: var(--space-2); }
+    section[data-slide="13-journey"] .timeline strong { display: block; font-family: var(--font-display); font-size: var(--slide-body); color: var(--text-primary); margin-bottom: var(--space-2); }
+    section[data-slide="13-journey"] .what { display: block; font-size: var(--slide-body); line-height: var(--leading-normal); color: var(--text-secondary); }
+    
+  </style>
+</section>

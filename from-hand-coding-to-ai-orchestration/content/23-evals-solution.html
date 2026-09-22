@@ -1,0 +1,61 @@
+<link rel="stylesheet" href="../shared/slide-base.css">
+<section data-slide="23-evals-solution" aria-label="Skill evals: what we added" class="slide" data-presenter="cordero">
+  <div class="accent-bar-top"></div>
+  <div class="content">
+    <ol class="progress" aria-label="Where we are in the session"><li class="done">Orientation</li><li class="done">Agent environment</li><li class="done">Instruction entry point</li><li class="done">Project memory</li><li class="done">Agent skills</li><li class="active">Skill evals</li></ol>
+    <p class="eyebrow">Section 5 of 5 · Skill evals · what we added</p>
+    <div class="grid">
+      <div class="text">
+        <h1><span class="check" aria-hidden="true">✓</span> Skill tests with Inspect and Harbor</h1>
+        <p class="lead tagline">Inspect checks responses. Harbor checks what the agent actually does.</p>
+        <div class="cols">
+          <div><h2>For contributors</h2><ul><li><strong>Inspect:</strong> 3–5 tasks with the skill loaded, including a tempting shortcut. Score <code>must</code> and <code>must_not</code> rules</li><li><strong>Harbor:</strong> a sandbox with fake <code>gh</code>, <code>pixi</code>, <code>okf</code>, and <code>git</code> commands that log each call</li><li>CI checks changes to skills and evals</li></ul></div>
+          <div><h2>For agents</h2><ul><li>Results show which models follow the steps</li><li>A failed test tells us what to fix in the instructions</li><li>Our evals cover skills. We still need coverage for AGENTS.md and rules.</li></ul></div>
+        </div>
+        
+      </div>
+      <figure class="figure"><img src="../assets/images/evals-gate.png" alt=""></figure>
+    </div>
+  </div>
+  <style>
+    
+    section[data-slide="23-evals-solution"] { background: linear-gradient(105deg, rgba(183,165,122,0.18), transparent 36%), var(--surface-secondary); padding: var(--space-16) var(--space-20); }
+    section[data-slide="23-evals-solution"] .content { position: relative; z-index: var(--z-raised); display: flex; flex-direction: column; width: 100%; height: 100%; }
+    section[data-slide="23-evals-solution"] h1 {
+      font-family: var(--font-display); font-size: var(--slide-title); font-weight: var(--font-extrabold);
+      letter-spacing: var(--tracking-tight); line-height: var(--leading-tight); color: var(--text-brand);
+      margin: var(--space-2) 0 var(--space-6);
+    }
+    section[data-slide="23-evals-solution"] p, section[data-slide="23-evals-solution"] li { font-size: var(--slide-body); line-height: var(--leading-relaxed); color: var(--text-primary); }
+    section[data-slide="23-evals-solution"] .lead { font-size: var(--slide-lead); }
+    section[data-slide="23-evals-solution"] .muted { color: var(--text-secondary); }
+    section[data-slide="23-evals-solution"] .source { margin-top: auto; padding-top: var(--space-4); }
+    
+    section[data-slide="23-evals-solution"] .eyebrow, section[data-slide="23-evals-solution"] h2, section[data-slide="23-evals-solution"] .pairs dt { color: var(--text-brand); }
+    
+    
+    section[data-slide="23-evals-solution"] .progress { list-style: none; display: flex; gap: var(--space-6); margin: 0 0 var(--space-6); padding: 0; }
+    section[data-slide="23-evals-solution"] .progress li {
+      font-family: var(--font-compressed); font-size: var(--slide-label); font-weight: var(--font-semibold);
+      letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--text-secondary);
+      padding-bottom: var(--space-2); border-bottom: 3px solid var(--color-neutral-200);
+    }
+    section[data-slide="23-evals-solution"] .progress li.done { color: var(--text-brand); border-color: var(--color-gold-500); }
+    section[data-slide="23-evals-solution"] .progress li.active { color: var(--text-brand); border-color: var(--color-teal-500); }
+    section[data-slide="23-evals-solution"].dark .progress li { color: var(--color-neutral-400); border-color: rgba(255,255,255,0.15); }
+    section[data-slide="23-evals-solution"].dark .progress li.done { color: var(--color-gold-200); border-color: var(--color-gold-500); }
+    section[data-slide="23-evals-solution"].dark .progress li.active { color: var(--color-white); border-color: var(--color-teal-500); }
+    
+    section[data-slide="23-evals-solution"] .grid { flex: 1; display: grid; grid-template-columns: 1.5fr 1fr; gap: var(--space-10); align-items: stretch; min-height: 0; }
+    section[data-slide="23-evals-solution"] h1 .check { display: inline-grid; place-items: center; width: 1.1em; height: 1.1em; margin-right: var(--space-2); border-radius: var(--radius-full); background: var(--color-teal-500); color: var(--color-purple-950); font-size: 0.7em; vertical-align: 0.1em; }
+    section[data-slide="23-evals-solution"] .tagline { margin-bottom: var(--space-5); color: var(--text-secondary); font-size: var(--slide-body); }
+    section[data-slide="23-evals-solution"] .cols { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-8); }
+    section[data-slide="23-evals-solution"] h2 { font-family: var(--font-compressed); font-size: var(--slide-label); font-weight: var(--font-bold); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--color-gold-700); margin-bottom: var(--space-3); }
+    section[data-slide="23-evals-solution"] .cols ul { list-style: none; }
+    section[data-slide="23-evals-solution"] .cols li { position: relative; padding-left: var(--space-6); margin-bottom: var(--space-2); font-size: var(--slide-body); line-height: var(--leading-normal); }
+    section[data-slide="23-evals-solution"] .cols li::before { content: ""; position: absolute; left: 0; top: 0.68em; width: 10px; height: 7px; background: var(--color-purple-700); transform: skewX(calc(-1 * var(--angle-brand))); }
+    section[data-slide="23-evals-solution"] .figure { margin: 0; display: flex; align-items: center; justify-content: center; min-height: 0; }
+    section[data-slide="23-evals-solution"] .figure img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: var(--radius-lg); box-shadow: var(--shadow-md); }
+    section[data-slide="23-evals-solution"] code { font-size: 0.9em; }
+  </style>
+</section>

@@ -1,0 +1,73 @@
+<link rel="stylesheet" href="../shared/slide-base.css">
+<section data-slide="18-memory-problem" aria-label="Project memory: the problem" class="slide" data-presenter="cordero">
+  <div class="accent-bar-left"></div>
+  <div class="content">
+    <ol class="progress" aria-label="Where we are in the session"><li class="done">Orientation</li><li class="done">Agent environment</li><li class="done">Instruction entry point</li><li class="active">Project memory</li><li class="">Agent skills</li><li class="">Skill evals</li></ol>
+    <p class="eyebrow">Section 3 of 5 · Project memory · the problem</p>
+    <div class="grid">
+      <div class="text">
+        <h1>Who remembers why we did it this way?</h1>
+        <dl class="pairs">
+          <dt>For humans</dt><dd>The postdoc who knew the data leaves. You're left piecing together old discussions to find which decisions still apply.</dd>
+          <dt>For agents</dt><dd>Switch agent tools and past decisions may stay behind. RAG helped us search documents, but added another system to maintain.</dd>
+        </dl>
+        
+        <div class="prompt-card">
+      <p class="prompt-label">Live demo prompt</p>
+      <pre class="prompt">What do you know about the headers in the LLMoxie spend logs?</pre>
+    </div>
+      </div>
+      <figure class="figure"><img src="../assets/images/memory-leaving.png" alt=""></figure>
+    </div>
+  </div>
+  <style>
+    
+    section[data-slide="18-memory-problem"] { background: linear-gradient(90deg, rgba(75,46,131,0.06), transparent 34%), var(--surface-primary); padding: var(--space-16) var(--space-20); }
+    section[data-slide="18-memory-problem"] .content { position: relative; z-index: var(--z-raised); display: flex; flex-direction: column; width: 100%; height: 100%; }
+    section[data-slide="18-memory-problem"] h1 {
+      font-family: var(--font-display); font-size: var(--slide-title); font-weight: var(--font-extrabold);
+      letter-spacing: var(--tracking-tight); line-height: var(--leading-tight); color: var(--text-brand);
+      margin: var(--space-2) 0 var(--space-6);
+    }
+    section[data-slide="18-memory-problem"] p, section[data-slide="18-memory-problem"] li { font-size: var(--slide-body); line-height: var(--leading-relaxed); color: var(--text-primary); }
+    section[data-slide="18-memory-problem"] .lead { font-size: var(--slide-lead); }
+    section[data-slide="18-memory-problem"] .muted { color: var(--text-secondary); }
+    section[data-slide="18-memory-problem"] .source { margin-top: auto; padding-top: var(--space-4); }
+    
+    
+    section[data-slide="18-memory-problem"] .progress { list-style: none; display: flex; gap: var(--space-6); margin: 0 0 var(--space-6); padding: 0; }
+    section[data-slide="18-memory-problem"] .progress li {
+      font-family: var(--font-compressed); font-size: var(--slide-label); font-weight: var(--font-semibold);
+      letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--text-secondary);
+      padding-bottom: var(--space-2); border-bottom: 3px solid var(--color-neutral-200);
+    }
+    section[data-slide="18-memory-problem"] .progress li.done { color: var(--text-brand); border-color: var(--color-gold-500); }
+    section[data-slide="18-memory-problem"] .progress li.active { color: var(--text-brand); border-color: var(--color-teal-500); }
+    section[data-slide="18-memory-problem"].dark .progress li { color: var(--color-neutral-400); border-color: rgba(255,255,255,0.15); }
+    section[data-slide="18-memory-problem"].dark .progress li.done { color: var(--color-gold-200); border-color: var(--color-gold-500); }
+    section[data-slide="18-memory-problem"].dark .progress li.active { color: var(--color-white); border-color: var(--color-teal-500); }
+    
+    
+    section[data-slide="18-memory-problem"] .prompt-card {
+      background: var(--surface-terminal); border: 1px solid rgba(42,210,201,0.25); border-radius: var(--radius-md);
+      padding: var(--space-5) var(--space-6); box-shadow: var(--shadow-glow-teal-sm); margin-top: auto;
+    }
+    section[data-slide="18-memory-problem"] .prompt-label {
+      font-family: var(--font-compressed); font-size: var(--slide-label); font-weight: var(--font-bold);
+      letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--color-gold-500); margin-bottom: var(--space-2);
+    }
+    section[data-slide="18-memory-problem"] .prompt {
+      font-family: var(--font-mono); font-size: var(--slide-code); line-height: var(--leading-relaxed);
+      color: var(--color-teal-500); white-space: pre-wrap; margin: 0;
+    }
+    section[data-slide="18-memory-problem"] .prompt::before { content: "> "; color: var(--color-gold-500); opacity: 0.7; }
+    
+    section[data-slide="18-memory-problem"] .grid { flex: 1; display: grid; grid-template-columns: 1.15fr 1fr; gap: var(--space-12); align-items: stretch; min-height: 0; }
+    section[data-slide="18-memory-problem"] .text { display: flex; flex-direction: column; min-height: 0; }
+    section[data-slide="18-memory-problem"] .pairs { margin: 0 0 var(--space-6); }
+    section[data-slide="18-memory-problem"] .pairs dt { font-family: var(--font-compressed); font-size: var(--slide-label); font-weight: var(--font-bold); letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--color-gold-700); margin-top: var(--space-3); }
+    section[data-slide="18-memory-problem"] .pairs dd { font-size: var(--slide-body); line-height: var(--leading-relaxed); color: var(--text-primary); margin: var(--space-1) 0 0; }
+    section[data-slide="18-memory-problem"] .figure { margin: 0; display: flex; align-items: center; justify-content: center; min-height: 0; }
+    section[data-slide="18-memory-problem"] .figure img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: var(--radius-lg); box-shadow: var(--shadow-md); }
+  </style>
+</section>

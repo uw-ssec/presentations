@@ -1,0 +1,39 @@
+<link rel="stylesheet" href="../shared/slide-base.css">
+<section data-slide="07-agent-model-harness" aria-label="Agent equals model plus harness" class="slide" data-presenter="don">
+  <div class="accent-bar-left"></div>
+  <div class="content">
+    <p class="eyebrow">How a coding agent works</p>
+    <h1>Agent = Model + Harness</h1>
+    <div class="grid">
+      <figure><img src="../assets/agent-model-harness.png" alt="Circuit-board diagram: the model is one chip; the harness around it handles context injection, control, action, observe and verify, and persist"></figure>
+      <ul>
+        <li><strong>The model</strong> interprets your request and chooses what to do next.</li>
+        <li><strong>The harness</strong> supplies context and tools. It controls what the model can do and remember.</li>
+        <li>Claude Code, Copilot, Cursor, Codex, and OpenCode provide that surrounding software.</li>
+        <li>We keep project guidance in the repo so it can travel with us when we switch agent tools.</li>
+      </ul>
+    </div>
+    <p class="source">Source: addyosmani.com/blog/agent-harness-engineering</p>
+  </div>
+  <style>
+    
+    section[data-slide="07-agent-model-harness"] { background: linear-gradient(90deg, rgba(75,46,131,0.06), transparent 34%), var(--surface-primary); padding: var(--space-16) var(--space-20); }
+    section[data-slide="07-agent-model-harness"] .content { position: relative; z-index: var(--z-raised); display: flex; flex-direction: column; width: 100%; height: 100%; }
+    section[data-slide="07-agent-model-harness"] h1 {
+      font-family: var(--font-display); font-size: var(--slide-title); font-weight: var(--font-extrabold);
+      letter-spacing: var(--tracking-tight); line-height: var(--leading-tight); color: var(--text-brand);
+      margin: var(--space-2) 0 var(--space-6);
+    }
+    section[data-slide="07-agent-model-harness"] p, section[data-slide="07-agent-model-harness"] li { font-size: var(--slide-body); line-height: var(--leading-relaxed); color: var(--text-primary); }
+    section[data-slide="07-agent-model-harness"] .lead { font-size: var(--slide-lead); }
+    section[data-slide="07-agent-model-harness"] .muted { color: var(--text-secondary); }
+    section[data-slide="07-agent-model-harness"] .source { margin-top: auto; padding-top: var(--space-4); }
+    
+    section[data-slide="07-agent-model-harness"] .grid { flex: 1; display: grid; grid-template-columns: 1.25fr 1fr; gap: var(--space-12); align-items: center; min-height: 0; }
+    section[data-slide="07-agent-model-harness"] figure { margin: 0; }
+    section[data-slide="07-agent-model-harness"] figure img { max-width: 100%; max-height: 64vh; object-fit: contain; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); }
+    section[data-slide="07-agent-model-harness"] ul { list-style: none; }
+    section[data-slide="07-agent-model-harness"] li { position: relative; padding-left: var(--space-8); margin-bottom: var(--space-4); }
+    section[data-slide="07-agent-model-harness"] li::before { content: ""; position: absolute; left: 0; top: 0.68em; width: 10px; height: 7px; background: var(--color-purple-700); transform: skewX(calc(-1 * var(--angle-brand))); }
+  </style>
+</section>

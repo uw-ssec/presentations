@@ -1,0 +1,31 @@
+<link rel="stylesheet" href="../shared/slide-base.css">
+<section data-slide="29-start-monday" aria-label="A starting point for your repo" class="slide" data-presenter="both">
+  <div class="accent-bar-left"></div>
+  <div class="content">
+    <p class="eyebrow">Back in your own repo</p>
+    <h1>A starting point for Monday</h1>
+    <ol class="ladder"><li>Write a short AGENTS.md and provide one command that runs the required checks</li><li>Point your agent tools to that same file</li><li>Add skills for commit and create-pr</li><li>Put detailed rules in separate files that say when to read them</li><li>Record decisions and caveats the next contributor will need</li><li>Test whether agents follow the skills</li></ol>
+    <p class="source">You can stop after the first step and still have something useful. Keep the required checks as you add more.</p>
+  </div>
+  <style>
+    
+    section[data-slide="29-start-monday"] { background: linear-gradient(105deg, rgba(183,165,122,0.18), transparent 36%), var(--surface-secondary); padding: var(--space-16) var(--space-20); }
+    section[data-slide="29-start-monday"] .content { position: relative; z-index: var(--z-raised); display: flex; flex-direction: column; width: 100%; height: 100%; }
+    section[data-slide="29-start-monday"] h1 {
+      font-family: var(--font-display); font-size: var(--slide-title); font-weight: var(--font-extrabold);
+      letter-spacing: var(--tracking-tight); line-height: var(--leading-tight); color: var(--text-brand);
+      margin: var(--space-2) 0 var(--space-6);
+    }
+    section[data-slide="29-start-monday"] p, section[data-slide="29-start-monday"] li { font-size: var(--slide-body); line-height: var(--leading-relaxed); color: var(--text-primary); }
+    section[data-slide="29-start-monday"] .lead { font-size: var(--slide-lead); }
+    section[data-slide="29-start-monday"] .muted { color: var(--text-secondary); }
+    section[data-slide="29-start-monday"] .source { margin-top: auto; padding-top: var(--space-4); }
+    
+    section[data-slide="29-start-monday"] .eyebrow, section[data-slide="29-start-monday"] h2, section[data-slide="29-start-monday"] .pairs dt { color: var(--text-brand); }
+    
+    section[data-slide="29-start-monday"] .ladder { list-style: none; counter-reset: r; flex: 1; display: flex; flex-direction: column; justify-content: center; gap: var(--space-3); max-width: 1500px; }
+    section[data-slide="29-start-monday"] .ladder li { counter-increment: r; position: relative; padding: var(--space-3) var(--space-5) var(--space-3) var(--space-16); background: var(--color-white); border: 1px solid var(--color-neutral-200); border-radius: var(--radius-md); box-shadow: var(--shadow-xs); font-size: var(--slide-body); }
+    section[data-slide="29-start-monday"] .ladder li::before { content: counter(r); position: absolute; left: var(--space-4); top: 50%; transform: translateY(-50%); display: grid; place-items: center; width: 44px; height: 44px; border-radius: var(--radius-full); background: var(--color-purple-700); color: var(--color-white); font-family: var(--font-compressed); font-weight: var(--font-bold); }
+    section[data-slide="29-start-monday"] .ladder li:first-child::before { background: var(--color-teal-500); color: var(--color-purple-950); }
+  </style>
+</section>

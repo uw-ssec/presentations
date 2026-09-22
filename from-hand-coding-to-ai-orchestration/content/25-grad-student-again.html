@@ -1,0 +1,57 @@
+<link rel="stylesheet" href="../shared/slide-base.css">
+<section data-slide="25-grad-student-again" aria-label="The payoff: the same prompt on the built-up repo" class="slide" data-presenter="cordero">
+  <div class="accent-bar-left"></div>
+  <div class="content">
+    <p class="eyebrow">The question we started with</p>
+    <div class="grid">
+      <div class="text">
+        <h1>Can the grad student get started now?</h1>
+        <p class="lead">We'll ask the same question in a fresh Sonnet 5 session, now with the repo changes in place. Compare this answer with the first one.</p>
+        <div class="prompt-card">
+      <p class="prompt-label">Live demo prompt</p>
+      <pre class="prompt">I'm a new grad student and I've been asked to work on the source-adapter issue.
+Get me up to speed: what do I need to know about this project before I start?</pre>
+    </div>
+        <p class="muted note">What can you do now that the first answer didn't help you do?</p>
+      </div>
+      <figure class="figure"><img src="../assets/images/new-grad-student.png" alt=""></figure>
+    </div>
+  </div>
+  <style>
+    
+    section[data-slide="25-grad-student-again"] { background: linear-gradient(90deg, rgba(75,46,131,0.06), transparent 34%), var(--surface-primary); padding: var(--space-16) var(--space-20); }
+    section[data-slide="25-grad-student-again"] .content { position: relative; z-index: var(--z-raised); display: flex; flex-direction: column; width: 100%; height: 100%; }
+    section[data-slide="25-grad-student-again"] h1 {
+      font-family: var(--font-display); font-size: var(--slide-title); font-weight: var(--font-extrabold);
+      letter-spacing: var(--tracking-tight); line-height: var(--leading-tight); color: var(--text-brand);
+      margin: var(--space-2) 0 var(--space-6);
+    }
+    section[data-slide="25-grad-student-again"] p, section[data-slide="25-grad-student-again"] li { font-size: var(--slide-body); line-height: var(--leading-relaxed); color: var(--text-primary); }
+    section[data-slide="25-grad-student-again"] .lead { font-size: var(--slide-lead); }
+    section[data-slide="25-grad-student-again"] .muted { color: var(--text-secondary); }
+    section[data-slide="25-grad-student-again"] .source { margin-top: auto; padding-top: var(--space-4); }
+    
+    
+    section[data-slide="25-grad-student-again"] .prompt-card {
+      background: var(--surface-terminal); border: 1px solid rgba(42,210,201,0.25); border-radius: var(--radius-md);
+      padding: var(--space-5) var(--space-6); box-shadow: var(--shadow-glow-teal-sm); margin-top: auto;
+    }
+    section[data-slide="25-grad-student-again"] .prompt-label {
+      font-family: var(--font-compressed); font-size: var(--slide-label); font-weight: var(--font-bold);
+      letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--color-gold-500); margin-bottom: var(--space-2);
+    }
+    section[data-slide="25-grad-student-again"] .prompt {
+      font-family: var(--font-mono); font-size: var(--slide-code); line-height: var(--leading-relaxed);
+      color: var(--color-teal-500); white-space: pre-wrap; margin: 0;
+    }
+    section[data-slide="25-grad-student-again"] .prompt::before { content: "> "; color: var(--color-gold-500); opacity: 0.7; }
+    
+    section[data-slide="25-grad-student-again"] .grid { flex: 1; display: grid; grid-template-columns: 1.2fr 1fr; gap: var(--space-12); align-items: stretch; min-height: 0; }
+    section[data-slide="25-grad-student-again"] .text { display: flex; flex-direction: column; }
+    section[data-slide="25-grad-student-again"] .lead { margin-bottom: var(--space-6); }
+    section[data-slide="25-grad-student-again"] .prompt-card { margin-top: 0; }
+    section[data-slide="25-grad-student-again"] .note { margin-top: var(--space-5); }
+    section[data-slide="25-grad-student-again"] .figure { margin: 0; display: flex; align-items: center; justify-content: center; min-height: 0; }
+    section[data-slide="25-grad-student-again"] .figure img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: var(--radius-lg); box-shadow: var(--shadow-md); }
+  </style>
+</section>

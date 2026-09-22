@@ -1,0 +1,44 @@
+<link rel="stylesheet" href="../shared/slide-base.css">
+<section data-slide="03-roadmap" aria-label="Roadmap: helping a new contributor get started" class="slide" data-presenter="cordero">
+  <div class="accent-bar-left"></div>
+  <div class="content">
+    <p class="eyebrow">Today's walkthrough</p>
+    <h1>Getting started in an unfamiliar repo</h1>
+    <div class="grid">
+      <div>
+        <ol class="questions">
+          <li><strong>How can a coding agent work in a repo it doesn't know?</strong></li>
+          <li><strong>How can a new contributor get started without us beside them?</strong></li>
+        </ol>
+        <p class="thesis">People and agents both need help finding the rules and understanding past decisions.</p>
+        <p class="muted">We'll ask an agent for help, improve the repo, then repeat the task. You judge whether the answer gets better.</p>
+      </div>
+      <ol class="stops"><li><span class="num">1</span>Orientation</li><li><span class="num">2</span>Agent environment</li><li><span class="num">3</span>Instruction entry point</li><li><span class="num">4</span>Project memory</li><li><span class="num">5</span>Agent skills</li><li><span class="num">6</span>Skill evals</li></ol>
+    </div>
+  </div>
+  <style>
+    
+    section[data-slide="03-roadmap"] { background: linear-gradient(90deg, rgba(75,46,131,0.06), transparent 34%), var(--surface-primary); padding: var(--space-16) var(--space-20); }
+    section[data-slide="03-roadmap"] .content { position: relative; z-index: var(--z-raised); display: flex; flex-direction: column; width: 100%; height: 100%; }
+    section[data-slide="03-roadmap"] h1 {
+      font-family: var(--font-display); font-size: var(--slide-title); font-weight: var(--font-extrabold);
+      letter-spacing: var(--tracking-tight); line-height: var(--leading-tight); color: var(--text-brand);
+      margin: var(--space-2) 0 var(--space-6);
+    }
+    section[data-slide="03-roadmap"] p, section[data-slide="03-roadmap"] li { font-size: var(--slide-body); line-height: var(--leading-relaxed); color: var(--text-primary); }
+    section[data-slide="03-roadmap"] .lead { font-size: var(--slide-lead); }
+    section[data-slide="03-roadmap"] .muted { color: var(--text-secondary); }
+    section[data-slide="03-roadmap"] .source { margin-top: auto; padding-top: var(--space-4); }
+    
+    section[data-slide="03-roadmap"] .grid { flex: 1; display: grid; grid-template-columns: 1.4fr 1fr; gap: var(--space-16); align-items: start; }
+    section[data-slide="03-roadmap"] .questions { list-style: none; counter-reset: q; margin-bottom: var(--space-8); }
+    section[data-slide="03-roadmap"] .questions li { counter-increment: q; position: relative; padding-left: var(--space-12); margin-bottom: var(--space-5); font-size: var(--slide-lead); line-height: var(--leading-relaxed); }
+    section[data-slide="03-roadmap"] .questions li::before { content: counter(q); position: absolute; left: 0; top: 0.1em; font-family: var(--font-compressed); font-weight: var(--font-bold); font-size: var(--slide-subtitle); color: var(--color-gold-700); }
+    section[data-slide="03-roadmap"] .thesis { font-size: var(--slide-lead); font-weight: var(--font-semibold); color: var(--text-brand); border-left: 6px solid var(--color-teal-500); padding-left: var(--space-5); margin-bottom: var(--space-6); }
+    section[data-slide="03-roadmap"] .stops { list-style: none; background: var(--color-white); border: 1px solid var(--color-neutral-200); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); padding: var(--space-6); }
+    section[data-slide="03-roadmap"] .stops li { display: flex; align-items: center; gap: var(--space-4); padding: var(--space-3) 0; border-bottom: 1px solid var(--color-neutral-200); font-size: var(--slide-body); }
+    section[data-slide="03-roadmap"] .stops li:last-child { border-bottom: 0; }
+    section[data-slide="03-roadmap"] .stops .num { display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: var(--radius-full); background: var(--color-purple-700); color: var(--color-white); font-family: var(--font-compressed); font-weight: var(--font-bold); font-size: var(--slide-body); flex-shrink: 0; }
+    section[data-slide="03-roadmap"] .stops li:first-child .num { background: var(--color-gold-500); color: var(--color-purple-950); }
+  </style>
+</section>

@@ -1,0 +1,45 @@
+<link rel="stylesheet" href="../shared/slide-base.css">
+<section data-slide="27-models-matter" aria-label="Model behavior in our trial runs" class="slide" data-presenter="cordero">
+  <div class="accent-bar-left"></div>
+  <div class="content">
+    <p class="eyebrow">Our trial runs in Copilot in a Codespace</p>
+    <h1>Models used the same repo differently</h1>
+    <div class="grid">
+      <table>
+        <thead><tr><th>Model</th><th>Effort</th><th>What happened</th></tr></thead>
+        <tbody><tr><td>Claude Sonnet 5</td><td>2 steps · 25 s</td><td>Searched the bundle and answered directly</td></tr><tr><td>Claude Haiku</td><td>2 steps</td><td>Used the right tools and covered the same content in a simpler layout</td></tr><tr><td>Kimi K3</td><td>5 steps</td><td>Gave a useful answer quickly on slower hardware</td></tr><tr><td>GPT Terra</td><td>7 steps</td><td>Fell back to regex over the files</td></tr><tr><td>GPT Luna</td><td>10 steps · 1 m 44 s</td><td>Skipped pixi, wrote scripts, then read other chat sessions' storage</td></tr><tr><td>MyCode 1.1 Flash</td><td>5 steps · 54 s</td><td>Searched files until the prompt explicitly named OKF</td></tr><tr><td>Qwen 3.8, local 4-bit</td><td>slow</td><td>Searched memory one keyword at a time, then lost focus</td></tr></tbody>
+      </table>
+      <ul class="points">
+        <li>Haiku covered the same <em>content</em> as Sonnet in this trial. That's worth testing on more tasks.</li>
+        <li>A cheaper model can cost you more time if you have to correct its work.</li>
+        <li>Draft with a capable model, then test with the models your contributors use.</li>
+        <li>Record what worked in the bundle. Define project terms, too: here, "headers" means spend-log columns.</li>
+      </ul>
+    </div>
+  </div>
+  <style>
+    
+    section[data-slide="27-models-matter"] { background: linear-gradient(90deg, rgba(75,46,131,0.06), transparent 34%), var(--surface-primary); padding: var(--space-16) var(--space-20); }
+    section[data-slide="27-models-matter"] .content { position: relative; z-index: var(--z-raised); display: flex; flex-direction: column; width: 100%; height: 100%; }
+    section[data-slide="27-models-matter"] h1 {
+      font-family: var(--font-display); font-size: var(--slide-title); font-weight: var(--font-extrabold);
+      letter-spacing: var(--tracking-tight); line-height: var(--leading-tight); color: var(--text-brand);
+      margin: var(--space-2) 0 var(--space-6);
+    }
+    section[data-slide="27-models-matter"] p, section[data-slide="27-models-matter"] li { font-size: var(--slide-body); line-height: var(--leading-relaxed); color: var(--text-primary); }
+    section[data-slide="27-models-matter"] .lead { font-size: var(--slide-lead); }
+    section[data-slide="27-models-matter"] .muted { color: var(--text-secondary); }
+    section[data-slide="27-models-matter"] .source { margin-top: auto; padding-top: var(--space-4); }
+    
+    section[data-slide="27-models-matter"] .grid { flex: 1; display: grid; grid-template-rows: auto auto; gap: var(--space-6); align-content: start; min-height: 0; }
+    section[data-slide="27-models-matter"] table { width: 100%; border-collapse: collapse; box-shadow: var(--shadow-sm); background: var(--color-white); }
+    section[data-slide="27-models-matter"] th { background: var(--color-purple-700); color: var(--color-white); font-family: var(--font-compressed); font-size: var(--slide-label); font-weight: var(--font-bold); letter-spacing: var(--tracking-wider); text-transform: uppercase; text-align: left; padding: var(--space-2) var(--space-4); }
+    section[data-slide="27-models-matter"] td { font-size: var(--slide-body); line-height: var(--leading-snug); padding: var(--space-2) var(--space-4); border-bottom: 1px solid var(--color-neutral-200); vertical-align: top; }
+    section[data-slide="27-models-matter"] tbody tr:nth-child(even) td { background: var(--color-gold-50); }
+    section[data-slide="27-models-matter"] td:first-child { font-weight: var(--font-semibold); color: var(--text-brand); white-space: nowrap; }
+    section[data-slide="27-models-matter"] td:nth-child(2) { font-family: var(--font-mono); white-space: nowrap; color: var(--text-secondary); }
+    section[data-slide="27-models-matter"] .points { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2) var(--space-10); }
+    section[data-slide="27-models-matter"] li { position: relative; padding-left: var(--space-8); margin-bottom: var(--space-2); font-size: var(--slide-body); line-height: var(--leading-normal); }
+    section[data-slide="27-models-matter"] li::before { content: ""; position: absolute; left: 0; top: 0.68em; width: 10px; height: 7px; background: var(--color-purple-700); transform: skewX(calc(-1 * var(--angle-brand))); }
+  </style>
+</section>

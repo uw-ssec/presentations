@@ -1,0 +1,31 @@
+{
+  "slug": "from-hand-coding-to-ai-orchestration",
+  "community": "uw-ssec",
+  "title": "From Hand Coding to AI Orchestration: The Harness Augmentation Framework",
+  "upload_type": "presentation",
+  "description": "<p>How the UW Scientific Software Engineering Center makes research repositories a place where humans and coding agents both start on day one. Presented at CrossVISS 2026. Walks a plain 2023 scientific Python repository through six additions: an agent environment (pixi), an instruction entry point (AGENTS.md and on-demand rules), project memory (an OKF knowledge bundle), agent skills, and skill evaluations (Inspect and Harbor in CI). Closes with lessons on how different models behave on the same repository and directions for future work.</p>",
+  "creators": [
+    {
+      "name": "Setiawan, Don",
+      "affiliation": "University of Washington Scientific Software Engineering Center"
+    },
+    {
+      "name": "Core, Cordero",
+      "affiliation": "University of Washington Scientific Software Engineering Center"
+    }
+  ],
+  "keywords": [
+    "research software engineering",
+    "coding agents",
+    "harness augmentation framework",
+    "AGENTS.md",
+    "agent skills",
+    "project memory",
+    "OKF",
+    "skill evaluation",
+    "pixi",
+    "onboarding"
+  ],
+  "license": "cc-by-4.0",
+  "pdf": "from-hand-coding-to-ai-orchestration.pdf"
+}

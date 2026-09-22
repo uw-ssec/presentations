@@ -1,0 +1,42 @@
+<link rel="stylesheet" href="../shared/slide-base.css">
+<section data-slide="09-llmoxie-context" aria-label="LLMoxie analysis, the project we work on today" class="slide" data-presenter="don">
+  <div class="accent-bar-left"></div>
+  <div class="content">
+    <p class="eyebrow">Our demo project</p>
+    <h1>The project: llmoxie-analysis</h1>
+    <div class="grid">
+      <ul>
+        <li>LLMoxie gives users access to multiple models through one API key and logs each request.</li>
+        <li>We have a year of logs from workshops and daily work to study how people use coding agents.</li>
+        <li><strong>llmoxie-analysis</strong> normalizes the logs and groups them into sessions, then writes relational tables to Parquet.</li>
+        <li>Our fork includes the <em>LLMoxie Data Pipeline</em> issues. We'll work on the source adapter.</li>
+      </ul>
+      <div class="flow" aria-hidden="true">
+        <span>Gateway traces</span><span class="arrow">→</span><span>Normalize</span><span class="arrow">→</span><span>Sessions</span><span class="arrow">→</span><span>Tables</span><span class="arrow">→</span><span>Parquet</span>
+      </div>
+    </div>
+    <p class="source">This demo builds on the LLMoxie overview from earlier in the convening.</p>
+  </div>
+  <style>
+    
+    section[data-slide="09-llmoxie-context"] { background: linear-gradient(90deg, rgba(75,46,131,0.06), transparent 34%), var(--surface-primary); padding: var(--space-16) var(--space-20); }
+    section[data-slide="09-llmoxie-context"] .content { position: relative; z-index: var(--z-raised); display: flex; flex-direction: column; width: 100%; height: 100%; }
+    section[data-slide="09-llmoxie-context"] h1 {
+      font-family: var(--font-display); font-size: var(--slide-title); font-weight: var(--font-extrabold);
+      letter-spacing: var(--tracking-tight); line-height: var(--leading-tight); color: var(--text-brand);
+      margin: var(--space-2) 0 var(--space-6);
+    }
+    section[data-slide="09-llmoxie-context"] p, section[data-slide="09-llmoxie-context"] li { font-size: var(--slide-body); line-height: var(--leading-relaxed); color: var(--text-primary); }
+    section[data-slide="09-llmoxie-context"] .lead { font-size: var(--slide-lead); }
+    section[data-slide="09-llmoxie-context"] .muted { color: var(--text-secondary); }
+    section[data-slide="09-llmoxie-context"] .source { margin-top: auto; padding-top: var(--space-4); }
+    
+    section[data-slide="09-llmoxie-context"] .grid { flex: 1; display: grid; grid-template-rows: auto auto; gap: var(--space-10); align-content: center; }
+    section[data-slide="09-llmoxie-context"] ul { list-style: none; max-width: 1500px; }
+    section[data-slide="09-llmoxie-context"] li { position: relative; padding-left: var(--space-8); margin-bottom: var(--space-4); }
+    section[data-slide="09-llmoxie-context"] li::before { content: ""; position: absolute; left: 0; top: 0.68em; width: 10px; height: 7px; background: var(--color-purple-700); transform: skewX(calc(-1 * var(--angle-brand))); }
+    section[data-slide="09-llmoxie-context"] .flow { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); }
+    section[data-slide="09-llmoxie-context"] .flow span { font-family: var(--font-compressed); font-size: var(--slide-body); font-weight: var(--font-bold); letter-spacing: var(--tracking-wider); text-transform: uppercase; background: var(--color-purple-700); color: var(--color-white); padding: var(--space-3) var(--space-6); }
+    section[data-slide="09-llmoxie-context"] .flow .arrow { background: none; color: var(--color-gold-700); padding: 0; font-family: var(--font-display); }
+  </style>
+</section>
