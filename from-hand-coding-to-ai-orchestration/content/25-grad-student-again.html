@@ -1,57 +1,68 @@
 <link rel="stylesheet" href="../shared/slide-base.css">
-<section data-slide="25-grad-student-again" aria-label="The payoff: the same prompt on the built-up repo" class="slide" data-presenter="cordero">
-  <div class="accent-bar-left"></div>
+<section data-slide="25-grad-student-again" aria-label="Can they get started now?" class="slide" data-presenter="cordero" data-content-tier="1">
+  <div class="accent-bar-top"></div>
   <div class="content">
-    <p class="eyebrow">The question we started with</p>
-    <div class="grid">
-      <div class="text">
-        <h1>Can the grad student get started now?</h1>
-        <p class="lead">We'll ask the same question in a fresh Sonnet 5 session, now with the repo changes in place. Compare this answer with the first one.</p>
-        <div class="prompt-card">
-      <p class="prompt-label">Live demo prompt</p>
-      <pre class="prompt">I'm a new grad student and I've been asked to work on the source-adapter issue.
-Get me up to speed: what do I need to know about this project before I start?</pre>
-    </div>
-        <p class="muted note">What can you do now that the first answer didn't help you do?</p>
-      </div>
-      <figure class="figure"><img src="../assets/images/new-grad-student.png" alt=""></figure>
-    </div>
+
+    <p class="eyebrow">After: repo with project context</p>
+    <h1>Can they get started now?</h1>
+    <div class="main split"><div><div class="prompt-card"><p class="prompt-label">Live demo prompt</p><pre class="prompt">I'm a new grad student and I've been asked to work on the source-adapter issue.
+Get me up to speed: what do I need to know about this project before I start?</pre></div></div><figure class="figure"><img src="../assets/images/new-grad-student.png" alt="A new contributor and agent facing an unfamiliar repository"></figure></div><p class="caption">What can you do with this answer?</p>
   </div>
   <style>
-    
-    section[data-slide="25-grad-student-again"] { background: linear-gradient(90deg, rgba(75,46,131,0.06), transparent 34%), var(--surface-primary); padding: var(--space-16) var(--space-20); }
-    section[data-slide="25-grad-student-again"] .content { position: relative; z-index: var(--z-raised); display: flex; flex-direction: column; width: 100%; height: 100%; }
-    section[data-slide="25-grad-student-again"] h1 {
-      font-family: var(--font-display); font-size: var(--slide-title); font-weight: var(--font-extrabold);
-      letter-spacing: var(--tracking-tight); line-height: var(--leading-tight); color: var(--text-brand);
-      margin: var(--space-2) 0 var(--space-6);
-    }
-    section[data-slide="25-grad-student-again"] p, section[data-slide="25-grad-student-again"] li { font-size: var(--slide-body); line-height: var(--leading-relaxed); color: var(--text-primary); }
-    section[data-slide="25-grad-student-again"] .lead { font-size: var(--slide-lead); }
-    section[data-slide="25-grad-student-again"] .muted { color: var(--text-secondary); }
-    section[data-slide="25-grad-student-again"] .source { margin-top: auto; padding-top: var(--space-4); }
-    
-    
-    section[data-slide="25-grad-student-again"] .prompt-card {
-      background: var(--surface-terminal); border: 1px solid rgba(42,210,201,0.25); border-radius: var(--radius-md);
-      padding: var(--space-5) var(--space-6); box-shadow: var(--shadow-glow-teal-sm); margin-top: auto;
-    }
-    section[data-slide="25-grad-student-again"] .prompt-label {
-      font-family: var(--font-compressed); font-size: var(--slide-label); font-weight: var(--font-bold);
-      letter-spacing: var(--tracking-widest); text-transform: uppercase; color: var(--color-gold-500); margin-bottom: var(--space-2);
-    }
-    section[data-slide="25-grad-student-again"] .prompt {
-      font-family: var(--font-mono); font-size: var(--slide-code); line-height: var(--leading-relaxed);
-      color: var(--color-teal-500); white-space: pre-wrap; margin: 0;
-    }
-    section[data-slide="25-grad-student-again"] .prompt::before { content: "> "; color: var(--color-gold-500); opacity: 0.7; }
-    
-    section[data-slide="25-grad-student-again"] .grid { flex: 1; display: grid; grid-template-columns: 1.2fr 1fr; gap: var(--space-12); align-items: stretch; min-height: 0; }
-    section[data-slide="25-grad-student-again"] .text { display: flex; flex-direction: column; }
-    section[data-slide="25-grad-student-again"] .lead { margin-bottom: var(--space-6); }
-    section[data-slide="25-grad-student-again"] .prompt-card { margin-top: 0; }
-    section[data-slide="25-grad-student-again"] .note { margin-top: var(--space-5); }
-    section[data-slide="25-grad-student-again"] .figure { margin: 0; display: flex; align-items: center; justify-content: center; min-height: 0; }
-    section[data-slide="25-grad-student-again"] .figure img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: var(--radius-lg); box-shadow: var(--shadow-md); }
-  </style>
+section[data-slide="25-grad-student-again"] { padding: var(--space-16) var(--space-20) var(--space-20); background: var(--surface-primary); }
+section[data-slide="25-grad-student-again"] .content { display:flex; flex-direction:column; width:100%; height:100%; min-height:0; gap:var(--space-6); position:relative; z-index:var(--z-raised); }
+section[data-slide="25-grad-student-again"] h1 { font-family:var(--font-display); font-size:var(--slide-title); font-weight:var(--font-extrabold); color:var(--text-brand); line-height:var(--leading-tight); letter-spacing:var(--tracking-tight); margin:0; padding-bottom:var(--space-3); border-bottom:3px solid var(--color-gold-500); }
+section[data-slide="25-grad-student-again"].dark h1 { color:var(--text-primary); border-bottom:0; }
+section[data-slide="25-grad-student-again"] h2 { font-family:var(--font-display); font-size:var(--slide-subtitle); color:var(--text-brand); line-height:var(--leading-tight); margin:0; }
+section[data-slide="25-grad-student-again"] p, section[data-slide="25-grad-student-again"] li, section[data-slide="25-grad-student-again"] dd, section[data-slide="25-grad-student-again"] dt, section[data-slide="25-grad-student-again"] figcaption, section[data-slide="25-grad-student-again"] button { font-size:var(--slide-body); line-height:var(--leading-normal); }
+section[data-slide="25-grad-student-again"] .eyebrow { font-family:var(--font-compressed); font-size:var(--slide-label); color:var(--text-brand); letter-spacing:var(--tracking-widest); }
+section[data-slide="25-grad-student-again"].dark .eyebrow { color:var(--color-teal-300); }
+section[data-slide="25-grad-student-again"] .lead { font-size:var(--slide-lead); line-height:var(--leading-normal); color:var(--text-secondary); }
+section[data-slide="25-grad-student-again"] .main { flex:1; min-height:0; display:flex; flex-direction:column; justify-content:center; gap:var(--space-8); }
+section[data-slide="25-grad-student-again"] .split { display:grid; grid-template-columns:1fr 1fr; gap:var(--space-12); align-items:center; }
+section[data-slide="25-grad-student-again"] .figure { display:flex; flex-direction:column; justify-content:center; align-items:center; min-height:0; height:100%; margin:0; gap:var(--space-3); }
+section[data-slide="25-grad-student-again"] .figure img { display:block; width:100%; max-height:46vh; object-fit:contain; }
+section[data-slide="25-grad-student-again"] .source { font-size:var(--slide-source); color:var(--text-secondary); line-height:var(--leading-normal); }
+section[data-slide="25-grad-student-again"] .caption { color:var(--text-secondary); margin:0; }
+section[data-slide="25-grad-student-again"] .progress { display:flex; gap:var(--space-5); list-style:none; margin:0; padding:0; }
+section[data-slide="25-grad-student-again"] .progress li { font-family:var(--font-compressed); font-size:var(--slide-label); text-transform:uppercase; letter-spacing:var(--tracking-wide); padding-bottom:var(--space-2); border-bottom:3px solid var(--color-neutral-200); color:var(--text-secondary); }
+section[data-slide="25-grad-student-again"] .progress .done { border-color:var(--color-gold-500); }
+section[data-slide="25-grad-student-again"] .progress .active { color:var(--text-brand); border-color:var(--color-teal-500); font-weight:var(--font-bold); }
+section[data-slide="25-grad-student-again"].dark .progress .active { color:var(--color-white); }
+section[data-slide="25-grad-student-again"] .prompt-card { background:var(--surface-terminal); border-left:4px solid var(--color-teal-500); border-radius:var(--radius-md); padding:var(--space-5) var(--space-6); }
+section[data-slide="25-grad-student-again"] .prompt-label { font-family:var(--font-compressed); font-size:var(--slide-label); color:var(--color-gold-500); letter-spacing:var(--tracking-widest); text-transform:uppercase; margin-bottom:var(--space-2); }
+section[data-slide="25-grad-student-again"] .prompt { white-space:pre-wrap; font-family:var(--font-mono); font-size:var(--slide-code); color:var(--color-teal-500); line-height:var(--leading-normal); margin:0; }
+section[data-slide="25-grad-student-again"] code { font-size:var(--slide-code); }
+section[data-slide="25-grad-student-again"] .flow { display:flex; align-items:stretch; gap:var(--space-6); list-style:none; padding:0; margin:0; }
+section[data-slide="25-grad-student-again"] .flow > li { flex:1; min-width:0; position:relative; border-top:4px solid var(--color-gold-500); padding:var(--space-5) var(--space-3) var(--space-3); }
+section[data-slide="25-grad-student-again"] .flow > li + li::before { content:''; position:absolute; width:var(--space-6); height:3px; background:var(--color-gold-500); left:calc(-1 * var(--space-6)); top:-4px; }
+section[data-slide="25-grad-student-again"] .flow strong { display:block; font-family:var(--font-display); font-size:var(--slide-subtitle); color:var(--text-brand); line-height:var(--leading-tight); margin-bottom:var(--space-3); }
+section[data-slide="25-grad-student-again"].dark .flow strong { color:var(--color-white); }
+section[data-slide="25-grad-student-again"] .flow span { display:block; font-size:var(--slide-body); color:var(--text-secondary); }
+section[data-slide="25-grad-student-again"] .flow .number { font-family:var(--font-compressed); font-size:var(--slide-subtitle); color:var(--text-brand); margin-bottom:var(--space-4); }
+section[data-slide="25-grad-student-again"] .controls { display:flex; gap:var(--space-4); align-items:center; min-height:48px; }
+section[data-slide="25-grad-student-again"] button { cursor:pointer; font-family:var(--font-body); padding:var(--space-2) var(--space-4); border:2px solid var(--color-purple-700); background:var(--color-purple-700); color:var(--color-white); border-radius:var(--radius-none); }
+section[data-slide="25-grad-student-again"].dark button { border-color:var(--color-gold-500); background:transparent; color:var(--color-gold-200); }
+section[data-slide="25-grad-student-again"] button[data-overview] { background:transparent; color:var(--text-brand); }
+section[data-slide="25-grad-student-again"].dark button[data-overview] { color:var(--color-gold-200); }
+section[data-slide="25-grad-student-again"] [data-stage].is-current { outline:3px solid var(--color-purple-700); outline-offset:6px; background:var(--color-purple-50); }
+section[data-slide="25-grad-student-again"].dark [data-stage].is-current { outline-color:var(--color-gold-500); background:var(--color-purple-900); }
+section[data-slide="25-grad-student-again"] .status { color:var(--text-secondary); font-size:var(--slide-body); }
+section[data-slide="25-grad-student-again"] .connections { display:grid; grid-template-columns:1fr 1.2fr 1fr; gap:var(--space-10); align-items:center; }
+section[data-slide="25-grad-student-again"] .connections .hub { border:3px solid var(--color-gold-500); border-radius:var(--radius-md); padding:var(--space-6); text-align:center; position:relative; background:var(--surface-secondary); }
+section[data-slide="25-grad-student-again"] .connections .hub::before, section[data-slide="25-grad-student-again"] .connections .hub::after { content:''; position:absolute; width:var(--space-10); height:3px; top:50%; background:var(--color-gold-500); }
+section[data-slide="25-grad-student-again"] .connections .hub::before { right:100%; } section[data-slide="25-grad-student-again"] .connections .hub::after { left:100%; }
+section[data-slide="25-grad-student-again"] .connections .ends { display:flex; flex-direction:column; gap:var(--space-8); }
+section[data-slide="25-grad-student-again"] .connections .ends > div { padding:var(--space-3) 0; border-bottom:2px solid var(--color-neutral-200); }
+section[data-slide="25-grad-student-again"] .connections strong { font-size:var(--slide-subtitle); color:var(--text-brand); }
+section[data-slide="25-grad-student-again"] .connections p { margin-top:var(--space-2); color:var(--text-secondary); }
+section[data-slide="25-grad-student-again"] .tags { list-style:none; padding:0; display:flex; flex-wrap:wrap; gap:var(--space-4) var(--space-8); }
+section[data-slide="25-grad-student-again"] .tags li { border-left:4px solid var(--color-gold-500); padding-left:var(--space-4); }
+section[data-slide="25-grad-student-again"] .pair { display:grid; grid-template-columns:1fr 1fr; gap:var(--space-12); }
+section[data-slide="25-grad-student-again"] .pair > div { border-left:4px solid var(--color-gold-500); padding:var(--space-4) var(--space-6); }
+section[data-slide="25-grad-student-again"] .pair p { margin-top:var(--space-4); }
+section[data-slide="25-grad-student-again"] .terminal { background:var(--surface-terminal); color:var(--color-teal-500); padding:var(--space-6); font-family:var(--font-mono); font-size:var(--slide-code); white-space:pre-wrap; line-height:var(--leading-relaxed); border-radius:var(--radius-md); }
+@media print { section[data-slide="25-grad-student-again"] [data-stage].is-current { outline:none; background:transparent; } section[data-slide="25-grad-student-again"] .controls { display:none; } }
+
+</style>
 </section>

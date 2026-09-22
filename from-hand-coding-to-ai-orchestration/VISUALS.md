@@ -1,40 +1,16 @@
-# Visual Elements — [Presentation Title]
+# Visual treatment — From Hand Coding to AI Orchestration
 
-Companion file to SLIDES.md. This file governs the **second pass** of the two-pass workflow.
+Primary content carriers are specified per slide in `SLIDES.md`, following
+`project/slide-content-hierarchy`. This is a first-pass restructuring of
+`content/`, not a pass that decorates prose with images.
 
-# How to use this file (instructions for the slide generator)
-
-**This is an additions document, not a parallel specification.** The first pass (governed by SLIDES.md) has already produced rendered HTML slides. This file specifies visual elements — photographs, diagrammatic accents, icons — to **add** to those existing slides.
-
-- Modify the existing HTML for each slide; do not regenerate from scratch.
-- Add only what this file specifies. Slides not listed here remain unchanged.
-- If a visual element here would conflict with the first-pass layout, the first-pass layout wins — flag the conflict rather than overriding it.
-- Slide identifiers (`## 01-title`, `## 02-example`, etc.) match SLIDES.md exactly. Use them as anchors.
-
-# Global styling for diagrammatic elements
-
-Describe the visual language for all icons and diagrammatic accents in the deck. Example:
-
-- **Line weight:** thin, uniform. No filled shapes.
-- **Color:** gold accent on transparent or neutral background.
-- **Level of abstraction:** geometric and minimal. No literal pictograms.
-- **Scale:** small. Visual accents, not focal elements. Typography remains primary.
-
-# Global styling for photographs
-
-Describe the photographic treatment for the deck. Example:
-
-- **Source:** [describe your photo source]
-- **Composition preference:** wide-frame moments showing relational context over tight portraits.
-- **Treatment:** consistent color grading across the deck.
-- **Rule:** one photograph per slide maximum.
-
----
+Native HTML diagrams remain editable. Presenter-controlled walkthroughs use
+cuts between highlighted steps, with no autoplay or animated text. Their
+complete overview is the static print frame. Existing source diagrams remain
+on slides 5, 7, and 8. The title and new-contributor illustrations remain.
+Unused image assets stay in the repository but no longer compete with the
+primary diagrams. No additional decorative media is needed.
 
 # Per-slide additions
 
-## 01-title
-No additions.
-
-## 02-example
-No additions.
+No pass-two additions. Build the authoritative fragments with `./build.sh`.

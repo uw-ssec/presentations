@@ -136,6 +136,7 @@
 
     // Keyboard navigation
     document.addEventListener('keydown', (e) => {
+      if (e.target.closest('button, input, select, textarea, [contenteditable]')) return;
       if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
         e.preventDefault();
         showSlide(currentSlide + 1);
@@ -157,9 +158,37 @@
 
     // Click to advance (anywhere except the HUD)
     document.addEventListener('click', (e) => {
-      if (!e.target.closest('.slide-counter') && !e.target.closest('.deck-hud') && !e.target.closest('a')) {
+      if (!e.target.closest('.slide-counter') && !e.target.closest('.deck-hud') && !e.target.closest('a, button, input, select, textarea, [data-interactive]')) {
         showSlide(currentSlide + 1);
       }
+    });
+
+    // Presenter-controlled walkthroughs. All stages stay visible in the overview.
+    document.querySelectorAll('[data-walkthrough]').forEach(group => {
+      const section = group.closest('section');
+      const stages = Array.from(group.querySelectorAll('[data-stage]'));
+      const next = section.querySelector('[data-next]');
+      const overview = section.querySelector('[data-overview]');
+      const status = section.querySelector('.status');
+      let step = -1;
+      const reset = () => {
+        step = -1;
+        stages.forEach(stage => { stage.classList.remove('is-current'); stage.removeAttribute('aria-current'); });
+        next.textContent = 'Walk through';
+        status.textContent = 'Overview';
+      };
+      next.addEventListener('click', () => {
+        if (step === stages.length - 1) { reset(); return; }
+        step += 1;
+        stages.forEach((stage, i) => {
+          stage.classList.toggle('is-current', i === step);
+          if (i === step) stage.setAttribute('aria-current', 'step');
+          else stage.removeAttribute('aria-current');
+        });
+        status.textContent = `Step ${step + 1} of ${stages.length}`;
+        next.textContent = step === stages.length - 1 ? 'Show overview' : 'Next step';
+      });
+      overview.addEventListener('click', reset);
     });
 
     // Initialize presentation

@@ -20,12 +20,17 @@ In the deck:
 - The timer next to it starts when you leave slide 1. `t` pauses and resumes,
   `r` resets. It turns gold at 50 minutes and pink at 60.
 - `#N` in the URL jumps to slide N.
+- “Walk through” highlights a diagram step. “Next step” advances the highlight;
+  “Show all” restores the overview. These buttons also work with Tab and Space.
+- Browser Print exports all 31 slides, with complete diagrams and no live controls.
 
 ## Files
 
 - `SLIDES.md`: the plan, one `## slide-id` heading per slide, in order.
   Reorder slides here and rebuild.
 - `content/`: one `<section>` fragment per slide, scoped styles inline.
+- `NOTES.md`: fuller explanations, demo context, and reported trial results for rehearsal.
+- `shared/print.css`: static overview for every slide, including interactive diagrams.
 - `shared/slide-base.css`: the SSEC design tokens, base styles, slide
   system, and utilities. `shared/header.html` links it, and so does every
   fragment, so a file in `content/` opened on its own is styled. Edit the
@@ -34,7 +39,7 @@ In the deck:
 - `assets/images/`: illustrations generated with Codex, plus the Mentimeter QR
   crop. `assets/`: the framework graphic, the agent board, the pyOpenSci
   lifecycle, the Mentimeter screenshots, and the planning notes.
-- `VISUALS.md`: pass-two visual additions spec (not used yet).
+- `VISUALS.md`: primary visual treatment and pass-two additions guidance.
 - `build/`: generated output, git-ignored.
 
 ## Live parts

@@ -1,34 +1,67 @@
 <link rel="stylesheet" href="../shared/slide-base.css">
-<section data-slide="05-characteristics" aria-label="What helps a new contributor" class="slide" data-presenter="don">
-  <div class="accent-bar-left"></div>
+<section data-slide="05-characteristics" aria-label="What helps a new contributor" class="slide" data-presenter="don" data-content-tier="2">
+  <div class="accent-bar-top"></div>
   <div class="content">
-    <p class="eyebrow">What helped in 2023</p>
+
+    <p class="eyebrow">The foundation we already had</p>
     <h1>What helps a new contributor</h1>
-    <div class="grid">
-      <ol class="chars"><li>Docs that answer real questions</li><li>A setup that works</li><li>Code checks with pre-commit and linting</li><li>Clear contribution and community rules</li><li>Tests and benchmarks you can run</li><li>Security practices you can check</li><li>Reliable packaging and distribution</li></ol>
-      <figure><img src="../assets/traditional-software.png" alt="pyOpenSci diagram: maintainers at the center of user documentation, code and API, test suite, contributor documentation, and project metadata, publishing to PyPI and conda"><figcaption class="source">Source: pyOpenSci Python packaging guide</figcaption></figure>
-    </div>
+    <div class="main split"><figure class="figure"><img src="../assets/traditional-software.png" alt="pyOpenSci package lifecycle: documentation, code, tests, contributors, and package metadata"><figcaption class="source">Source: pyOpenSci Python packaging guide</figcaption></figure><ul class="tags"><li>Useful docs</li><li>Working setup</li><li>Code checks</li><li>Clear rules</li><li>Tests</li><li>Security</li><li>Packaging</li></ul></div>
   </div>
   <style>
-    
-    section[data-slide="05-characteristics"] { background: linear-gradient(90deg, rgba(75,46,131,0.06), transparent 34%), var(--surface-primary); padding: var(--space-16) var(--space-20); }
-    section[data-slide="05-characteristics"] .content { position: relative; z-index: var(--z-raised); display: flex; flex-direction: column; width: 100%; height: 100%; }
-    section[data-slide="05-characteristics"] h1 {
-      font-family: var(--font-display); font-size: var(--slide-title); font-weight: var(--font-extrabold);
-      letter-spacing: var(--tracking-tight); line-height: var(--leading-tight); color: var(--text-brand);
-      margin: var(--space-2) 0 var(--space-6);
-    }
-    section[data-slide="05-characteristics"] p, section[data-slide="05-characteristics"] li { font-size: var(--slide-body); line-height: var(--leading-relaxed); color: var(--text-primary); }
-    section[data-slide="05-characteristics"] .lead { font-size: var(--slide-lead); }
-    section[data-slide="05-characteristics"] .muted { color: var(--text-secondary); }
-    section[data-slide="05-characteristics"] .source { margin-top: auto; padding-top: var(--space-4); }
-    
-    section[data-slide="05-characteristics"] .grid { flex: 1; display: grid; grid-template-columns: 1fr 1.1fr; gap: var(--space-12); align-items: center; }
-    section[data-slide="05-characteristics"] .chars { list-style: none; counter-reset: c; }
-    section[data-slide="05-characteristics"] .chars li { counter-increment: c; position: relative; padding-left: var(--space-12); margin-bottom: var(--space-4); font-size: var(--slide-body); line-height: var(--leading-relaxed); }
-    section[data-slide="05-characteristics"] .chars li::before { content: counter(c); position: absolute; left: 0; top: -0.05em; font-family: var(--font-compressed); font-weight: var(--font-bold); font-size: var(--slide-subtitle); color: var(--color-gold-700); }
-    section[data-slide="05-characteristics"] figure { margin: 0; display: flex; flex-direction: column; align-items: center; }
-    section[data-slide="05-characteristics"] figure img { max-width: 100%; max-height: 62vh; object-fit: contain; }
-    section[data-slide="05-characteristics"] figcaption { margin-top: var(--space-3); }
-  </style>
+section[data-slide="05-characteristics"] { padding: var(--space-16) var(--space-20) var(--space-20); background: var(--surface-primary); }
+section[data-slide="05-characteristics"] .content { display:flex; flex-direction:column; width:100%; height:100%; min-height:0; gap:var(--space-6); position:relative; z-index:var(--z-raised); }
+section[data-slide="05-characteristics"] h1 { font-family:var(--font-display); font-size:var(--slide-title); font-weight:var(--font-extrabold); color:var(--text-brand); line-height:var(--leading-tight); letter-spacing:var(--tracking-tight); margin:0; padding-bottom:var(--space-3); border-bottom:3px solid var(--color-gold-500); }
+section[data-slide="05-characteristics"].dark h1 { color:var(--text-primary); border-bottom:0; }
+section[data-slide="05-characteristics"] h2 { font-family:var(--font-display); font-size:var(--slide-subtitle); color:var(--text-brand); line-height:var(--leading-tight); margin:0; }
+section[data-slide="05-characteristics"] p, section[data-slide="05-characteristics"] li, section[data-slide="05-characteristics"] dd, section[data-slide="05-characteristics"] dt, section[data-slide="05-characteristics"] figcaption, section[data-slide="05-characteristics"] button { font-size:var(--slide-body); line-height:var(--leading-normal); }
+section[data-slide="05-characteristics"] .eyebrow { font-family:var(--font-compressed); font-size:var(--slide-label); color:var(--text-brand); letter-spacing:var(--tracking-widest); }
+section[data-slide="05-characteristics"].dark .eyebrow { color:var(--color-teal-300); }
+section[data-slide="05-characteristics"] .lead { font-size:var(--slide-lead); line-height:var(--leading-normal); color:var(--text-secondary); }
+section[data-slide="05-characteristics"] .main { flex:1; min-height:0; display:flex; flex-direction:column; justify-content:center; gap:var(--space-8); }
+section[data-slide="05-characteristics"] .split { display:grid; grid-template-columns:1fr 1fr; gap:var(--space-12); align-items:center; }
+section[data-slide="05-characteristics"] .figure { display:flex; flex-direction:column; justify-content:center; align-items:center; min-height:0; height:100%; margin:0; gap:var(--space-3); }
+section[data-slide="05-characteristics"] .figure img { display:block; width:100%; max-height:46vh; object-fit:contain; }
+section[data-slide="05-characteristics"] .source { font-size:var(--slide-source); color:var(--text-secondary); line-height:var(--leading-normal); }
+section[data-slide="05-characteristics"] .caption { color:var(--text-secondary); margin:0; }
+section[data-slide="05-characteristics"] .progress { display:flex; gap:var(--space-5); list-style:none; margin:0; padding:0; }
+section[data-slide="05-characteristics"] .progress li { font-family:var(--font-compressed); font-size:var(--slide-label); text-transform:uppercase; letter-spacing:var(--tracking-wide); padding-bottom:var(--space-2); border-bottom:3px solid var(--color-neutral-200); color:var(--text-secondary); }
+section[data-slide="05-characteristics"] .progress .done { border-color:var(--color-gold-500); }
+section[data-slide="05-characteristics"] .progress .active { color:var(--text-brand); border-color:var(--color-teal-500); font-weight:var(--font-bold); }
+section[data-slide="05-characteristics"].dark .progress .active { color:var(--color-white); }
+section[data-slide="05-characteristics"] .prompt-card { background:var(--surface-terminal); border-left:4px solid var(--color-teal-500); border-radius:var(--radius-md); padding:var(--space-5) var(--space-6); }
+section[data-slide="05-characteristics"] .prompt-label { font-family:var(--font-compressed); font-size:var(--slide-label); color:var(--color-gold-500); letter-spacing:var(--tracking-widest); text-transform:uppercase; margin-bottom:var(--space-2); }
+section[data-slide="05-characteristics"] .prompt { white-space:pre-wrap; font-family:var(--font-mono); font-size:var(--slide-code); color:var(--color-teal-500); line-height:var(--leading-normal); margin:0; }
+section[data-slide="05-characteristics"] code { font-size:var(--slide-code); }
+section[data-slide="05-characteristics"] .flow { display:flex; align-items:stretch; gap:var(--space-6); list-style:none; padding:0; margin:0; }
+section[data-slide="05-characteristics"] .flow > li { flex:1; min-width:0; position:relative; border-top:4px solid var(--color-gold-500); padding:var(--space-5) var(--space-3) var(--space-3); }
+section[data-slide="05-characteristics"] .flow > li + li::before { content:''; position:absolute; width:var(--space-6); height:3px; background:var(--color-gold-500); left:calc(-1 * var(--space-6)); top:-4px; }
+section[data-slide="05-characteristics"] .flow strong { display:block; font-family:var(--font-display); font-size:var(--slide-subtitle); color:var(--text-brand); line-height:var(--leading-tight); margin-bottom:var(--space-3); }
+section[data-slide="05-characteristics"].dark .flow strong { color:var(--color-white); }
+section[data-slide="05-characteristics"] .flow span { display:block; font-size:var(--slide-body); color:var(--text-secondary); }
+section[data-slide="05-characteristics"] .flow .number { font-family:var(--font-compressed); font-size:var(--slide-subtitle); color:var(--text-brand); margin-bottom:var(--space-4); }
+section[data-slide="05-characteristics"] .controls { display:flex; gap:var(--space-4); align-items:center; min-height:48px; }
+section[data-slide="05-characteristics"] button { cursor:pointer; font-family:var(--font-body); padding:var(--space-2) var(--space-4); border:2px solid var(--color-purple-700); background:var(--color-purple-700); color:var(--color-white); border-radius:var(--radius-none); }
+section[data-slide="05-characteristics"].dark button { border-color:var(--color-gold-500); background:transparent; color:var(--color-gold-200); }
+section[data-slide="05-characteristics"] button[data-overview] { background:transparent; color:var(--text-brand); }
+section[data-slide="05-characteristics"].dark button[data-overview] { color:var(--color-gold-200); }
+section[data-slide="05-characteristics"] [data-stage].is-current { outline:3px solid var(--color-purple-700); outline-offset:6px; background:var(--color-purple-50); }
+section[data-slide="05-characteristics"].dark [data-stage].is-current { outline-color:var(--color-gold-500); background:var(--color-purple-900); }
+section[data-slide="05-characteristics"] .status { color:var(--text-secondary); font-size:var(--slide-body); }
+section[data-slide="05-characteristics"] .connections { display:grid; grid-template-columns:1fr 1.2fr 1fr; gap:var(--space-10); align-items:center; }
+section[data-slide="05-characteristics"] .connections .hub { border:3px solid var(--color-gold-500); border-radius:var(--radius-md); padding:var(--space-6); text-align:center; position:relative; background:var(--surface-secondary); }
+section[data-slide="05-characteristics"] .connections .hub::before, section[data-slide="05-characteristics"] .connections .hub::after { content:''; position:absolute; width:var(--space-10); height:3px; top:50%; background:var(--color-gold-500); }
+section[data-slide="05-characteristics"] .connections .hub::before { right:100%; } section[data-slide="05-characteristics"] .connections .hub::after { left:100%; }
+section[data-slide="05-characteristics"] .connections .ends { display:flex; flex-direction:column; gap:var(--space-8); }
+section[data-slide="05-characteristics"] .connections .ends > div { padding:var(--space-3) 0; border-bottom:2px solid var(--color-neutral-200); }
+section[data-slide="05-characteristics"] .connections strong { font-size:var(--slide-subtitle); color:var(--text-brand); }
+section[data-slide="05-characteristics"] .connections p { margin-top:var(--space-2); color:var(--text-secondary); }
+section[data-slide="05-characteristics"] .tags { list-style:none; padding:0; display:flex; flex-wrap:wrap; gap:var(--space-4) var(--space-8); }
+section[data-slide="05-characteristics"] .tags li { border-left:4px solid var(--color-gold-500); padding-left:var(--space-4); }
+section[data-slide="05-characteristics"] .pair { display:grid; grid-template-columns:1fr 1fr; gap:var(--space-12); }
+section[data-slide="05-characteristics"] .pair > div { border-left:4px solid var(--color-gold-500); padding:var(--space-4) var(--space-6); }
+section[data-slide="05-characteristics"] .pair p { margin-top:var(--space-4); }
+section[data-slide="05-characteristics"] .terminal { background:var(--surface-terminal); color:var(--color-teal-500); padding:var(--space-6); font-family:var(--font-mono); font-size:var(--slide-code); white-space:pre-wrap; line-height:var(--leading-relaxed); border-radius:var(--radius-md); }
+@media print { section[data-slide="05-characteristics"] [data-stage].is-current { outline:none; background:transparent; } section[data-slide="05-characteristics"] .controls { display:none; } }
+
+section[data-slide="05-characteristics"] .split { grid-template-columns:1.5fr 1fr; } section[data-slide="05-characteristics"] .figure img { max-height:56vh; }</style>
 </section>
