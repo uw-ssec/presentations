@@ -1,3 +1,13 @@
+## 2026-09-22
+* **Update**: Linked `project/slide-visual-verification.md` to `pipeline/fragment-decks-outside-pdf-workflow.md` (Fitting in the browser does not guarantee fitting in the deposited PDF, so the export needs its own pass.).
+* **Update**: Linked `project/slide-visual-verification.md` to `project/slide-content-hierarchy.md` (The content hierarchy decides what goes on a slide; this check confirms what landed there actually fits inside it.).
+* **Creation**: Documented concept `project/slide-visual-verification.md` (Verifying a slide change visually: nothing outside the 1280x720 boundary).
+* **Update**: Linked `project/slide-content-hierarchy.md` to `pipeline/fragment-decks-outside-pdf-workflow.md` (Rich tier-1 and tier-2 elements do not survive the decktape PDF export this concept governs, so every such slide needs a static fallback frame for the Zenodo deposit.).
+* **Update**: Updated concept `project/slide-content-hierarchy.md`.
+* **Update**: Linked `project/slide-content-hierarchy.md` to `branding/ssec-slide-brand.md` (Brand sets how a slide looks; the content hierarchy sets what carries its idea. A tier-2 chart still uses the ssec tokens and 24px type floor.).
+* **Update**: Linked `project/slide-content-hierarchy.md` to `project/deck-format-default.md` (The tier choice is made during the SLIDES.md planning pass of the two-pass fragment deck workflow this concept defines.).
+* **Creation**: Documented concept `project/slide-content-hierarchy.md` (Slide content hierarchy: animation, then visuals, then tables, then text).
+
 ## 2026-09-21
 * **Update**: Linked `project/skill-evals.md` to `project/deck-format-default.md` (The decision the new-deck guard task enforces.).
 * **Update**: Linked `project/skill-evals.md` to `project/uw-slides-plugin-vendored.md` (The skills under test and the assets the base image carries for them.).

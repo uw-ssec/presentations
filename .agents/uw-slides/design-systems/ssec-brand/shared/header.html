@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <script>document.documentElement.classList.add("js");</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="UW Scientific Software Engineering Center Presentation">
   <meta name="author" content="UW Scientific Software Engineering Center">
@@ -307,6 +308,13 @@
 
     section.slide.active {
       display: flex;
+    }
+
+    /* Without JavaScript (or before it runs) show every slide stacked, still styled */
+    html:not(.js) section.slide {
+      display: flex;
+      height: auto;
+      min-height: 100vh;
     }
 
     /* ─── UTILITY CLASSES (available to all slides) ──────────────────────── */

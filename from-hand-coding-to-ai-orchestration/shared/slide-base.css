@@ -1,0 +1,476 @@
+/* SSEC slide base: tokens, base styles, slide system, utilities.
+   Linked by shared/header.html and by every content/ fragment so a fragment
+   opened on its own is styled. Path ../shared/ resolves from content/ and build/. */
+
+@import url('https://fonts.googleapis.com/css2?family=Encode+Sans:wght@300;400;500;600;700;800;900&family=Encode+Sans+Compressed:wght@400;600;700&family=Open+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+/* ─── DESIGN TOKENS ──────────────────────────────────────────────────── */
+/* Mirrors design-systems/ssec-brand/colors_and_type.css. Keep in sync.   */
+
+:root {
+  /* UW Purple (primary) */
+  --color-purple-950: #1a0038;
+  --color-purple-900: #32006e;
+  --color-purple-800: #3d1a7a;
+  --color-purple-700: #4b2e83;
+  --color-purple-600: #5a3d94;
+  --color-purple-500: #6b4fa6;
+  --color-purple-400: #8b74be;
+  --color-purple-300: #a899d0;
+  --color-purple-200: #c5b4e3;
+  --color-purple-100: #e0d7f0;
+  --color-purple-50:  #f0ecf7;
+
+  /* UW Gold (secondary) */
+  --color-gold-900: #5a4a2e;
+  --color-gold-800: #6e5d3a;
+  --color-gold-700: #85754d;
+  --color-gold-600: #9e8d63;
+  --color-gold-500: #b7a57a;
+  --color-gold-400: #c9bb96;
+  --color-gold-300: #dbd1b4;
+  --color-gold-200: #e8e3d3;
+  --color-gold-100: #f2efe6;
+  --color-gold-50:  #f9f7f2;
+
+  /* Accent (≤ 15% of any slide) */
+  --color-teal-600: #1fb8b0;
+  --color-teal-500: #2ad2c9;
+  --color-teal-400: #5cddd6;
+  --color-teal-300: #8fe9e4;
+  --color-teal-200: #c2f3f0;
+  --color-teal-100: #e6faf9;
+  --color-green-600: #8ab818;
+  --color-green-500: #aadb1e;
+  --color-green-400: #bce44e;
+  --color-green-300: #d1ed85;
+  --color-pink-600: #d4289a;
+  --color-pink-500: #e93cac;
+  --color-pink-400: #ee66bf;
+  --color-spirit-gold: #ffc700;
+
+  /* Neutrals */
+  --color-neutral-950: #0d0f10;
+  --color-neutral-900: #1a1d1f;
+  --color-neutral-800: #2a2e31;
+  --color-neutral-700: #373a3c;
+  --color-neutral-600: #555a5e;
+  --color-neutral-500: #72777c;
+  --color-neutral-400: #9a9fa4;
+  --color-neutral-300: #c2c6ca;
+  --color-neutral-200: #d5d8de;
+  --color-neutral-100: #eceef0;
+  --color-neutral-50:  #f6f7f8;
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  /* Font families */
+  --font-display:    "Encode Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-compressed: "Encode Sans Compressed", "Encode Sans", -apple-system, sans-serif;
+  --font-body:       "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono:       "JetBrains Mono", "Fira Code", "Source Code Pro", "Consolas", monospace;
+  --font-display-compressed: var(--font-compressed);
+  --font-ui:                 var(--font-compressed);
+  --font-heading:            var(--font-display);
+  --font-reading:            var(--font-body);
+
+  /* Weights */
+  --font-light: 300;
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+  --font-extrabold: 800;
+  --font-black: 900;
+
+  /* Line heights */
+  --leading-none: 1;
+  --leading-tight: 1.15;
+  --leading-snug: 1.3;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose: 1.8;
+
+  /* Letter spacing */
+  --tracking-tighter: -0.03em;
+  --tracking-tight: -0.015em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.025em;
+  --tracking-wider: 0.05em;
+  --tracking-widest: 0.1em;
+
+  /* Spacing (4px base) */
+  --space-px: 1px;
+  --space-0: 0;
+  --space-0-5: 0.125rem;
+  --space-1:  0.25rem;
+  --space-1-5: 0.375rem;
+  --space-2:  0.5rem;
+  --space-2-5: 0.625rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-5:  1.25rem;
+  --space-6:  1.5rem;
+  --space-8:  2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+
+  /* Radius */
+  --radius-none: 0;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-full: 9999px;
+
+  /* Shadows and glows */
+  --shadow-xs:  0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-sm:  0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md:  0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+  --shadow-lg:  0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+  --shadow-xl:  0 20px 25px rgba(0, 0, 0, 0.1), 0 8px 10px rgba(0, 0, 0, 0.04);
+  --shadow-2xl: 0 25px 50px rgba(0, 0, 0, 0.2);
+  --shadow-glow-sm: 0 0 10px rgba(75, 46, 131, 0.15);
+  --shadow-glow-md: 0 0 20px rgba(75, 46, 131, 0.2);
+  --shadow-glow-lg: 0 0 40px rgba(75, 46, 131, 0.25);
+  --shadow-glow-teal-sm: 0 0 10px rgba(42, 210, 201, 0.15);
+  --shadow-glow-teal-md: 0 0 20px rgba(42, 210, 201, 0.2);
+
+  /* Z-index */
+  --z-base: 0;
+  --z-raised: 1;
+  --z-dropdown: 10;
+  --z-sticky: 20;
+  --z-overlay: 30;
+  --z-modal: 40;
+  --z-toast: 50;
+
+  /* Motion */
+  --duration-fast: 100ms;
+  --duration-normal: 200ms;
+  --duration-slow: 300ms;
+  --duration-slower: 500ms;
+  --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Layout */
+  --width-content: 960px;
+  --width-wide: 1140px;
+  --width-full: 1400px;
+  --angle-brand: 15deg;
+
+  /* Semantic — surfaces */
+  --surface-primary: var(--color-white);
+  --surface-secondary: var(--color-gold-50);
+  --surface-tertiary: var(--color-neutral-50);
+  --surface-inverse: var(--color-purple-900);
+  --surface-brand: var(--color-purple-700);
+  --surface-dark: var(--color-purple-950);
+  --surface-code: var(--color-neutral-900);
+  --surface-terminal: var(--color-purple-950);
+  --surface-data: var(--color-gold-100);
+
+  /* Semantic — text */
+  --text-primary: var(--color-neutral-900);
+  --text-secondary: var(--color-neutral-600);
+  --text-tertiary: #767676;
+  --text-disabled: #767676;
+  --text-inverse: var(--color-white);
+  --text-brand: var(--color-purple-700);
+  --text-link: var(--color-purple-700);
+  --text-link-hover: var(--color-purple-900);
+  --text-code: #0f8a83;
+
+  /* Semantic — borders */
+  --border-default: var(--color-neutral-200);
+  --border-strong: var(--color-neutral-300);
+  --border-brand: var(--color-purple-700);
+  --border-focus: var(--color-purple-500);
+  --border-accent: var(--color-teal-500);
+
+  /* Semantic — interactive */
+  --interactive-primary: var(--color-purple-700);
+  --interactive-primary-hover: var(--color-purple-900);
+  --interactive-primary-active: var(--color-purple-800);
+  --interactive-secondary: var(--color-gold-500);
+  --interactive-secondary-hover: var(--color-gold-700);
+  --interactive-ghost-hover: var(--color-purple-50);
+  --interactive-ghost-active: var(--color-purple-100);
+
+  /* Semantic — status */
+  --color-success: #2e7d32;
+  --color-success-light: #e8f5e9;
+  --color-warning: #f57c00;
+  --color-warning-light: #fff3e0;
+  --color-error: #c62828;
+  --color-error-light: #ffebee;
+  --color-info: var(--color-purple-600);
+  --color-info-light: var(--color-purple-50);
+
+  /* Focus ring */
+  --focus-ring: 0 0 0 0.2rem rgba(75, 46, 131, 0.5);
+  --focus-ring-offset: 2px;
+
+  /* Semantic spacing */
+  --space-inline-xs: var(--space-1);
+  --space-inline-sm: var(--space-2);
+  --space-inline-md: var(--space-4);
+  --space-inline-lg: var(--space-6);
+  --space-stack-xs: var(--space-1);
+  --space-stack-sm: var(--space-2);
+  --space-stack-md: var(--space-4);
+  --space-stack-lg: var(--space-8);
+  --space-stack-xl: var(--space-12);
+  --space-section-sm: var(--space-12);
+  --space-section-md: var(--space-16);
+  --space-section-lg: var(--space-24);
+
+  /* Slide type scale — 1.5rem (24px) floor for all content text */
+  --slide-hero:     clamp(3.5rem, 5.5vw, 5.375rem);
+  --slide-title:    clamp(2.5rem, 3.5vw, 3.5rem);
+  --slide-subtitle: clamp(1.75rem, 2.4vw, 2.5rem);
+  --slide-lead:     clamp(1.625rem, 2.2vw, 2.125rem);
+  --slide-body:     clamp(1.5rem, 1.9vw, 1.75rem);
+  --slide-code:     clamp(1.5rem, 1.7vw, 1.625rem);
+  --slide-stat:     clamp(4rem, 7vw, 7.5rem);
+  --slide-label:    clamp(1rem, 1.2vw, 1.25rem);
+  --slide-source:   clamp(1rem, 1.1vw, 1.25rem);
+}
+
+/* Dark context: add class="dark" to purple-950 / purple-900 slides */
+.dark,
+[data-theme="dark"] {
+  --surface-primary: var(--color-purple-950);
+  --surface-secondary: var(--color-purple-900);
+  --surface-tertiary: var(--color-neutral-800);
+  --text-primary: var(--color-white);
+  --text-secondary: var(--color-gold-200);
+  --text-tertiary: var(--color-neutral-400);
+  --text-brand: var(--color-gold-500);
+  --text-link: var(--color-teal-400);
+  --text-link-hover: var(--color-teal-300);
+  --text-code: var(--color-teal-500);
+  --border-default: rgba(255, 255, 255, 0.12);
+  --border-strong: rgba(255, 255, 255, 0.2);
+  --border-accent: var(--color-teal-500);
+  --border-focus: var(--color-teal-500);
+  --interactive-primary: var(--color-teal-500);
+  --interactive-primary-hover: var(--color-teal-400);
+  --interactive-ghost-hover: rgba(255, 255, 255, 0.08);
+  --interactive-ghost-active: rgba(255, 255, 255, 0.12);
+}
+
+/* ─── BASE STYLES ────────────────────────────────────────────────────── */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  color: var(--text-primary);
+  background: var(--color-purple-950);
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── SLIDE SYSTEM ───────────────────────────────────────────────────── */
+
+section.slide {
+  width: 100vw;
+  height: 100vh;
+  display: none;
+  position: relative;
+  background: var(--surface-primary);
+  color: var(--text-primary);
+}
+
+section.slide.active {
+  display: flex;
+}
+
+/* Without JavaScript (or before it runs) show every slide stacked, still styled */
+html:not(.js) section.slide {
+  display: flex;
+  height: auto;
+  min-height: 100vh;
+}
+
+/* ─── UTILITY CLASSES (available to all slides) ──────────────────────── */
+
+/* SSEC accent bar: 4px teal — the signature underline from the website nav */
+.accent-bar-top,
+.accent-bar-bottom,
+.accent-bar-left,
+.accent-bar-right {
+  position: absolute;
+  background: var(--color-teal-500);
+  z-index: var(--z-dropdown);
+}
+.accent-bar-top    { top: 0;    left: 0; right: 0;  height: 4px; }
+.accent-bar-bottom { bottom: 0; left: 0; right: 0;  height: 4px; }
+.accent-bar-left   { top: 0;    bottom: 0; left: 0;  width: 4px; }
+.accent-bar-right  { top: 0;    bottom: 0; right: 0; width: 4px; }
+
+/* 15° angled gold divider along the bottom edge (section and title slides) */
+.angle-divider {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 72px;
+  background: var(--color-gold-500);
+  clip-path: polygon(0 35%, 100% 0, 100% 100%, 0 100%);
+  z-index: var(--z-raised);
+  pointer-events: none;
+}
+
+/* Angled rain texture (105° = 90° + brand angle). Apply to a slide section. */
+.rain-texture::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: var(--z-base);
+  background-image: repeating-linear-gradient(
+    105deg,
+    transparent,
+    transparent 10px,
+    rgba(255, 255, 255, 0.035) 10px,
+    rgba(255, 255, 255, 0.035) 11px
+  );
+}
+.rain-texture--light::after {
+  background-image: repeating-linear-gradient(
+    105deg,
+    transparent,
+    transparent 9px,
+    rgba(75, 46, 131, 0.07) 9px,
+    rgba(75, 46, 131, 0.07) 10px
+  );
+}
+
+/* Eyebrow / tag: compressed uppercase label above a title */
+.eyebrow {
+  font-family: var(--font-compressed);
+  font-size: var(--slide-label);
+  font-weight: var(--font-bold);
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--color-gold-700);
+}
+.dark .eyebrow {
+  color: var(--color-teal-300);
+}
+
+/* Teal signature underline under a heading (15° skew) */
+.signature-rule {
+  display: block;
+  width: 112px;
+  height: 4px;
+  margin-top: var(--space-4);
+  background: var(--color-teal-500);
+  transform: skewX(calc(-1 * var(--angle-brand)));
+}
+
+/* Code block: terminal surface, teal text, JetBrains Mono */
+.code-block {
+  background: var(--surface-terminal);
+  border: 1px solid rgba(42, 210, 201, 0.15);
+  border-radius: var(--radius-md);
+  padding: var(--space-6);
+  font-family: var(--font-mono);
+  font-size: var(--slide-code);
+  line-height: var(--leading-loose);
+  color: var(--color-teal-500);
+  overflow: hidden;
+  white-space: pre;
+}
+.code-block::before {
+  content: "$ ";
+  color: var(--color-gold-500);
+  opacity: 0.6;
+}
+.code-block--plain::before {
+  content: none;
+}
+
+/* Inline code on light slides uses the AA-safe darker teal */
+code:not(.code-block code) {
+  font-family: var(--font-mono);
+  font-weight: var(--font-medium);
+  color: var(--text-code);
+  background: var(--color-purple-50);
+  padding: 0 var(--space-1-5);
+  border-radius: var(--radius-sm);
+}
+.dark code:not(.code-block code) {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Stat counter */
+.stat { text-align: center; }
+.stat__number {
+  font-family: var(--font-display);
+  font-size: var(--slide-stat);
+  font-weight: var(--font-extrabold);
+  letter-spacing: var(--tracking-tighter);
+  line-height: var(--leading-none);
+  color: var(--text-brand);
+}
+.stat__label {
+  margin-top: var(--space-2);
+  font-family: var(--font-compressed);
+  font-size: var(--slide-label);
+  font-weight: var(--font-semibold);
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+/* Source / citation line */
+.source {
+  font-family: var(--font-body);
+  font-size: var(--slide-source);
+  color: var(--text-secondary);
+}
+
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Focus indicator: purple-500 on light, teal-500 on dark (via --border-focus) */
+:focus-visible {
+  outline: 3px solid var(--border-focus);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
