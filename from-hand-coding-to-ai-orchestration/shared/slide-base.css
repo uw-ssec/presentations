@@ -514,6 +514,94 @@ code:not(.code-block code) {
   display: block;
 }
 
+/* Partner logo lockup: SSEC, then the eScience Institute, then the UW.
+   Injected into every slide by shared/footer.html, so the order and sizing are
+   defined once here. Content slides grey it back and bring it to full strength
+   on hover; the title and closing slides always show it at full strength. */
+.slide .partner-logos {
+  position: absolute;
+  top: var(--space-6);
+  right: var(--space-6);
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  z-index: 5;
+}
+
+/* The three marks differ in aspect ratio, so they are normalised by height. */
+.slide .partner-logos img {
+  display: block;
+  width: auto;
+  height: 20px;
+  transition: filter 200ms ease;
+}
+
+/* The SSEC wordmark reads optically smaller at a shared height. */
+.slide .partner-logos img.logo-ssec {
+  height: 26px;
+}
+
+/* Brand purple on a purple ground is illegible, so dark slides knock out to white. */
+.slide.dark .partner-logos img {
+  filter: brightness(0) invert(1);
+}
+
+/* Content slides: greyed back at rest, waking to full colour on hover. */
+.slide .partner-logos.is-muted {
+  opacity: 0.55;
+  transition: opacity 200ms ease;
+}
+
+.slide .partner-logos.is-muted img {
+  filter: grayscale(1);
+}
+
+.slide .partner-logos.is-muted:hover {
+  opacity: 1;
+}
+
+.slide .partner-logos.is-muted:hover img {
+  filter: none;
+}
+
+/* On dark slides the hover brightens the white lockup rather than revealing
+   purple, which would disappear into the background. */
+.slide.dark .partner-logos.is-muted img,
+.slide.dark .partner-logos.is-muted:hover img {
+  filter: brightness(0) invert(1);
+}
+
+/* The closing slide carries the full lockup, larger and centred along the foot. */
+.slide .partner-logos.is-lockup {
+  top: auto;
+  right: auto;
+  bottom: var(--space-6);
+  left: 50%;
+  transform: translateX(-50%);
+  gap: var(--space-8);
+}
+
+.slide .partner-logos.is-lockup img {
+  height: 34px;
+}
+
+.slide .partner-logos.is-lockup img.logo-ssec {
+  height: 44px;
+}
+
+/* Paper has no hover, so the lockup prints at full strength everywhere. */
+@media print {
+  .slide .partner-logos.is-muted {
+    opacity: 1;
+  }
+  .slide .partner-logos.is-muted img {
+    filter: none;
+  }
+  .slide.dark .partner-logos.is-muted img {
+    filter: brightness(0) invert(1);
+  }
+}
+
 /* Focus indicator: purple-500 on light, teal-500 on dark (via --border-focus) */
 :focus-visible {
   outline: 3px solid var(--border-focus);

@@ -1,4 +1,8 @@
 ## 2026-09-23
+* **Update**: Linked `branding/partner-logo-lockup.md` to `from-hand-coding-to-ai-orchestration/presenter-controls.md` (The footer injects the lockup into every slide alongside the deck controls it already owns).
+* **Update**: Linked `branding/partner-logo-lockup.md` to `project/slide-visual-verification.md` (Placing the lockup needs this verification method, extended to elements that merely paint such as decorative bands and dividers).
+* **Update**: Linked `branding/partner-logo-lockup.md` to `branding/ssec-slide-brand.md` (The lockup is part of the SSEC slide brand and uses its spacing tokens and colour palette).
+* **Creation**: Documented concept `branding/partner-logo-lockup.md` (Partner Logo Lockup: SSEC, eScience, UW on Every Slide).
 * **Update**: Linked `project/onboarding-skill.md` to `project/skill-evals.md` (The onboarding skill ships the Inspect sample and Harbor happy-path and guard tasks this eval architecture requires of every skill).
 * **Creation**: Documented concept `project/onboarding-skill.md` (Onboarding Is a Read-Only, Checkpointed Guided Tour).
 * **Update**: Linked `from-hand-coding-to-ai-orchestration/trial-run-model-names.md` to `from-hand-coding-to-ai-orchestration/slide-order-and-insertions.md` (The chart lives in file 27 but is displayed as slide 28 after the insertions; resolve by position in SLIDES.md.).

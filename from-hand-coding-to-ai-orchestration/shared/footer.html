@@ -333,6 +333,48 @@
         }, 1500);
       });
     });
+
+    // Partner logo lockup on every slide: SSEC, eScience Institute, UW.
+    // Injected here so the order and markup are defined once rather than pasted
+    // into every fragment. The title and closing slides show it at full
+    // strength; every other slide greys it back until hovered.
+    const LOGOS = [
+      ['uw_ssec_logo.svg', 'UW Scientific Software Engineering Center', 'logo-ssec'],
+      ['escience_institute.svg', 'eScience Institute', 'logo-escience'],
+      ['university_of_washington_2.svg', 'University of Washington', 'logo-uw']
+    ];
+    const FULL_STRENGTH = ['01-title', '30-thank-you', '31-questions'];
+    const FULL_LOCKUP = '30-thank-you';
+
+    slides.forEach(section => {
+      if (section.querySelector('.partner-logos')) return;
+      const id = section.dataset.slide || '';
+      const muted = !FULL_STRENGTH.includes(id);
+      const lockup = id === FULL_LOCKUP;
+
+      const strip = document.createElement('div');
+      strip.className = 'partner-logos'
+        + (muted ? ' is-muted' : '')
+        + (lockup ? ' is-lockup' : '');
+      // The small mark repeats on every slide, so it is decorative there; the
+      // closing lockup is the one that carries the names to assistive tech.
+      if (lockup) {
+        strip.setAttribute('role', 'img');
+        strip.setAttribute('aria-label',
+          'UW Scientific Software Engineering Center, eScience Institute, University of Washington');
+      } else {
+        strip.setAttribute('aria-hidden', 'true');
+      }
+
+      LOGOS.forEach(([file, name, cls]) => {
+        const img = document.createElement('img');
+        img.src = '../assets/logos/' + file;
+        img.className = cls;
+        img.alt = lockup ? name : '';
+        strip.appendChild(img);
+      });
+      section.appendChild(strip);
+    });
   </script>
 </body>
 </html>

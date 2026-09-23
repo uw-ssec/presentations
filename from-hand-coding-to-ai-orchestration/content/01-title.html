@@ -12,6 +12,8 @@
   </div>
   <div class="angle-divider"></div>
   <style>
+    /* The full-screen icon owns this corner, so the logo lockup sits inboard of it. */
+    section[data-slide="01-title"] .partner-logos { right: calc(var(--space-6) + 56px); }
     section[data-slide="01-title"] {
       background: radial-gradient(circle at 82% 26%, rgba(42,210,201,0.16), transparent 25%),
                   linear-gradient(135deg, var(--color-purple-950), var(--color-purple-900));
