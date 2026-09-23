@@ -102,6 +102,17 @@ slides, the finding is "wrong page", not "no overflow". Address the local
 server as `127.0.0.1` explicitly, and check what already holds the port with
 `lsof -nP -iTCP:8000 -sTCP:LISTEN` before assuming a new server bound.
 
-# Related Concepts
+## Headless method used on 2026-09-22 (no browser extension needed)
+
+The Chromium that Playwright installs under its browser cache (`chrome-headless-shell`) is enough, even without the Playwright package:
+
+1. Build the deck, then serve the repository root: `python3 -m http.server 8765 --bind 127.0.0.1`.
+2. Screenshot one slide at the target size: `chrome-headless-shell --headless --no-sandbox --disable-gpu --hide-scrollbars --window-size=1280,720 --virtual-time-budget=4000 --screenshot=<out.png> http://127.0.0.1:8765/<deck>/build/index.html#<N>`. Look at the image; the fonts and images load within the virtual-time budget.
+3. For behaviour (keys, buttons, counters), drop a throwaway harness page into the git-ignored `build/` directory that loads `index.html#<N>` in a same-origin iframe, drives it, and writes results into a `<pre>`; run the shell with `--dump-dom` and read the `<pre>`. Delete the harness afterwards.
+
+Trap: dispatch synthetic `keydown` events on `document.body`, never on `document`. The footer's key handler calls `e.target.closest(...)`, which does not exist on the document node, so an event dispatched there throws silently and every key appears to do nothing. Real key presses always target an element.
+
+## Related Concepts
+
 - [How an agent builds a slide: audience, narrative, then the sourcing cascade](slide-content-hierarchy.md): The content hierarchy decides what goes on a slide; this check confirms what landed there actually fits inside it.
 - [Fragment-based uw-slides decks are not covered by the PDF and Zenodo workflow](../pipeline/fragment-decks-outside-pdf-workflow.md): Fitting in the browser does not guarantee fitting in the deposited PDF, so the export needs its own pass.
