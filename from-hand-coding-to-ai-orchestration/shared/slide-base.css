@@ -459,6 +459,61 @@ code:not(.code-block code) {
   border-width: 0;
 }
 
+/* Copy control on a live demo prompt card. Revealed by hovering the card or by
+   focusing the button, so it stays reachable from the keyboard. [data-interactive]
+   keeps it out of the print export. Selectors are deliberately specific: each
+   fragment carries a generic `section[data-slide=...] button` rule (and a .dark
+   variant) that would otherwise repaint this control. */
+.prompt-card {
+  position: relative;
+}
+
+.slide .prompt-card .copy-prompt {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  cursor: pointer;
+  color: var(--color-teal-500);
+  background: transparent;
+  border: 2px solid var(--color-teal-500);
+  border-radius: var(--radius-md);
+  opacity: 0;
+  transition: opacity 150ms ease, color 150ms ease, border-color 150ms ease;
+}
+
+.slide .prompt-card .copy-prompt svg {
+  width: 20px;
+  height: 20px;
+}
+
+.slide .prompt-card:hover .copy-prompt,
+.slide .prompt-card .copy-prompt:focus-visible,
+.slide .prompt-card .copy-prompt.is-copied {
+  opacity: 1;
+}
+
+.slide .prompt-card .copy-prompt:hover,
+.slide .prompt-card .copy-prompt.is-copied {
+  color: var(--color-gold-500);
+  border-color: var(--color-gold-500);
+  background: transparent;
+}
+
+/* Both icons share the box; the copied state swaps which one is shown. */
+.slide .prompt-card .copy-prompt .icon-copied,
+.slide .prompt-card .copy-prompt.is-copied .icon-copy {
+  display: none;
+}
+
+.slide .prompt-card .copy-prompt.is-copied .icon-copied {
+  display: block;
+}
+
 /* Focus indicator: purple-500 on light, teal-500 on dark (via --border-focus) */
 :focus-visible {
   outline: 3px solid var(--border-focus);

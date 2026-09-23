@@ -13,6 +13,9 @@
     <span id="deck-timer" class="deck-timer" title="t: pause/resume · r: reset">00:00</span>
   </div>
 
+  <!-- Announces the result of a prompt copy to assistive tech -->
+  <p id="copy-status" class="sr-only" role="status" aria-live="polite"></p>
+
   <style>
     .deck-progress {
       position: fixed;
@@ -283,6 +286,51 @@
       document.querySelectorAll('[data-fullscreen]').forEach(btn => {
         btn.setAttribute('aria-label', on ? 'Exit full screen' : 'Enter full screen');
         btn.title = on ? 'Exit full screen' : 'Full screen';
+      });
+    });
+
+    // Copy a live demo prompt. The clipboard API is unavailable on file:// in
+    // some browsers, so fall back to a hidden textarea and execCommand.
+    const copyStatus = document.getElementById('copy-status');
+
+    async function copyPromptText(text) {
+      if (navigator.clipboard && window.isSecureContext) {
+        try {
+          await navigator.clipboard.writeText(text);
+          return true;
+        } catch (err) { /* fall through */ }
+      }
+      const scratch = document.createElement('textarea');
+      scratch.value = text;
+      scratch.setAttribute('readonly', '');
+      scratch.style.cssText = 'position:fixed;top:-1000px;opacity:0;';
+      document.body.appendChild(scratch);
+      scratch.select();
+      let copied = false;
+      try { copied = document.execCommand('copy'); } catch (err) { copied = false; }
+      document.body.removeChild(scratch);
+      return copied;
+    }
+
+    document.querySelectorAll('[data-copy-prompt]').forEach(btn => {
+      const prompt = btn.closest('.prompt-card')?.querySelector('.prompt');
+      if (!prompt) return;
+      let revert;
+      btn.addEventListener('click', async () => {
+        const copied = await copyPromptText(prompt.textContent);
+        btn.classList.toggle('is-copied', copied);
+        btn.setAttribute('aria-label', copied
+          ? 'Prompt copied to the clipboard'
+          : 'Copy failed; select the prompt text manually');
+        if (copyStatus) copyStatus.textContent = copied ? 'Prompt copied' : 'Copy failed';
+        // Drop focus so the arrow keys keep driving the deck, not the button.
+        btn.blur();
+        clearTimeout(revert);
+        revert = setTimeout(() => {
+          btn.classList.remove('is-copied');
+          btn.setAttribute('aria-label', 'Copy the prompt to the clipboard');
+          if (copyStatus) copyStatus.textContent = '';
+        }, 1500);
       });
     });
   </script>
