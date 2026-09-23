@@ -33,6 +33,10 @@ The footer binds a click on any `[data-fullscreen]` to toggle `document.document
 
 The footer is shared by every slide, so after editing it scan the whole deck, and test the key bindings with the iframe harness described in the slide-visual-verification concept.
 
+The footer also injects the partner logo lockup into every slide, so its scope is
+deck furniture generally, not only interactive controls. See
+[[branding/partner-logo-lockup]].
+
 ## Related Concepts
 
 - [Verifying a slide change visually: nothing outside the 1280x720 boundary](../project/slide-visual-verification.md): Footer changes affect every slide; verify with the whole-deck scan and the iframe key harness described there.
