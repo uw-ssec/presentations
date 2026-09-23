@@ -1,4 +1,5 @@
 ## 2026-09-23
+* **Update**: Updated concept `from-hand-coding-to-ai-orchestration/closing-sequence.md`.
 * **Update**: Linked `branding/partner-logo-lockup.md` to `from-hand-coding-to-ai-orchestration/presenter-controls.md` (The footer injects the lockup into every slide alongside the deck controls it already owns).
 * **Update**: Linked `branding/partner-logo-lockup.md` to `project/slide-visual-verification.md` (Placing the lockup needs this verification method, extended to elements that merely paint such as decorative bands and dividers).
 * **Update**: Linked `branding/partner-logo-lockup.md` to `branding/ssec-slide-brand.md` (The lockup is part of the SSEC slide brand and uses its spacing tokens and colour palette).
