@@ -344,21 +344,21 @@
       ['university_of_washington_2.svg', 'University of Washington', 'logo-uw']
     ];
     const FULL_STRENGTH = ['01-title', '30-thank-you', '31-questions'];
-    const FULL_LOCKUP = '30-thank-you';
+    // One slide names the institutions for assistive tech; the repeated mark on
+    // every other slide is decorative.
+    const NAMED = '30-thank-you';
 
     slides.forEach(section => {
       if (section.querySelector('.partner-logos')) return;
       const id = section.dataset.slide || '';
       const muted = !FULL_STRENGTH.includes(id);
-      const lockup = id === FULL_LOCKUP;
+      const named = id === NAMED;
 
       const strip = document.createElement('div');
-      strip.className = 'partner-logos'
-        + (muted ? ' is-muted' : '')
-        + (lockup ? ' is-lockup' : '');
+      strip.className = 'partner-logos' + (muted ? ' is-muted' : '');
       // The small mark repeats on every slide, so it is decorative there; the
       // closing lockup is the one that carries the names to assistive tech.
-      if (lockup) {
+      if (named) {
         strip.setAttribute('role', 'img');
         strip.setAttribute('aria-label',
           'UW Scientific Software Engineering Center, eScience Institute, University of Washington');
@@ -370,7 +370,7 @@
         const img = document.createElement('img');
         img.src = '../assets/logos/' + file;
         img.className = cls;
-        img.alt = lockup ? name : '';
+        img.alt = named ? name : '';
         strip.appendChild(img);
       });
       section.appendChild(strip);
