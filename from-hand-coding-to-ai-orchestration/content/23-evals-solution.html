@@ -5,7 +5,7 @@
     <ol class="progress" aria-label="Session progress"><li class="done">Orientation</li><li class="done">Environment</li><li class="done">Instructions</li><li class="done">Memory</li><li class="done">Skills</li><li class="active" aria-current="step">Evals</li></ol>
 
     <h1>Two ways to test a skill</h1>
-    <div class="main pair"><div><h2>Inspect</h2><ol class="flow"><li><span class="number">01</span><strong>Prompt</strong><span>Skill + task</span></li><li><span class="number">02</span><strong>Score</strong><span>Response rules</span></li></ol></div><div><h2>Harbor</h2><ol class="flow"><li><span class="number">01</span><strong>Run</strong><span>Sandboxed agent</span></li><li><span class="number">02</span><strong>Check</strong><span>Logged tool calls</span></li></ol></div></div><p class="caption">CI runs these checks when skills or evals change.</p>
+    <div class="main pair"><div><h2>Inspect</h2><ol class="flow"><li><span class="number">01</span><strong>Prompt</strong><span>Skill + task</span></li><li><span class="number">02</span><strong>Score</strong><span>Response rules</span></li></ol><figure class="figure"><img src="../assets/images/evals-written-exam.png" alt="A learner fills in a multiple-choice answer sheet for a driver's license written exam while an answer key with check marks rests beside it."></figure></div><div><h2>Harbor</h2><ol class="flow"><li><span class="number">01</span><strong>Run</strong><span>Sandboxed agent</span></li><li><span class="number">02</span><strong>Check</strong><span>Logged tool calls</span></li></ol><figure class="figure"><img src="../assets/images/evals-road-test.png" alt="A learner drives through a coned test course while an examiner in the passenger seat ticks a checklist on a clipboard."></figure></div></div><p class="caption">CI runs these checks when skills or evals change.</p>
   </div>
   <style>
 section[data-slide="23-evals-solution"] { padding: var(--space-16) var(--space-20) var(--space-20); background: var(--surface-primary); }
@@ -64,5 +64,8 @@ section[data-slide="23-evals-solution"] .terminal { background:var(--surface-ter
 @media print { section[data-slide="23-evals-solution"] [data-stage].is-current { outline:none; background:transparent; } section[data-slide="23-evals-solution"] .controls { display:none; } }
 
 section[data-slide="23-evals-solution"] { background:var(--color-gold-50); }
+section[data-slide="23-evals-solution"] .pair > div { display:flex; flex-direction:column; min-height:0; }
+section[data-slide="23-evals-solution"] .pair .figure { flex:1; height:auto; margin-top:var(--space-6); }
+section[data-slide="23-evals-solution"] .pair .figure img { height:100%; max-height:100%; min-height:0; }
 </style>
 </section>
