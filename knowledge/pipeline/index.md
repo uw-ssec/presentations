@@ -1,2 +1,3 @@
 # Pipeline
 * [Fragment-based uw-slides decks are not covered by the PDF and Zenodo workflow](fragment-decks-outside-pdf-workflow.md) - A uw-slides deck builds to <slug>/build/index.html, which is git-ignored and not Reveal.js, so the workflow that renders <slug>/index.html with decktape reveal needs a dedicated build and render step before such a deck can publish.
+* [Cloudflare Pages deploys the repository as static files with no build step](cloudflare-pages-no-build-step.md) - Every push to staging gets a Cloudflare Pages deployment that serves the checkout as-is, so a fragment deck whose build/ output is git-ignored has no page there and every missing path falls back to the gallery with a 200, which makes a status code alone useless as evidence.

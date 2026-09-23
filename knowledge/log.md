@@ -1,3 +1,17 @@
+## 2026-09-23
+* **Update**: Linked `from-hand-coding-to-ai-orchestration/trial-run-model-names.md` to `from-hand-coding-to-ai-orchestration/slide-order-and-insertions.md` (The chart lives in file 27 but is displayed as slide 28 after the insertions; resolve by position in SLIDES.md.).
+* **Update**: Linked `from-hand-coding-to-ai-orchestration/llmoxie-background-slide.md` to `from-hand-coding-to-ai-orchestration/slide-order-and-insertions.md` (The LLMoxie slide is the first suffix-named insertion (08b); its file number and displayed number differ.).
+* **Update**: Linked `from-hand-coding-to-ai-orchestration/slide-order-and-insertions.md` to `project/deck-format-default.md` (Suffix naming only works because fragment decks take their order from SLIDES.md, which the default deck format establishes.).
+* **Update**: Linked `from-hand-coding-to-ai-orchestration/closing-sequence.md` to `project/slide-content-hierarchy.md` (The closing slides follow the sourcing cascade: ladder and orchestra mapping are tier 2 structures, the thank-you is deliberately tier 4 text.).
+* **Update**: Linked `from-hand-coding-to-ai-orchestration/presenter-controls.md` to `project/slide-visual-verification.md` (Footer changes affect every slide; verify with the whole-deck scan and the iframe key harness described there.).
+* **Update**: Linked `pipeline/cloudflare-pages-no-build-step.md` to `pipeline/fragment-decks-outside-pdf-workflow.md` (Both describe why a fragment deck has no published page yet: the PDF/Zenodo workflow renders only Reveal.js, and the Cloudflare preview runs no build.).
+* **Creation**: Documented concept `from-hand-coding-to-ai-orchestration/presenter-controls.md` (Deck-level presenter controls live in shared/footer.html: walkthrough keys, progress bar, full-screen toggle).
+* **Creation**: Documented concept `from-hand-coding-to-ai-orchestration/trial-run-model-names.md` (Trial-run model names on the models-matter chart).
+* **Creation**: Documented concept `from-hand-coding-to-ai-orchestration/closing-sequence.md` (Closing sequence: Monday ladder, orchestra metaphor, shared-source callback, plain thank-you).
+* **Creation**: Documented concept `from-hand-coding-to-ai-orchestration/llmoxie-background-slide.md` (The LLMoxie slide is background that leads into the demo project, not a platform tour).
+* **Creation**: Documented concept `from-hand-coding-to-ai-orchestration/slide-order-and-insertions.md` (Insert slides with suffixed names and keep order in SLIDES.md; displayed numbers drift from file numbers).
+* **Creation**: Documented concept `pipeline/cloudflare-pages-no-build-step.md` (Cloudflare Pages deploys the repository as static files with no build step).
+
 ## 2026-09-22
 * **Update**: Linked `project/slide-visual-verification.md` to `pipeline/fragment-decks-outside-pdf-workflow.md` (Fitting in the browser does not guarantee fitting in the deposited PDF, so the export needs its own pass.).
 * **Update**: Linked `project/slide-visual-verification.md` to `project/slide-content-hierarchy.md` (The content hierarchy decides what goes on a slide; this check confirms what landed there actually fits inside it.).

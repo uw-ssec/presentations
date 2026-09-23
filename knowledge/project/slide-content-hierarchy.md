@@ -158,7 +158,8 @@ diagrammatic accents and icons** - small gold line-art marks - and governs
 override this cascade. Accents stay subordinate; the slide's primary content
 carrier is still chosen by tier.
 
-# Related Concepts
+## Related Concepts
+
 - [New Decks Default to uw-slides HTML, Not Reveal.js](deck-format-default.md): The tier choice is made during the SLIDES.md planning pass of the two-pass fragment deck workflow this concept defines.
 - [SSEC is the default slide brand, adapted from the website design system](../branding/ssec-slide-brand.md): Brand sets how a slide looks; the content hierarchy sets what carries its idea. A tier-2 chart still uses the ssec tokens and 24px type floor.
 - [Fragment-based uw-slides decks are not covered by the PDF and Zenodo workflow](../pipeline/fragment-decks-outside-pdf-workflow.md): Rich tier-1 and tier-2 elements do not survive the decktape PDF export this concept governs, so every such slide needs a static fallback frame for the Zenodo deposit.
