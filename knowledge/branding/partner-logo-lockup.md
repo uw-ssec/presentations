@@ -11,7 +11,7 @@ code_refs: [from-hand-coding-to-ai-orchestration/shared/footer.html, from-hand-c
 
 Every slide carries a partner logo lockup in the order **SSEC, then the eScience
 Institute, then the University of Washington**, placed in the top-right corner.
-The closing slide carries the same three larger, as the full lockup.
+Every slide uses the same corner treatment, including the closing slides.
 
 ## Where the assets come from
 
@@ -50,16 +50,21 @@ offsets belong in that slide's own fragment.
 - Dark slides knock the lockup out to white with `filter: brightness(0)
   invert(1)` and stay white on hover. Brand purple (`#4b2e83`, `#443374`) on a
   dark purple ground is close to invisible, so colour is never revealed there.
-- The title and questions slides show the lockup at full strength with no hover
-  gesture; the closing slide uses `is-lockup`, larger.
+- The title, thank-you and questions slides show the lockup at full strength
+  with no hover gesture.
+- A larger lockup centred on the closing slide was built and then **rejected**:
+  the corner mark has to be in the same place on every slide, and a centred
+  variant reads as a different element rather than the same furniture.
 - Paper has no hover, so an `@media print` block prints every lockup at full
   strength.
 
 ## Placement is verified, not assumed
 
-Two collisions were found only by measuring, and both are fixed with a rule in
-the relevant fragment: the title slide's full-screen icon owns the top-right
-corner, and the closing slide's gold angle divider owns the foot.
+One collision survives and is fixed with a rule in the fragment: the title
+slide's full-screen icon owns the top-right corner, so the lockup sits inboard
+of it. A second was found while the centred closing variant existed - it sat on
+the gold angle divider - and disappeared with that variant, but the lesson it
+taught about scanning did not.
 
 Scan the boxes as described in the slide visual verification concept, and
 include **elements that merely paint** - decorative divs, bands, dividers -

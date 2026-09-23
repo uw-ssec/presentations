@@ -571,24 +571,6 @@ code:not(.code-block code) {
   filter: brightness(0) invert(1);
 }
 
-/* The closing slide carries the full lockup, larger and centred along the foot. */
-.slide .partner-logos.is-lockup {
-  top: auto;
-  right: auto;
-  bottom: var(--space-6);
-  left: 50%;
-  transform: translateX(-50%);
-  gap: var(--space-8);
-}
-
-.slide .partner-logos.is-lockup img {
-  height: 34px;
-}
-
-.slide .partner-logos.is-lockup img.logo-ssec {
-  height: 44px;
-}
-
 /* Paper has no hover, so the lockup prints at full strength everywhere. */
 @media print {
   .slide .partner-logos.is-muted {
