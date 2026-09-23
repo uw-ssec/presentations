@@ -294,6 +294,6 @@ agents a place to find the rules and the reasons behind them. Links. Questions.
 
 ## 31-questions
 
-**Primary carrier: tier 4.** A plain final slide: thanks, the question prompt, and the links. Text is the right carrier for a closing prompt.
+**Primary carrier: tier 4.** A plain final slide: thanks, the question prompt, and the links. Text is the right carrier for a closing prompt. A looping video of the uwssec.org partner logo bar sits under the prompt, on a light gold-50 slide that matches the video's background.
 
-Last slide: thank you, questions, links.
+Last slide: thank you, questions, partner logos, links.
