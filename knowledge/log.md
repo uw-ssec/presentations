@@ -1,4 +1,6 @@
 ## 2026-09-23
+* **Update**: Linked `project/onboarding-skill.md` to `project/skill-evals.md` (The onboarding skill ships the Inspect sample and Harbor happy-path and guard tasks this eval architecture requires of every skill).
+* **Creation**: Documented concept `project/onboarding-skill.md` (Onboarding Is a Read-Only, Checkpointed Guided Tour).
 * **Update**: Linked `from-hand-coding-to-ai-orchestration/trial-run-model-names.md` to `from-hand-coding-to-ai-orchestration/slide-order-and-insertions.md` (The chart lives in file 27 but is displayed as slide 28 after the insertions; resolve by position in SLIDES.md.).
 * **Update**: Linked `from-hand-coding-to-ai-orchestration/llmoxie-background-slide.md` to `from-hand-coding-to-ai-orchestration/slide-order-and-insertions.md` (The LLMoxie slide is the first suffix-named insertion (08b); its file number and displayed number differ.).
 * **Update**: Linked `from-hand-coding-to-ai-orchestration/slide-order-and-insertions.md` to `project/deck-format-default.md` (Suffix naming only works because fragment decks take their order from SLIDES.md, which the default deck format establishes.).

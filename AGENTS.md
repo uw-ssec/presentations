@@ -85,6 +85,7 @@ tool when your harness can load it natively.
 | `/accessibility-check` | Validating WCAG 2.1 AA: contrast, font sizes, alt text, ARIA, semantic HTML                 |
 | `/extract-to-markdown` | Turning an existing HTML deck into a `SLIDES.md` planning outline                           |
 | `/okf-memory`          | Recording or looking up decisions and constraints in `knowledge/`; when `okf validate` fails |
+| `/onboarding`          | Walking someone new to this repository through it; a read-only, checkpointed tour            |
 
 The five deck skills are vendored from the
 [uw-slide-deck-plugin](https://github.com/aaarendt/uw-slide-deck-plugin) and
