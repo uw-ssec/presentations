@@ -5,7 +5,7 @@
 
 
     <h1>Join the conversation</h1>
-    <div class="main split"><div><p class="lead">Scan for the polls.</p><p class="caption">Follow along in a Codespace, or just watch.</p></div><figure class="figure"><img src="../assets/images/menti-qr.png" alt="QR code to join this session in Mentimeter"></figure></div>
+    <div class="main split"><div class="join"><p class="how">Go to</p><p class="big">menti.com</p><p class="how">Enter the code</p><p class="big code">4985 6011</p><p class="caption">Follow along in a Codespace, or just watch.</p></div><figure class="figure"><img src="../assets/images/menti-qr.png" alt="QR code to join this session in Mentimeter, code 4985 6011"><figcaption class="source">Or scan the QR code</figcaption></figure></div>
   </div>
   <style>
 section[data-slide="02-join-mentimeter"] { padding: var(--space-16) var(--space-20) var(--space-20); background: var(--surface-primary); }
@@ -63,5 +63,10 @@ section[data-slide="02-join-mentimeter"] .pair p { margin-top:var(--space-4); }
 section[data-slide="02-join-mentimeter"] .terminal { background:var(--surface-terminal); color:var(--color-teal-500); padding:var(--space-6); font-family:var(--font-mono); font-size:var(--slide-code); white-space:pre-wrap; line-height:var(--leading-relaxed); border-radius:var(--radius-md); }
 @media print { section[data-slide="02-join-mentimeter"] [data-stage].is-current { outline:none; background:transparent; } section[data-slide="02-join-mentimeter"] .controls { display:none; } }
 
-section[data-slide="02-join-mentimeter"] .figure img { max-height:65vh; }</style>
+section[data-slide="02-join-mentimeter"] .figure img { max-height:58vh; }
+section[data-slide="02-join-mentimeter"] .join { display:flex; flex-direction:column; gap:var(--space-2); }
+section[data-slide="02-join-mentimeter"] .how { font-family:var(--font-compressed); font-size:var(--slide-label); letter-spacing:var(--tracking-widest); text-transform:uppercase; color:var(--color-teal-300); margin:0; }
+section[data-slide="02-join-mentimeter"] .big { font-family:var(--font-display); font-size:var(--slide-hero); font-weight:var(--font-extrabold); line-height:var(--leading-tight); color:var(--color-white); margin:0 0 var(--space-6); }
+section[data-slide="02-join-mentimeter"] .code { color:var(--color-gold-200); letter-spacing:var(--tracking-wide); }
+section[data-slide="02-join-mentimeter"] .caption { margin-top:var(--space-4); }</style>
 </section>

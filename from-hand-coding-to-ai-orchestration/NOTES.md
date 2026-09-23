@@ -22,7 +22,7 @@ Before we start
 
 Scan to join
 
-Join the polls from your phone.
+Join the polls from your phone: menti.com, code 4985 6011, or scan the QR code.
 
 We'll show you what worked, what failed, and what we changed.
 
@@ -145,6 +145,22 @@ Skill evaluations
 Agent environment
 
 The package is still at the center. We'll build the support around it, one part at a time.
+
+## 08b-llmoxie-platform
+
+Where the demo data comes from
+
+LLMoxie is SSEC's AI gateway: one endpoint in front of cloud and on-prem models, with authentication, budgets, PII masking, and observability in the control plane.
+
+Every human and AI exchange that goes through it is logged.
+
+We have been collecting those interactions from our internal team and from the workshops we have run. That is now a lot of data.
+
+So we are building an analysis library: normalize the data first, then support whatever analysis we want to do later.
+
+That library is the demo project. Next slide.
+
+Paper: arXiv:2607.02703.
 
 ## 09-llmoxie-context
 
@@ -494,7 +510,7 @@ GPT Terra | 7 steps | Fell back to regex over the files
 
 GPT Luna | 10 steps · 1 m 44 s | Skipped pixi, wrote scripts, then read other chat sessions' storage
 
-MyCode 1.1 Flash | 5 steps · 54 s | Searched files until the prompt explicitly named OKF
+MAI Code 1.1 Flash | 5 steps · 54 s | Searched files until the prompt explicitly named OKF
 
 Qwen 3.8, local 4-bit | slow | Searched memory one keyword at a time, then lost focus
 
@@ -546,6 +562,16 @@ Test whether agents follow the skills
 
 You can stop after the first step and still have something useful. Keep the required checks as you add more.
 
+## 29b-same-sheet-music
+
+Why this works
+
+Think of an orchestra. Every player reads the same score. During rehearsal they pencil notes into the margins, and those notes stay on the page for the next rehearsal and for whoever sits in that chair next.
+
+That is what we set up today. AGENTS.md and the rules are the score. The knowledge bundle is the pencil marks: the decisions and the reasons behind them. Skills are the parts practiced until they are routine. Evals are tuning up before the concert. Pixi means everyone has the same instrument, in tune.
+
+Nobody plays from memory. A new contributor and a coding agent open the same score and the same margin notes, so the orchestration is repeatable instead of depending on who is in the room.
+
 ## 30-thank-you
 
 Thank you
@@ -562,10 +588,14 @@ escience.washington.edu/software-engineering
 
 UW Scientific Software Engineering Center
 
-## 31-backup-horror-stories
+## 31-questions
 
-Mentimeter
+Thank you
 
-In one line: what is the worst thing a coding agent has done in your repo?
+Questions?
 
-We've seen an agent contradict a recorded decision and another change a schema without updating the upstream API. What happened in yours?
+github.com/uw-ssec/llmoxie-analysis
+
+github.com/uw-ssec/rse-plugins
+
+escience.washington.edu/software-engineering

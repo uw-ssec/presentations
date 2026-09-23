@@ -19,10 +19,14 @@ In the deck:
 - The bottom-left badge shows who is speaking (teal Don, gold Cordero).
 - The timer next to it starts when you leave slide 1. `t` pauses and resumes,
   `r` resets. It turns gold at 50 minutes and pink at 60.
+- The teal bar along the top fills as the deck progresses. The faint icon at
+  the top right of the title slide toggles full screen.
 - `#N` in the URL jumps to slide N.
 - “Walk through” highlights a diagram step. “Next step” advances the highlight;
   “Show all” restores the overview. These buttons also work with Tab and Space.
-- Browser Print exports all 31 slides, with complete diagrams and no live controls.
+  On those slides, Down arrow is the next step and Up arrow is the previous
+  step; Down on the last step returns to the overview.
+- Browser Print exports all 33 slides, with complete diagrams and no live controls.
 
 ## Files
 

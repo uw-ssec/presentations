@@ -46,7 +46,7 @@ event. Hero illustration: hands typing become a conductor's baton.
 
 **Primary carrier: tier 2.** The QR code is the action. Spoken setup instructions move to NOTES.md.
 
-Join slide: QR code (cropped from the Mentimeter deck), "Scan to join".
+Join slide: menti.com, the code 4985 6011, and the Mentimeter QR code.
 Note aloud: informal, hands-on, fork the demo repo and open a Codespace if you
 want to follow along, or sit back.
 
@@ -91,6 +91,16 @@ model and the software around it in plain language. Keep the source line.
 The Harness Augmentation Framework graphic (the anchor visual, per Anant's
 feedback) with the six components listed. This is the repo layout the rest of
 the session builds up.
+
+## 08b-llmoxie-platform
+
+**Primary carrier: tier 2.** The LLMoxie architecture diagram shows the gateway the data flows through. It is a structure, so no motion is needed. Three short steps carry the story; one line hands off to the demo project.
+
+Background that leads into slide 09: we have been collecting human and AI
+interactions through the LLMoxie AI gateway (arXiv:2607.02703). We now have a
+lot of data from the internal team and the workshops we have run, and we are
+building an analysis library to normalize it and support future analysis.
+Don's segment.
 
 ## 09-llmoxie-context
 
@@ -264,6 +274,17 @@ across more research projects.
 
 Adoption ladder, six rungs, each useful on its own.
 
+## 29b-same-sheet-music
+
+**Primary carrier: tier 2.** A native HTML mapping pairs each orchestra element with the repo part it corresponds to. The claim is a correspondence, so a table-like diagram carries it; no motion is needed.
+
+Closing narrative: the pieces we demoed are the shared sheet music. Everyone,
+human or agent, plays from the same score (AGENTS.md, rules), with the notes
+scribbled during practice (knowledge) written on it rather than held in one
+person's head. Parts are rehearsed (skills), the ensemble is tuned before the
+concert (evals), and the instruments match (pixi). Nobody plays from memory,
+which is what makes agent orchestration repeatable.
+
 ## 30-thank-you
 
 **Primary carrier: tier 2.** Return to the shared-source visual from slide 6. The repeated structure closes the argument; links remain as sources.
@@ -271,9 +292,8 @@ Adoption ladder, six rungs, each useful on its own.
 Closing: connect both opening questions to a shared answer: give people and
 agents a place to find the rules and the reasons behind them. Links. Questions.
 
-## 31-backup-horror-stories
+## 31-questions
 
-**Primary carrier: tier 4.** The live poll supplies interaction. The prompt must be read verbatim; illustration or a table cannot ask the question more clearly.
+**Primary carrier: tier 4.** A plain final slide: thanks, the question prompt, and the links. Text is the right carrier for a closing prompt.
 
-Backup Mentimeter cue: "In one line, the worst thing a coding agent has done
-in your repo?" Use only if time allows.
+Last slide: thank you, questions, links.
