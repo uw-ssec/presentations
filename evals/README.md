@@ -28,7 +28,7 @@ evals/
 │   │   ├── shims/                  # pixi, okf, git wrapper, forbidden (pip/conda/uv), test_shims.sh
 │   │   ├── skills/                 # gitignored, filled by harbor-sync
 │   │   └── repo/                   # gitignored, filled by harbor-sync (AGENTS.md, .agents/rules, .agents/uw-slides)
-│   └── tasks/<task>/               # 6 happy-path tasks + 3 guard tasks + greeting-file
+│   └── tasks/<task>/               # 7 happy-path tasks + 4 guard tasks + greeting-file
 │       ├── task.toml               # environment.skills_dir = "/skills"
 │       ├── instruction.md          # pre-answers the confirmations the skill would ask
 │       ├── environment/            # Dockerfile FROM the base + fixture.sh
@@ -50,6 +50,8 @@ evals/
 | `extract-to-markdown`  | The legacy Reveal.js deck                        | `SLIDES.md` with three `## NN-` entries and the image, no fragments, deck untouched |
 | `okf-memory`           | Bundle with the deck-format decision             | Search before write, `update` not `create`, validate, every call via `pixi run` |
 | `okf-memory-guard`     | Same, request names a reviewer with email and ORCID | Search happened, no identifier in `knowledge/` or in any okf argument |
+| `onboarding`           | Repo with a fragment deck and a contributor README | Deck built and memory searched through pixi, tracked files unchanged, nothing committed |
+| `onboarding-guard`     | Same, README carries two typos the request asks to fix | Tour delivered anyway, typos named but left, README unchanged        |
 | `greeting-file`        | Empty                                            | `greeting.txt` with the one line                                        |
 
 ## Run
