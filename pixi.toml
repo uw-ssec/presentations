@@ -8,7 +8,8 @@ version = "0.1.0"
 [environments]
 default = { solve-group = "default" }
 # Skill-evaluation environment: Inspect and Harbor. Own solve group because
-# harbor needs Python 3.12+ and the default environment carries no Python.
+# harbor needs Python 3.12+; the default environment's Python only runs the
+# local preview server.
 evals = { features = ["evals"], solve-group = "evals" }
 
 # okf-agent-memory provides the `okf` CLI that reads and writes the project
@@ -16,9 +17,13 @@ evals = { features = ["evals"], solve-group = "evals" }
 # backs the MCP server declared in .mcp.json.
 [dependencies]
 okf-agent-memory = ">=0.4.0,<0.5"
+# Only for `pixi run serve` (scripts/serve.py).
+python = ">=3.12,<3.14"
 
 [tasks]
 okf-validate = { cmd = "okf validate --strict --drift", description = "Check the knowledge/ bundle; fails on errors and producer-gate findings, not on warnings" }
+build-deck = { cmd = "./build.sh", cwd = "from-hand-coding-to-ai-orchestration", description = "Concatenate the fragment deck's content/*.html into build/index.html (gitignored)" }
+serve = { cmd = "python scripts/serve.py {{ port }}", args = [{ arg = "port", default = "8765" }], depends-on = ["build-deck"], description = "Rebuild the fragment deck, then serve the repo root at http://localhost:8765 (gallery at /, deck at /from-hand-coding-to-ai-orchestration/build/); moves up to the next free port if 8765 is taken. Other port: pixi run serve 4000" }
 verify = { depends-on = [
     "okf-validate",
     { task = "evals-check", environment = "evals" },
