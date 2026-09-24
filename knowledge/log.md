@@ -1,3 +1,7 @@
+## 2026-09-24
+* **Update**: Updated concept `from-hand-coding-to-ai-orchestration/closing-sequence.md`.
+* **Update**: Updated concept `from-hand-coding-to-ai-orchestration/trial-run-model-names.md`.
+
 ## 2026-09-23
 * **Update**: Updated concept `from-hand-coding-to-ai-orchestration/closing-sequence.md`.
 * **Update**: Linked `branding/partner-logo-lockup.md` to `from-hand-coding-to-ai-orchestration/presenter-controls.md` (The footer injects the lockup into every slide alongside the deck controls it already owns).
