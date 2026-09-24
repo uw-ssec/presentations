@@ -272,7 +272,9 @@ across more research projects.
 
 **Primary carrier: tier 1.** A presenter-stepped adoption staircase shows order while keeping every useful stopping point visible. The static staircase preserves the sequence.
 
-Adoption ladder, six rungs, each useful on its own.
+Adoption ladder, six rungs, each useful on its own. The Harness Augmentation
+Framework graphic from slide 8 sits beside the ladder as a callback to where the
+parts were introduced.
 
 ## 29b-same-sheet-music
 
