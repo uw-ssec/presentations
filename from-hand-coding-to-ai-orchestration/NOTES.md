@@ -244,7 +244,7 @@ You follow the setup steps, hit a dependency error, and spend the afternoon fixi
 
 For agents
 
-Sonnet used pip install even though the repo had pixi. It kept trying different approaches instead of using the existing setup.
+Sonnet ran pytest directly with pixi run pytest instead of the repo's pixi tasks. It kept trying different approaches instead of using the existing setup.
 
 Live demo prompt
 
@@ -512,8 +512,6 @@ GPT Luna | 10 steps · 1 m 44 s | Skipped pixi, wrote scripts, then read other c
 
 MAI Code 1.1 Flash | 5 steps · 54 s | Searched files until the prompt explicitly named OKF
 
-Qwen 3.8, local 4-bit | slow | Searched memory one keyword at a time, then lost focus
-
 Haiku covered the same content as Sonnet in this trial. That's worth testing on more tasks.
 
 A cheaper model can cost you more time if you have to correct its work.
@@ -568,7 +566,7 @@ Why this works
 
 Think of an orchestra. Every player reads the same score. During rehearsal they pencil notes into the margins, and those notes stay on the page for the next rehearsal and for whoever sits in that chair next.
 
-That is what we set up today. AGENTS.md and the rules are the score. The knowledge bundle is the pencil marks: the decisions and the reasons behind them. Skills are the parts practiced until they are routine. Evals are tuning up before the concert. Pixi means everyone has the same instrument, in tune.
+That is what we set up today. AGENTS.md and the rules are the score. The knowledge bundle is the pencil marks: the decisions and the reasons behind them. Skills are the parts practiced until they are routine. Evals are the dress rehearsal before the concert: does the agent actually perform the part? Pixi gives everyone the same instruments and the same tuner: one environment, and tasks like pixi run test and pixi run verify that give the same answer no matter who runs them.
 
 Nobody plays from memory. A new contributor and a coding agent open the same score and the same margin notes, so the orchestration is repeatable instead of depending on who is in the room.
 

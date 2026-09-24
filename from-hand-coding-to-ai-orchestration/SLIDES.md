@@ -145,8 +145,8 @@ skills, evals. Keep the setup that worked and add help where agents got stuck.
 **Primary carrier: tier 1.** The live hello-world task demonstrates the failure. This static mismatch diagram makes the observed wrong command legible without inventing terminal output.
 
 Section 1 of 5, Agent environment. Problem: 2023 was copy-paste from a chat
-window; every machine different; agents trained on pip revert to pip even when
-pixi is configured and burn tokens cycling. Prompt: add a hello-world module
+window; every machine different; agents run tools directly (pixi run pytest)
+instead of the configured tasks and burn tokens cycling. Prompt: add a hello-world module
 with a test and run the tests.
 
 ## 15-env-solution
@@ -281,8 +281,9 @@ Adoption ladder, six rungs, each useful on its own.
 Closing narrative: the pieces we demoed are the shared sheet music. Everyone,
 human or agent, plays from the same score (AGENTS.md, rules), with the notes
 scribbled during practice (knowledge) written on it rather than held in one
-person's head. Parts are rehearsed (skills), the ensemble is tuned before the
-concert (evals), and the instruments match (pixi). Nobody plays from memory,
+person's head. Parts are rehearsed (skills), the ensemble runs a dress rehearsal
+before the concert (evals), and everyone has the same instruments and the same
+tuner (pixi: one environment, plus tasks that check work the same way for anyone). Nobody plays from memory,
 which is what makes agent orchestration repeatable.
 
 ## 30-thank-you

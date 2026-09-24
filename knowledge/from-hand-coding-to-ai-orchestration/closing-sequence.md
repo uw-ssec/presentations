@@ -3,7 +3,7 @@ type: Decision
 title: "Closing sequence: Monday ladder, orchestra metaphor, shared-source callback, thank-you with partner logos"
 description: "The deck ends with the adoption ladder, an orchestra slide mapping repo parts to sheet music (worded as repeatable, not deterministic), the callback to the shared-source diagram with an empty Your repo hub, and a thank-you slide with a looping uwssec.org partner logo video; the backup horror-stories slide was removed and filling the hub with the six parts was rejected as a repeat of the ladder."
 tags: [uw-slides, narrative, closing, orchestra]
-generated: { by: "claude-code:claude-opus-5-5", at: "2026-09-23T16:29:49Z" }
+generated: { by: "claude-code:claude-opus-5-5", at: "2026-09-24T03:37:58Z" }
 status: stable
 governance: constraint
 code_refs: [from-hand-coding-to-ai-orchestration/content/29-start-monday.html, from-hand-coding-to-ai-orchestration/content/29b-same-sheet-music.html, from-hand-coding-to-ai-orchestration/content/30-thank-you.html, from-hand-coding-to-ai-orchestration/content/31-questions.html, from-hand-coding-to-ai-orchestration/assets/video/uwssec-partners.webm]
@@ -12,7 +12,7 @@ code_refs: [from-hand-coding-to-ai-orchestration/content/29-start-monday.html, f
 ## Final order
 
 1. `29-start-monday`: the six-rung adoption ladder. The only place the six framework parts are listed as steps.
-2. `29b-same-sheet-music`: the orchestra metaphor. Score = `AGENTS.md` and `rules/`; pencil marks from rehearsal = `knowledge/`; parts practiced until routine = `skills/`; tuning before the concert = `evals/`; same instruments in tune = `pixi.toml`. Closing line: nobody plays from memory, same score and same margin notes, so the orchestration is **repeatable**.
+2. `29b-same-sheet-music`: the orchestra metaphor. Score = `AGENTS.md` and `rules/`; pencil marks from rehearsal = `knowledge/`; parts practiced until routine = `skills/`; dress rehearsal before the concert = `evals/`; same instruments, same tuner = `pixi.toml` (the shared environment plus tasks such as `pixi run verify` that give every player, human or agent, the same deterministic check). Changed 2026-09-23 from "tuning before the concert" and "same instruments, in tune", which covered only the environment half of pixi; tuning moved to pixi because it is the deterministic check, and evals became the dress rehearsal because they test whether the agent performs the part. Closing line: nobody plays from memory, same score and same margin notes, so the orchestration is **repeatable**.
 3. `30-thank-you`: the callback to the shared-source diagram from slide 6, hub left as an empty "Your repo", with the three project links.
 4. `31-questions`: "Thank you" and "Questions?" with the same links, plus a looping video of the partner logo bar from uwssec.org. This slide is light, on `--color-gold-50`, so it matches the video's background.
 
